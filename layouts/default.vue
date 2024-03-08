@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <AppHeader />
+  <AppHeader />
+  <main class="relative my-12 flex-1">
     <slot />
-    <AppFooter />
-  </div>
+  </main>
+  <AppFooter />
 </template>

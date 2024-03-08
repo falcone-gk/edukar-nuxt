@@ -1,5 +1,9 @@
+<script setup lang="ts">
+import NavBar from './NavBar.vue';
+import Sidebar from './Sidebar.vue';
+</script>
+
 <template>
-  <header>
-    <h1>Logo</h1>
-  </header>
+  <NavBar />
+  <Sidebar />
 </template>

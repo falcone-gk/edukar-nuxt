@@ -16,5 +16,8 @@
     "pinia": "^2.1.7",
     "vue": "^3.4.19",
     "vue-router": "^4.3.0"
+  },
+  "devDependencies": {
+    "@iconify-json/bxl": "^1.1.10"
   }
 }

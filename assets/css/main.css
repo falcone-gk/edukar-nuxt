@@ -1,0 +1,11 @@
+@font-face {
+  font-family: 'LexendDeca';
+  src: url('/fonts/LexendDeca.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+* {
+  font-family: 'LexendDeca', sans-serif;
+}
