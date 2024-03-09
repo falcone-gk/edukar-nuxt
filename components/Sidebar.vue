@@ -15,17 +15,17 @@
     </div>
   </header>
   <USlideover class="fixed top-0 z-30 md:hidden" v-model="isOpen" side="left">
-    <UCard class="fixed top-0 h-screen w-5/6">
-      <template #header>
+    <UCard
+      class="fixed top-0 h-screen w-5/6"
+      :ui="{ base: 'flex flex-col', footer: { base: 'mt-auto' } }"
+    >
+      <template v-if="userStore.user" #header>
         <ul>
           <li>
             <div class="flex justify-between px-2.5 py-1.5">
               <div class="flex items-center gap-1.5">
-                <UIcon class="w-5 h-5 text-gray-700 dark:text-gray-200" name="i-heroicons-moon-solid" />
-                <span>Dark Mode</span>
-              </div>
-              <div class="flex items-center">
-                <UToggle v-model="selected" @click="toggleColorMode"/>
+                <UAvatar :src="userStore.getPicturePath()" />
+                <span>{{ userStore.user.username }}</span>
               </div>
             </div>
           </li>
@@ -33,14 +33,28 @@
       </template>
       <UVerticalNavigation :links="links"
       :ui="{
-        active: 'bg-primary dark:before:bg-primary-500'
-      }"
-    />
+        active: 'bg-primary dark:before:bg-primary-500',
+      }">
+        <template #badge="{ link }">
+          <div v-if="link.input" class="flex items-center ml-auto">
+            <UToggle v-model="selected" @click="toggleColorMode"/>
+          </div>
+        </template>
+      </UVerticalNavigation>
+      <template v-if="userStore.isLogged" #footer>
+        <UButton
+          icon="i-heroicons-arrow-right-end-on-rectangle-solid"
+          label="Cerrar sesión"
+          variant="ghost"
+          @click="userStore.logout"
+        />
+    </template>
     </UCard>
   </USlideover>
 </template>
 
 <script lang="ts" setup>
+const userStore = useUserStore()
 const colorMode = useColorMode()
 const selected = ref<boolean>(colorMode.preference === 'dark' ? true : false)
 
@@ -55,8 +69,13 @@ const toggleColorMode = () => {
 const isOpen = ref(false)
 
 const userLinks = [
-  { label: 'Iniciar sesión', to: '/login', icon: 'i-heroicons-user-20-solid' },
-  { label: 'Registrarse', to: '/signup', icon: 'i-heroicons-user-plus-20-solid' }
+  { label: 'Iniciar sesión', to: '/login', icon: 'i-heroicons-user-solid' },
+  { label: 'Registrarse', to: '/signup', icon: 'i-heroicons-user-plus-solid' }
+]
+
+const userLoggedLinks = [
+  { label: 'Ver perfil', to: '/account', icon: 'i-heroicons-user-solid' },
+  { label: 'Notificaciones', to: '/account/notifications', icon: 'i-heroicons-envelope-solid' }
 ]
 
 const navLinks = [
@@ -66,8 +85,13 @@ const navLinks = [
   { label: 'Descargas', to: '/downloads', icon: 'i-heroicons-arrow-down-circle-20-solid' },
 ]
 
-const links = [
-  userLinks,
-  navLinks
+const darkMode = [
+  { label: 'Dark mode', icon: 'i-heroicons-moon-solid', input: true }
 ]
+
+const links = computed(() => [
+  userStore.isLogged ? userLoggedLinks : userLinks,
+  navLinks,
+  darkMode
+])
 </script>

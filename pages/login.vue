@@ -8,7 +8,7 @@
           <LogoEdukar size="h-8" />
         </div>
       </template>
-      <UForm :validate="validate" :state="state" @submit="submitLogin" class="flex flex-col gap-4">
+      <UForm ref="form" :validate="validate" :state="state" @submit="submitLogin" class="flex flex-col gap-4">
         <UFormGroup label="Username o email" name="username" required>
           <UInput v-model="state.username" placeholder="you@example.com" icon="i-heroicons-envelope" />
         </UFormGroup>
@@ -16,7 +16,7 @@
           <UInput v-model="state.password" placeholder="************" type="password"
             icon="i-heroicons-lock-closed-20-solid" />
         </UFormGroup>
-        <UButton type="submit" block :loading="isLoading">Iniciar sesión</UButton>
+        <UButton type="submit" block :loading="status === 'pending'">Iniciar sesión</UButton>
       </UForm>
 
       <template #footer>
@@ -29,13 +29,20 @@
 </template>
 
 <script lang="ts" setup>
-import type { FormError, FormSubmitEvent } from '#ui/types'
+import type { FormError, FormSubmitEvent, Form } from '#ui/types'
+import type { userInfo } from '~/types'
 
-const state = reactive({
-  username: undefined,
-  password: undefined
+definePageMeta({
+  middleware: ['anonymous']
 })
 
+const userStore = useUserStore()
+const state = reactive({
+  username: '',
+  password: ''
+})
+
+const form = ref<Form<any> | undefined>(undefined)
 const validate = (state: any): FormError[] => {
   const errors = []
   if (!state.username) errors.push({ path: 'username', message: 'Campo requerido' })
@@ -43,12 +50,28 @@ const validate = (state: any): FormError[] => {
   return errors
 }
 
-const isLoading = ref(false)
+const { data, status, error, execute } = await useAsyncData(
+  'user',
+  () => useApiFetch<userInfo>('/account/login', {
+    method: 'post',
+    body: state
+  }),
+  {
+    server: false,
+    lazy: true,
+    immediate: false
+  }
+)
+
 const submitLogin = async (event: FormSubmitEvent<any>) => {
-  isLoading.value = true
-  console.log(event.data)
-  setTimeout(() => {
-    isLoading.value = false
-  }, 2000)
+  await execute()
+  if (status.value === 'success') {
+    userStore.setUser(data.value)
+    navigateTo('/', { replace: true })
+  } else {
+    if (error.value?.statusCode === 400) {
+      form.value?.setErrors([{message: 'El nombre de usuario o contraseña son incorrectos.', path: 'password'}])
+    }
+  }
 }
 </script>

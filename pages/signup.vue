@@ -57,6 +57,10 @@
 <script lang="ts" setup>
 import type { FormError, FormSubmitEvent } from '#ui/types'
 
+definePageMeta({
+  middleware: ['anonymous']
+})
+
 interface userData {
   username: string | undefined,
   email: string | undefined,

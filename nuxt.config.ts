@@ -1,7 +1,12 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  modules: ['@nuxt/ui', '@pinia/nuxt', "@nuxt/image"],
+  modules: ['@nuxt/ui', '@pinia/nuxt'],
+  runtimeConfig: {
+    public: {
+      apiURL: process.env.API_BASE
+    },
+  },
   app: {
     pageTransition: { name: 'page', mode: 'out-in' }
   },
@@ -11,4 +16,7 @@ export default defineNuxtConfig({
     preference: 'light',
     fallback: 'light'
   },
+  pinia: {
+    storesDirs: ['./stores/**']
+  }
 })

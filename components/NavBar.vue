@@ -1,5 +1,8 @@
 <script setup lang="ts">
+const userStore = useUserStore()
 const colorMode = useColorMode()
+
+const selected = ref<boolean>(colorMode.preference === 'dark' ? true : false)
 
 const toggleColorMode = () => {
   const colorSwitcher = {
@@ -9,11 +12,32 @@ const toggleColorMode = () => {
   colorMode.preference = colorSwitcher[colorMode.value as 'light' | 'dark']
 }
 
+const logout = () => {
+  useApiFetch('/account/logout', {
+    method: 'post'
+  }).then(() => userStore.logout())
+}
+
 const links = [
   { text: 'Inicio', path: '/', name: 'home', id: 1 },
   { text: 'Cursos', path: '/courses', name: 'course', id: 2 },
   { text: 'Foro', path: '/forum', name: 'forum', id: 3 },
   { text: 'Descargas', path: '/downloads', name: 'download', id: 4 },
+]
+
+const darkModeItem = [
+  { icon: 'i-heroicons-moon-solid', label: 'Dark mode', slot: 'theme' }
+]
+
+const menuItems = [
+  [
+    { icon: 'i-heroicons-user-solid', label: 'Ver perfil' },
+    { icon: 'i-heroicons-envelope-solid', label: 'Notificaciones' },
+  ],
+    darkModeItem,
+  [
+    { icon: 'i-heroicons-arrow-right-end-on-rectangle-solid', label: 'Cerrar sesión', click: logout }
+  ]
 ]
 </script>
 
@@ -35,17 +59,32 @@ const links = [
         </ul>
       </nav>
       <div class="flex flex-grow-0 my-auto gap-4">
-        <UButton to="/login" type="button" label="Iniciar sesión"/>
-        <UButton to="/signup" type="button" variant="outline" label="Registrarse" />
-        <ColorScheme>
-          <UButton
-          :icon="colorMode.preference === 'light' ? 'i-heroicons-sun-solid' : 'i-heroicons-moon-solid'"
-          size="sm"
-          square
-          variant="ghost"
-          @click="toggleColorMode"
-          />
-        </ColorScheme>
+        <UButton v-if="!userStore.isLogged" to="/login" type="button" label="Iniciar sesión"/>
+        <UButton v-if="!userStore.isLogged" to="/signup" type="button" variant="outline" label="Registrarse" />
+        <div v-if="userStore.user" class="flex gap-2">
+          <UDropdown :items="menuItems" :popper="{ placement: 'bottom-start' }">
+            <template #theme="{ item }">
+              <UIcon class="flex-shrink-0 w-5 h-5 text-gray-400 dark:text-gray-500" :name="item.icon" />
+              <span class="truncate">{{ item.label }}</span>
+              <div class="flex items-center ml-auto">
+                <UToggle v-model="selected" @click="toggleColorMode"/>
+              </div>
+            </template>
+            <UAvatar :src="userStore.getPicturePath()" />
+          </UDropdown>
+        </div>
+        <div v-else class="flex gap-2">
+          <UDropdown :items="[darkModeItem]" :popper="{ placement: 'bottom-start' }">
+            <template #theme="{ item }">
+              <UIcon class="flex-shrink-0 w-5 h-5 text-gray-400 dark:text-gray-500" :name="item.icon" />
+              <span class="truncate">{{ item.label }}</span>
+              <div class="flex items-center ml-auto">
+                <UToggle v-model="selected" @click="toggleColorMode"/>
+              </div>
+            </template>
+            <UButton icon="i-heroicons-ellipsis-vertical-solid" variant="ghost" />
+          </UDropdown>
+        </div>
       </div>
     </div>
   </header>
