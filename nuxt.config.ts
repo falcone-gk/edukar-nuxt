@@ -7,10 +7,10 @@ export default defineNuxtConfig({
       apiURL: process.env.API_BASE
     },
   },
-  app: {
-    pageTransition: { name: 'page', mode: 'out-in' }
-  },
-  css: ['~/assets/css/main.css'],
+  //app: {
+  //  pageTransition: { name: 'page', mode: 'out-in' }
+  //},
+  css: ['~/assets/css/main.css', '~/assets/css/tailwind.css'],
   colorMode: {
     classSuffix: '',
     preference: 'light',

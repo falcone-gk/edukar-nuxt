@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .title-section {
+        @apply text-primary text-4xl
+    }
+}
