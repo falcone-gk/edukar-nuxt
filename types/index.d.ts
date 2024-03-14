@@ -1,8 +1,8 @@
 export { userInfo };
 
 declare module '#app' {
-    interface BreadCrumb extends PageMeta {
-        breadCrumb: {
+    interface PageMeta {
+        breadCrumb?: {
             label?: string,
             icon: string,
             to?: string,
@@ -28,4 +28,19 @@ declare global {
         previous: string | null
         results: T[]
     }
+}
+
+export interface ExamsFilter {
+    universities: University[]
+    years: number[]
+}
+  
+export interface University {
+    university: string
+    siglas: string
+}
+
+export interface YearsOption {
+    label: string,
+    value: number
 }

@@ -9,7 +9,6 @@
 
 <script setup lang="ts">
 definePageMeta({
-  key: (route) => route.fullPath,
   breadCrumb: {
     label: 'Foro',
     icon: 'i-heroicons-chat-bubble-left-right-solid',

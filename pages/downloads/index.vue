@@ -1,5 +1,7 @@
 <template>
   <section id="downloads" class="flex justify-center px-2">
+
+    <!-- Modal to show downloads description -->
     <LazyUModal v-model="isOpen" prevent-close :ui="{
       width: 'w-11/12 sm:w-3/4 md:w-2/3 lg:w-3/5 xl:w-2/5'
     }">
@@ -56,19 +58,28 @@
             </div>
           </div>
         </div>
-
       </UCard>
     </LazyUModal>
+
+    <!-- Downloads content -->
     <UContainer>
       <UCard>
         <template #header>
           <h1 class="title-section">Exámenes</h1>
         </template>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          <CardResume v-for="exam in data?.results" :image="exam.cover" :title="exam.title"
-            @callback="showSelectedExam(exam)" />
+        <SkeletonCardList v-if="pending" />
+        <div class="space-y-4" v-if="!pending">
+          <div class="flex">
+            <UFormGroup>
+              <USelect v-model="year" :options="serviceStore.years" />
+            </UFormGroup>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <CardResume v-for="exam in data?.results" :image="exam.cover" :title="exam.title"
+              @callback="showSelectedExam(exam)" />
+          </div>
         </div>
-        <template #footer>
+        <template v-if="!pending" #footer>
           <div class="flex justify-center">
             <UPagination :total="data?.count" :page-count="pageCount" v-model="page" />
           </div>
@@ -79,22 +90,26 @@
 </template>
 
 <script lang="ts" setup>
+import type { ExamsFilter, YearsOption } from '~/types';
 import type { Exams } from '~/types/resultApiTypes';
 
 type ExamPagination = PaginationData<Exams>
 
+const serviceStore = useServiceStore()
+const year = ref<number>(0)
 const page = ref(1)
 const pageCount = ref(8)
 const isOpen = ref(false)
-const { data } = await useAsyncData<ExamPagination>(
+const { data, pending } = await useLazyAsyncData<ExamPagination>(
   'exams',
   () => useApiFetch<ExamPagination>('/services/exams-list', {
     query: {
       page: page.value,
-      size: pageCount.value
+      size: pageCount.value,
+      year: year.value
     }
   }),
-  { watch: [page,] }
+  { watch: [page, year] }
 )
 
 const customUIBtn = {rounded: 'rounded-full'}
@@ -104,4 +119,26 @@ const showSelectedExam = (examData: Exams) => {
   examSelectData.value = examData
   isOpen.value = true
 }
+
+const { data: filters, status: statusFilters, execute: getFilters } = await useLazyAsyncData<ExamsFilter>(
+  'exams-filter',
+  () => useApiFetch<ExamsFilter>('/services/exams-filters'),
+  { immediate: false, server: false }
+)
+
+if (serviceStore.years.length === 1) {
+  await getFilters()
+}
+
+if (statusFilters.value === 'success') {
+  serviceStore.universityList = filters.value?.universities
+  const selectOptions: YearsOption[] | undefined = filters.value?.years.map((year) => {
+    return { label: year.toString(), value: year }
+  })
+  if (selectOptions) {
+    serviceStore.years?.push(...selectOptions)
+  }
+  console.log(serviceStore.years)
+}
+
 </script>

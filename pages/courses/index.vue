@@ -5,11 +5,12 @@
         <template #header>
           <h1 class="title-section">Cursos</h1>
         </template>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <SkeletonCardList v-if="pending" />
+        <div v-if="!pending" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           <CardResume v-for="course in data?.results" :image="course.image" :title="course.name"
             @callback="openURL(course.url)" />
         </div>
-        <template #footer>
+        <template v-if="!pending" #footer>
           <div class="flex justify-center">
             <UPagination :total="data?.count" :page-count="pageCount" v-model="page" />
           </div>
@@ -27,7 +28,7 @@ type CoursePagination = PaginationData<Courses>
 const page = ref(1)
 const pageCount = ref(8)
 
-const { data } = await useAsyncData<CoursePagination>(
+const { data, pending } = await useLazyAsyncData<CoursePagination>(
   'courses',
   () => useApiFetch<CoursePagination>('/services/courses', {
     query: {

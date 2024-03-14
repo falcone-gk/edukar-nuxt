@@ -11,29 +11,34 @@
         </p>
       </div>
     </UCard>
-    <UCard v-for="section in sections" :key="'section-' + section.id" :ui="{
-      body: { padding: '' }
-    }">
-      <template #header>
-        <h2 class="text-primary text-xl">
-          <ULink @click="subsectionSelected = 0" class="hover:underline" :to="'/forum/' + section.slug">{{ section.name }}</ULink>
-        </h2>
-      </template>
-      <div class="flex items-center justify-between px-4 sm:px-6 border-b last:border-b-0 dark:border-gray-700 py-4" v-for="subsection in section.subsections" :key="'subsection-' + subsection.id">
-        <div>
-          <ULink @click="subsectionSelected = subsection.id" :to="`/forum/${section.slug}`" class="text-left hover:underline">{{ subsection.name }}</ULink>
-        </div>
-        <div class="text-right">
+
+    <SkeletonForumPost v-if="pending" />
+
+    <div v-else>
+      <UCard v-for="section in sections" :key="'section-' + section.id" :ui="{
+        body: { padding: '' }
+      }">
+        <template #header>
+          <h2 class="text-primary text-xl">
+            <ULink @click="subsectionSelected = 0" class="hover:underline" :to="'/forum/' + section.slug">{{ section.name }}</ULink>
+          </h2>
+        </template>
+        <div class="flex items-center justify-between px-4 sm:px-6 border-b last:border-b-0 dark:border-gray-700 py-4" v-for="subsection in section.subsections" :key="'subsection-' + subsection.id">
           <div>
-            <ULink class="hidden sm:block hover:underline">{{ truncateText(subsection.last_post.title) }}</ULink>
-            <ULink class="text-sm sm:hidden hover:underline">{{ truncateText(subsection.last_post.title, 15) }}</ULink>
+            <ULink @click="subsectionSelected = subsection.id" :to="`/forum/${section.slug}`" class="text-left hover:underline">{{ subsection.name }}</ULink>
           </div>
-          <div class="text-xs">
-            <p><span class="text-primary">{{ subsection.last_post.author }}</span>, {{ subsection.last_post.date }}</p>
+          <div class="text-right">
+            <div>
+              <ULink class="hidden sm:block hover:underline">{{ truncateText(subsection.last_post.title) }}</ULink>
+              <ULink class="text-sm sm:hidden hover:underline">{{ truncateText(subsection.last_post.title, 15) }}</ULink>
+            </div>
+            <div class="text-xs">
+              <p><span class="text-primary">{{ subsection.last_post.author }}</span>, {{ subsection.last_post.date }}</p>
+            </div>
           </div>
         </div>
-      </div>
-    </UCard>
+      </UCard>
+    </div>
   </div>
 </template>
 
@@ -59,7 +64,7 @@ interface sectionData {
 
 const subsectionSelected = useState('subsection')
 
-const { data: sections } = await useAsyncData<sectionData[]>(
+const { data: sections, pending } = await useLazyAsyncData<sectionData[]>(
   'forum',
   () => useApiFetch<sectionData[]>('/forum/home-forum')
 )

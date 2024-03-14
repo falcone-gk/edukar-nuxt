@@ -1,24 +1,23 @@
 import { generateDynamicPath, slugToTitle } from "~/utils/router"
 
 export default defineNuxtRouteMiddleware((to, from) => {
-    const breadCrumbInfo = to.matched.flatMap((el) => {
+    const matchedRoutes = to.matched
+    const breadCrumbInfo = matchedRoutes.flatMap((route, i) => {
+        const navInfo = route.meta.breadCrumb
+        if (!navInfo) return []
 
-        const value = el.meta.breadCrumb
-        // path '/forum' matched is excluded (doesn't have pageMeta) becasuse
-        // we are using the parent path to includ in navigation
-        if (value === undefined) return []
+        const pathTemplate = route.path
+        const path = generateDynamicPath(pathTemplate, to.params)
 
-        if (value.isDynamic) {
-            const pathTemplate = el.path
-            const path = generateDynamicPath(pathTemplate, to.params)
-            const slug = path[1]
-            value.to = path[0]
-            value.label = slugToTitle(slug)
+        if (navInfo.isDynamic) {
+            const parameter = path.split('/').at(-1)
+            const label = slugToTitle(parameter as string)
+            navInfo.label = label
         }
 
-        return value === undefined ? [] : value
+        navInfo.to = path
+        return navInfo
     })
-
     const links = useState('navigation')
     links.value = breadCrumbInfo
 })
