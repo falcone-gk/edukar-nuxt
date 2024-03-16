@@ -1,11 +1,35 @@
-@font-face {
-  font-family: 'LexendDeca';
-  src: url('/fonts/LexendDeca.woff2') format('woff2');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+
+  :root {
+    --primary-color: 76 182 146;
+    --secondary-color: 18 26 45;
+    --accent-color: 239 239 239;
+    --dark-accent-color: 38 57 102;
+  }
+
+  @font-face {
+    font-family: 'LexendDeca';
+    src: url('/fonts/LexendDeca.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  html {
+    font-family: 'LexendDeca', system-ui, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: rgb(var(--primary-color));
+  };
 }
 
-* {
-  font-family: 'LexendDeca', sans-serif;
+@layer components {
+  .title-section {
+    @apply text-primary text-4xl
+  }
 }

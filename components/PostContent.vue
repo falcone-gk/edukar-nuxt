@@ -1,6 +1,9 @@
 <template>
   <div :class="type === 'comment' ? 'border-b border-gray-200 dark:border-gray-800' : ''">
-    <UCard :ui="{ ring: '', divide: '', shadow: '' }">
+    <UCard :ui="{
+        ring: '', divide: '', shadow: '',
+        body: { padding: 'py-5' }, header: { padding: 'py-5' }, footer: { padding: 'py-5' },
+      }">
       <template #header>
         <div class="flex gap-4">
           <div class="flex items-center">
@@ -21,22 +24,45 @@
         </div>
       </template>
       <div v-html="props.body"></div>
-      <div v-if="props.type !== 'reply'" class="mt-4">
-        <UButton
-        label="Responder"
-        size="2xs"
-        icon="i-heroicons-arrow-uturn-left-solid"
-        color="gray" />
-      </div>
+
+      <template v-if="props.type !== 'reply' || userStore.isAuthorUser(props.username)" #footer>
+        <div class="space-x-2">
+          <UButton v-if="props.type !== 'reply'"
+          @click="emits('showTextEditor')"
+          label="Responder"
+          size="2xs"
+          icon="i-heroicons-arrow-uturn-left-solid"
+          color="gray" />
+  
+          <UButton v-if="userStore.isAuthorUser(props.username)"
+          @click="emits('showUpdateTextEditor')"
+          label="Editar"
+          size="2xs"
+          icon="i-heroicons-pencil-solid"
+          color="gray" />
+
+          <UButton v-if="userStore.isAuthorUser(props.username)"
+          @click="emits('deleteComment')"
+          label="Eliminar"
+          size="2xs"
+          icon="i-heroicons-trash-solid"
+          color="gray" />
+        </div>
+
+      </template>
     </UCard>
-    <div class="ml-12" v-if="$slots['replies']">
-      <slot name="replies"></slot>
+    <div class="ml-12" v-if="slots.replies">
+      <h3>Respuestas:</h3>
+      <slot name="replies" />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { translateDateMonth } from '~/utils/text';
+
+const userStore = useUserStore()
+const slots = useSlots()
 
 type Content = 'post' | 'comment' | 'reply'
 
@@ -48,4 +74,10 @@ const props = defineProps<{
   date: string
   body: string
 }>()
+
+const emits = defineEmits([
+  'showTextEditor',
+  'showUpdateTextEditor',
+  'deleteComment'
+])
 </script>

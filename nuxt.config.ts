@@ -1,7 +1,12 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  modules: ['@nuxt/ui', '@pinia/nuxt'],
+  modules: [
+    '@nuxt/ui', '@pinia/nuxt', 'nuxt-tiptap-editor',
+  ],
+  tiptap: {
+    prefix: "Tiptap"
+  },
   runtimeConfig: {
     public: {
       apiURL: process.env.API_BASE
@@ -10,7 +15,7 @@ export default defineNuxtConfig({
   //app: {
   //  pageTransition: { name: 'page', mode: 'out-in' }
   //},
-  css: ['~/assets/css/main.css', '~/assets/css/tailwind.css'],
+  css: ['~/assets/css/main.css',],
   colorMode: {
     classSuffix: '',
     preference: 'light',

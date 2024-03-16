@@ -29,5 +29,9 @@ export const useUserStore = defineStore('user', () => {
     return baseAPI + user.value!.picture
   }
 
-  return { isLogged, user, logout, setUser, getPicturePath }
+  const isAuthorUser = (authorUsername: string) => {
+    return authorUsername === user.value?.username
+  }
+
+  return { isLogged, user, logout, setUser, getPicturePath, isAuthorUser }
 })

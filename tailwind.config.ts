@@ -25,7 +25,9 @@ export default <Partial<Config>>{
             '900': '#124236',
             '950': '#09251f',
         },
-        secondary: '#121A2D',
+        secondary: 'rgb(var(--secondary-color) / <alpha-value>)',
+        'dark-accent-color': 'rgb(var(--dark-accent-color) / <alpha-value>)',
+        'accent-color': 'rgb(var(--accent-color) / <alpha-value>)'
       }
     }
   }

@@ -43,7 +43,7 @@
 </template>
 
 <script lang="ts" setup>
-import truncateText from '~/utils/text';
+import { truncateText } from '~/utils/text';
 
 interface sectionData {
   id: number,
