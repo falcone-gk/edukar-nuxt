@@ -19,7 +19,7 @@
           </div>
         </div>
       </template>
-      <UForm id="form" :validate="validate" :state="state" @submit="onSubmit">
+      <UForm id="form" :schema="userRegisterSchema" :state="state" @submit="onSubmit">
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <UFormGroup label="Nombre de usuario" name="username" required>
             <UInput v-model="state.username" />
@@ -31,21 +31,21 @@
             <UInput v-model="state.name" />
           </UFormGroup>
           <UFormGroup label="Apellido(s)" name="lastname" required>
-            <UInput v-model="state.lastname" />
+            <UInput v-model="state.lastName" />
           </UFormGroup>
           <UFormGroup label="Contraseña" name="password" required>
             <UInput v-model="state.password" type="password" />
           </UFormGroup>
           <UFormGroup label="Confirmar contraseña" name="confirm_password" required>
-            <UInput v-model="state.confirm_password" type="password" />
+            <UInput v-model="state.confirmPassword" type="password" />
           </UFormGroup>
         </div>
         <div class="flex flex-col gap-4 mt-4">
           <UFormGroup label="Sobre mí:" name="about_me">
-            <UTextarea v-model="state.about_me" :rows="10" />
+            <UTextarea v-model="state.aboutMe" :rows="10" />
           </UFormGroup>
           <UFormGroup label="Imágen de perfil:" name="picture">
-            <UInput v-model="state.picture" type="file" accept="image/*" />
+            <UInput ref="fileImg" type="file" accept="image/*" />
           </UFormGroup>
         </div>
         <UButton type="submit" class="mt-4" block :loading="isLoading">Registrarse</UButton>
@@ -55,63 +55,49 @@
 </template>
 
 <script lang="ts" setup>
-import type { FormError, FormSubmitEvent } from '#ui/types'
+import type { FormSubmitEvent } from '#ui/types'
+import { userRegisterSchema } from '~/schemas/auth';
+import { z } from 'zod'
 
 definePageMeta({
   middleware: ['anonymous']
 })
 
-interface userData {
-  username: string | undefined,
-  email: string | undefined,
-  name: string | undefined,
-  lastname: string | undefined,
-  password: string | undefined,
-  confirm_password: string | undefined,
-  about_me: string | undefined,
-  picture: File | undefined
-}
+type UserRegister = z.infer<typeof userRegisterSchema>
+const registerData = ref(new FormData())
+const fileImg = ref()
 
-const state = reactive<userData>({
-  username: undefined,
-  email: undefined,
-  name: undefined,
-  lastname: undefined,
-  password: undefined,
-  confirm_password: undefined,
-  about_me: undefined,
-  picture: undefined
+const state = reactive<UserRegister>({
+  username: '',
+  email: '',
+  name: '',
+  lastName: '',
+  password: '',
+  confirmPassword: '',
+  aboutMe: ''
 })
 
-const validate = (state: userData): FormError[] => {
-  const errors = []
-  if (!state.username) errors.push({ path: 'username', message: 'Campo requerido' })
-
-  if (!state.email) errors.push({ path: 'email', message: 'Campo requerido' })
-  const re: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!re.test(state.email as string)) errors.push({ path: 'email', message: 'Email inválido' })
-
-  if (!state.name) errors.push({ path: 'name', message: 'Campo requerido' })
-  if (!state.lastname) errors.push({ path: 'lastname', message: 'Campo requerido' })
-  if (!state.password) errors.push({ path: 'password', message: 'Campo requerido' })
-
-  if (!state.confirm_password) errors.push({ path: 'confirm_password', message: 'Campo requerido' })
-  if (state.password !== state.confirm_password) {
-    errors.push({ path: 'confirm_password', message: 'No coincide con contraseña' })
-  }
-
-  return errors
-}
+/* const { execute } = await useLazyFetch('/api/auth/register', {
+  method: 'post',
+  body: registerData.value,
+  immediate: false,
+  server: false
+}) */
 
 const isLoading = ref(false)
-const onSubmit = async (event: FormSubmitEvent<any>) => {
+const onSubmit = async (event: FormSubmitEvent<UserRegister>) => {
   isLoading.value = true
-  const form = document.getElementById('form') as HTMLFormElement
-  const data = new FormData(form)
-  console.log(data)
-  setTimeout(() => {
-    isLoading.value = false
-  }, 2000)
+  Object.keys(event.data).forEach(key => {
+    const value = event.data[key as keyof typeof event.data]
+    if (value !== undefined)
+      registerData.value.append(key, value)
+  })
+
+  const file = fileImg.value.input.files[0]
+  if (file !== undefined) registerData.value.append('picture', file)
+
+  //await execute()
+  isLoading.value = false
 }
 
 </script>

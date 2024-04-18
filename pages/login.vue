@@ -31,13 +31,16 @@
 <script lang="ts" setup>
 import type { FormError, FormSubmitEvent, Form } from '#ui/types'
 import type { userInfo } from '~/types'
+import { userLoginSchema } from '~/schemas/auth';
+import { z } from 'zod'
 
 definePageMeta({
   middleware: ['anonymous']
 })
 
+type UserLogin = z.infer<typeof userLoginSchema>
 const userStore = useUserStore()
-const state = reactive({
+const state = reactive<UserLogin>({
   username: '',
   password: ''
 })
@@ -49,6 +52,14 @@ const validate = (state: any): FormError[] => {
   if (!state.password) errors.push({ path: 'password', message: 'Campo requerido' })
   return errors
 }
+
+/* const { data, status, error, execute } = await useLazyFetch<userInfo>('/api/auth/login', {
+  method: 'post',
+  body: state,
+  server: false,
+  immediate: false,
+  watch: false
+}) */
 
 const { data, status, error, execute } = await useAsyncData(
   'user',
@@ -63,14 +74,14 @@ const { data, status, error, execute } = await useAsyncData(
   }
 )
 
-const submitLogin = async (event: FormSubmitEvent<any>) => {
+const submitLogin = async (event: FormSubmitEvent<UserLogin>) => {
   await execute()
   if (status.value === 'success') {
     userStore.setUser(data.value)
     navigateTo('/', { replace: true })
   } else {
     if (error.value?.statusCode === 400) {
-      form.value?.setErrors([{message: 'El nombre de usuario o contraseña son incorrectos.', path: 'password'}])
+      form.value?.setErrors([{ message: 'El nombre de usuario o contraseña son incorrectos.', path: 'password' }])
     }
   }
 }

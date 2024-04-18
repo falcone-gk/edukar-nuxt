@@ -14,13 +14,15 @@ export const useUserStore = defineStore('user', () => {
     token.value = null
   }
 
-  const setUser = (data: userInfo) => {
-    isLogged.value = true
-    user.value = data
-    const token = useCookie('token', {
-      sameSite: true
-    })
-    token.value = data.token
+  const setUser = (data: userInfo | null) => {
+    if (data) {
+      isLogged.value = true
+      user.value = data
+      const token = useCookie('token', {
+        sameSite: true
+      })
+      token.value = data.token
+    }
   }
 
   const getPicturePath = () => {
