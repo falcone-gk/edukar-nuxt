@@ -12,15 +12,9 @@
         </template>
         <div class="space-y-4">
           <UFormGroup class="flex items-center">
-            <USelect
-            v-model="subsection"
-            :options="subsections"
-            option-attribute="name"
-            value-attribute="id" />
+            <USelect v-model="subsection" :options="subsections" option-attribute="name" value-attribute="id" />
           </UFormGroup>
-          <div
-            v-for="post in data?.results"
-            @click="navigateTo(`/forum/${sectionSlug}/posts/${post.slug}`)"
+          <div v-for="post in data?.results" @click="navigateTo(`/forum/${sectionSlug}/posts/${post.slug}`)"
             class="flex items-center rounded w-full dark:border dark:border-slate-800 py-2 shadow-md cursor-pointer hover:bg-primary-200 dark:hover:bg-primary-600">
             <div class="px-2">
               <img class="rounded-full w-[48px] h-[48px] max-w-none" :src="useImgFullPath(post.author.picture)"
@@ -30,8 +24,9 @@
               <div class="flex flex-col sm:flex-row justify-between sm:items-center">
                 <h2 :title="post.title" class="hidden lg:block mr-auto">{{ truncateText(post.title) }}</h2>
                 <h2 :title="post.title" class="lg:hidden mr-auto">{{ truncateText(post.title, 20) }}</h2>
-                <p class="text-xs"> Publicación: <span class="text-primary dark:text-primary-200">{{ post.time_difference
-                    }}</span>
+                <p class="text-xs"> Publicación: <span class="text-primary dark:text-primary-200">
+                    {{ post.time_difference }}
+                  </span>
                 </p>
               </div>
               <div class="hidden sm:flex justify-between items-center">
