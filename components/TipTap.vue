@@ -1,53 +1,58 @@
 <template>
-  <div class="border border-accent-color dark:border-dark-accent-color rounded-md">
-    <div v-if="editor">
-      <div
-      class="flex items-center gap-1 h-8 px-2 border-b border-b-accent-color dark:border-dark-accent-color">
-        <UButton
-        icon="i-heroicons-bold-solid"
-        :variant="editor.isActive('bold') ? 'outline' : 'link'"
-        :color="editor.isActive('bold') ? 'primary' : 'gray'"
-        size="2xs"
-        :padding="false"
-        @click="editor.chain().focus().toggleBold().run()" />
-  
-        <UButton
-        icon="i-heroicons-italic-solid"
-        :variant="editor.isActive('italic') ? 'outline' : 'link'"
-        :color="editor.isActive('italic') ? 'primary' : 'gray'"
-        size="2xs"
-        :padding="false"
-        @click="editor.chain().focus().toggleItalic().run()" />
+  <div>
+    <div class="border border-gray-300 dark:border-gray-700 rounded-md">
+      <div v-if="editor">
+        <div class="flex items-center gap-1 h-8 px-2 border-b border-b-gray-300 dark:border-gray-700">
+          <UButton icon="i-heroicons-bold-solid" :variant="editor.isActive('bold') ? 'outline' : 'link'"
+            :color="editor.isActive('bold') ? 'primary' : 'gray'" size="2xs" :padding="false"
+            @click="editor.chain().focus().toggleBold().run()" />
 
-        <UButton
-        variant="link"
-        color="gray"
-        icon="i-heroicons-photo-solid"
-        size="2xs"
-        :padding="false"
-        @click="console.log('hola')" />
-      </div>
-      <div>
-        <TiptapEditorContent :editor="editor" />
+          <UButton icon="i-heroicons-italic-solid" :variant="editor.isActive('italic') ? 'outline' : 'link'"
+            :color="editor.isActive('italic') ? 'primary' : 'gray'" size="2xs" :padding="false"
+            @click="editor.chain().focus().toggleItalic().run()" />
+
+          <UPopover :popper="{ arrow: true, placement: 'top' }">
+            <UButton variant="link" color="gray" icon="i-heroicons-photo-solid" size="2xs" :padding="false" />
+            <template #panel>
+              <div class="p-2">
+                <UFormGroup label="Subir URL de imagen">
+                  <UInput />
+                </UFormGroup>
+              </div>
+            </template>
+          </UPopover>
+        </div>
+        <div>
+          <TiptapEditorContent :editor="editor" />
+        </div>
       </div>
     </div>
+    <p v-if="errors && errors.length > 0" class="mt-2 text-red-500 dark:text-red-400 text-sm">
+      {{ errors[0].message }}
+    </p>
   </div>
 </template>
 
 <script setup lang="ts">
-import { Image as ImageTipTap} from '@tiptap/extension-image'
+import { Image as ImageTipTap } from '@tiptap/extension-image'
+import type { FormError } from '#ui/types'
 
 const props = defineProps({
   value: {
-    type: String
+    type: String,
+  },
+  errors: {
+    type: Array<FormError>
   }
 })
 const emits = defineEmits(['update:modelValue'])
 
-function toFixedNumber(num: number, digits: number, base: number = 10){
+function toFixedNumber(num: number, digits: number, base: number = 10) {
   const pow = Math.pow(base, digits);
-  return Math.round(num*pow) / pow;
+  return Math.round(num * pow) / pow;
 }
+
+// TODO: Refactor image upload
 
 const options = {
   maxWidth: 512,
@@ -92,9 +97,9 @@ const editor = useEditor({
   extensions: [TiptapStarterKit, ImageTipTap],
   editorProps: {
     attributes: {
-      class: 'outline-none rounded-b-md px-2 py-5 min-h-[300px]',
+      class: 'outline-none rounded-b-md px-2 py-2 min-h-[300px]',
     },
-    handleDrop: function(view, event, slice, moved) {
+    handleDrop: function (view, event, slice, moved) {
       if (!moved && event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0]) { // if dropping external files
         let file = event.dataTransfer.files[0]; // the dropped file
         let filesize = toFixedNumber((file.size / 1024) / 1024, 4); // get the filesize in MB
@@ -134,7 +139,7 @@ const editor = useEditor({
 });
 
 onBeforeUnmount(() => {
-  editor.value?.destroy()
+  unref(editor)?.destroy()
 })
 
 </script>
