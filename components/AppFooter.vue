@@ -13,12 +13,12 @@ const socials = [
   <footer class="text-sm text-white bg-primary-500 p-4">
     <div class="grid text-center grid-cols-1 sm:text-left sm:grid-cols-2 md:grid-cols-4 gap-4">
       <div>
-        <h2 class="font-bold">EDUKAR</h2>
+        <h2 class="font-bold text-white">EDUKAR</h2>
         <p>Somos una empresa que brinda servicios de clases de reforzamiento y talleres psicológicos en zonas de
           influencia directa o indirecta para empresas mineras, municipalidades y también particulares.</p>
       </div>
       <div>
-        <h2 class="font-bold">PRODUCTOS</h2>
+        <h2 class="font-bold text-white">PRODUCTOS</h2>
         <ul>
           <li>
             <ULink class="hover:underline">Exámenes</ULink>
@@ -29,7 +29,7 @@ const socials = [
         </ul>
       </div>
       <div>
-        <h2 class="font-bold">COMPAÑÍA</h2>
+        <h2 class="font-bold text-white">COMPAÑÍA</h2>
         <ul>
           <li>
             <ULink class="hover:underline">Sobre nosotros</ULink>
@@ -43,7 +43,7 @@ const socials = [
         </ul>
       </div>
       <div>
-        <h2 class="font-bold">CONTACTO</h2>
+        <h2 class="font-bold text-white">CONTACTO</h2>
         <p>
           <UIcon class="mr-1" name="i-heroicons-home-solid"></UIcon>
           <span>Urb. Juan XXIII LT. 10 Mz. B Dpto. C3</span>
@@ -62,13 +62,7 @@ const socials = [
     <div class="flex gap-4 md:justify-between items-center flex-col md:flex-row">
       <span>© 2020 Copyright: aedukar.com</span>
       <div class="space-x-1">
-        <UButton v-for="social in socials"
-          :icon="social.icon"
-          size="sm"
-          color="white"
-          square
-          variant="solid"
-        />
+        <UButton v-for="social in socials" :icon="social.icon" size="sm" color="white" square variant="solid" />
       </div>
     </div>
   </footer>
