@@ -8,7 +8,7 @@
         <CanvasBackground />
       </Teleport>
     </ClientOnly>
-    <HomeSection id="hero" title="Conviértete en todo un experto en la materia que quieras.">
+    <HomeSection id="hero" :transition="false" title="Conviértete en todo un experto en la materia que quieras.">
       <HomeSectionsHero />
     </HomeSection>
 
