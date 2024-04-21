@@ -39,10 +39,12 @@
           </div>
           <div v-if="subsection.last_post" class="text-right">
             <div>
-              <ULink class="hidden sm:block hover:underline">
+              <ULink class="hidden sm:block hover:underline"
+                :to="`/forum/${section.slug}/posts/${subsection.last_post.slug}`">
                 {{ truncateText(subsection.last_post.title) }}
               </ULink>
-              <ULink class="text-sm sm:hidden hover:underline">
+              <ULink class="text-sm sm:hidden hover:underline"
+                :to="`/forum/${section.slug}/posts/${subsection.last_post.slug}`">
                 {{ truncateText(subsection.last_post.title, 15) }}
               </ULink>
             </div>
