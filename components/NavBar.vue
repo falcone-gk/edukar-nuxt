@@ -65,13 +65,13 @@ const menuItems = [
         </ul>
       </nav>
       <div class="flex flex-grow-0 my-auto gap-4">
-        <div v-if="userStore.isLogged">
+        <UButton v-if="!userStore.isLogged" to="/login" type="button" label="Iniciar sesión" />
+        <UButton v-if="!userStore.isLogged" to="/signup" type="button" variant="outline" label="Registrarse" />
+        <div>
           <ColorScheme>
             <UButton :icon="iconColorMode" color="gray" variant="ghost" @click="toggleColorMode" />
           </ColorScheme>
         </div>
-        <UButton v-if="!userStore.isLogged" to="/login" type="button" label="Iniciar sesión" />
-        <UButton v-if="!userStore.isLogged" to="/signup" type="button" variant="outline" label="Registrarse" />
         <div v-if="userStore.user" class="flex gap-2">
           <UDropdown :items="menuItems" :popper="{ placement: 'bottom-start' }">
             <template #theme="{ item }">
@@ -83,11 +83,6 @@ const menuItems = [
             </template>
             <UAvatar :src="userStore.getPicturePath()" />
           </UDropdown>
-        </div>
-        <div v-if="!userStore.isLogged">
-          <ColorScheme>
-            <UButton :icon="iconColorMode" color="gray" variant="ghost" @click="toggleColorMode" />
-          </ColorScheme>
         </div>
       </div>
     </div>
