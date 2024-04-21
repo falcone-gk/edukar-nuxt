@@ -17,7 +17,7 @@
         base: 'flex border-primary dark:border-gray-200'
       }
     }">
-      <LogoEdukar />
+      <LogoEdukarIcon />
     </UDivider>
     <HomeSection id="forum" title="Foro Edukar">
       <HomeSectionsForum />
@@ -28,7 +28,7 @@
         base: 'flex border-primary dark:border-gray-200'
       }
     }">
-      <LogoEdukar />
+      <LogoEdukarIcon />
     </UDivider>
     <HomeSection id="downloads" title="Descargar Exámenes de Admisión">
       <HomeSectionsDownloads />

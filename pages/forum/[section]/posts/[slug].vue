@@ -34,7 +34,7 @@
           :body="post.body" />
 
         <UDivider>
-          <LogoEdukar />
+          <LogoEdukarIcon />
         </UDivider>
 
         <h2>Comentarios:</h2>

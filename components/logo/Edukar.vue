@@ -54,28 +54,12 @@
 
 <script setup lang="ts">
 
-interface Props {
-  size?: string
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  size: 'h-6'
+const props = defineProps({
+  size: {
+    type: String,
+    default: 'h-6',
+  },
 })
-
-//const colorMode = useColorMode()
-//
-//const logoPath = '/logo.svg'
-//const darkLogoPath = '/dark-logo.svg'
-//
-//const imgData = {
-//  dark: darkLogoPath,
-//  light: logoPath
-//}
-//
-//const imgUrl = computed(() => {
-//  const path = imgData[colorMode.preference as 'dark' | 'light']
-//  return '/logos' + path
-//})
 
 </script>
 
