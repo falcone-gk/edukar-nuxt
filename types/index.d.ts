@@ -34,10 +34,15 @@ export interface ExamsFilter {
     universities: University[]
     years: number[]
 }
-  
+
 export interface University {
     university: string
     siglas: string
+}
+
+export interface UniversityOption {
+    label: string
+    value: string
 }
 
 export interface YearsOption {

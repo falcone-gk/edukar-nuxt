@@ -36,18 +36,18 @@
               </p>
             </div>
             <div class="flex flex-wrap justify-start gap-2">
-              <UButton label="Descargar" size="xs" variant="soft" rounded :to="examSelectData?.source_exam"
+              <UButton color="black" label="Descargar" size="xs" rounded :to="examSelectData?.source_exam"
                 target="_blank" :ui="customUIBtn" />
 
-              <UButton v-if="examSelectData?.source_video_solution" label="Video solucionario" size="xs" variant="soft"
+              <UButton color="black" v-if="examSelectData?.source_video_solution" label="Video solucionario" size="xs"
                 rounded :to="examSelectData?.source_exam" target="_blank" :ui="customUIBtn">
                 <template #trailing>
                   <span class="text-black px-1.5 py-0.5 rounded bg-gray-300">Free</span>
                 </template>
               </UButton>
 
-              <UButton v-if="examSelectData?.source_video_solution_premium" label="Video solucionario" size="xs"
-                variant="soft" rounded :to="examSelectData?.source_exam" target="_blank" :ui="customUIBtn">
+              <UButton color="black" v-if="examSelectData?.source_video_solution_premium" label="Video solucionario"
+                size="xs" rounded :to="examSelectData?.source_exam" target="_blank" :ui="customUIBtn">
                 <template #trailing>
                   <span class="flex gap-1 text-black px-1.5 py-0.5 rounded bg-yellow-400">
                     <img class="w-4 h-auto" src="/icons/crown.svg" alt="crown">
@@ -73,11 +73,16 @@
         </template>
         <SkeletonCardList v-if="pending" />
         <div class="space-y-4" v-if="!pending">
-          <div class="flex">
+          <div class="flex gap-2">
             <UFormGroup>
-              <USelect v-model="year" :options="serviceStore.years" />
+              <USelect v-model="year" :options="serviceStore.years" placeholder="--Seleccionar año--" />
+            </UFormGroup>
+            <UFormGroup>
+              <USelect v-model="university" :options="serviceStore.universities"
+                placeholder="--Seleccionar universidad--" />
             </UFormGroup>
           </div>
+
           <div class="grid gap-4 auto-cols-auto grid-cols-[repeat(auto-fill,minmax(15rem,1fr))]">
             <CardResume v-for="exam in data?.results" :image="exam.cover" :title="exam.title"
               @callback="showSelectedExam(exam)" />
@@ -94,13 +99,13 @@
 </template>
 
 <script lang="ts" setup>
-import type { ExamsFilter, YearsOption } from '~/types';
 import type { Exams } from '~/types/resultApiTypes';
 
 type ExamPagination = PaginationData<Exams>
 
 const serviceStore = useServiceStore()
-const year = ref<number>(0)
+const year = ref<number | undefined>()
+const university = ref<string | undefined>()
 const page = ref(1)
 const pageCount = ref(8)
 const isOpen = ref(false)
@@ -110,12 +115,13 @@ const { data, pending } = await useLazyAsyncData<ExamPagination>(
     query: {
       page: page.value,
       size: pageCount.value,
-      year: year.value
+      year: year.value,
+      university: university.value
     }
   }),
   {
     server: false,
-    watch: [page, year]
+    watch: [page, year, university]
   }
 )
 
@@ -125,26 +131,6 @@ const examSelectData = ref<Exams | undefined>(undefined)
 const showSelectedExam = (examData: Exams) => {
   examSelectData.value = examData
   isOpen.value = true
-}
-
-const { data: filters, status: statusFilters, execute: getFilters } = await useLazyAsyncData<ExamsFilter>(
-  'exams-filter',
-  () => useApiFetch<ExamsFilter>('/services/exams-filters'),
-  { immediate: false, server: false }
-)
-
-if (serviceStore.years.length === 1) {
-  await getFilters()
-}
-
-if (statusFilters.value === 'success') {
-  serviceStore.universityList = filters.value?.universities
-  const selectOptions: YearsOption[] | undefined = filters.value?.years.map((year) => {
-    return { label: year.toString(), value: year }
-  })
-  if (selectOptions) {
-    serviceStore.years?.push(...selectOptions)
-  }
 }
 
 </script>

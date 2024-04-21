@@ -1,9 +1,34 @@
 import { defineStore } from 'pinia'
-import type { University, YearsOption } from '~/types'
+import type { UniversityOption, YearsOption, ExamsFilter } from '~/types'
 
 export const useServiceStore = defineStore('serviceStore', () => {
-  const universityList = ref<University[] | undefined>(undefined)
-  const years = ref<YearsOption[]>([{ label: '--Seleccionar año---', value: 0 }])
+  const universities = ref<UniversityOption[]>([])
+  const years = ref<YearsOption[]>([])
 
-  return { universityList, years }
+  const { data: filters, status: statusFilters, execute: getFilters } = useLazyAsyncData(
+    'exams-filter',
+    () => useApiFetch<ExamsFilter>('/services/exams-filters'), {
+    immediate: false, server: false,
+    transform: (data: ExamsFilter) => {
+      return {
+        universities: data.universities.map(el => ({ label: el.university, value: el.siglas })),
+        years: data.years.map(el => ({ label: String(el), value: el }))
+      }
+    }
+  })
+
+  const setupFilters = async () => {
+    if (years.value.length === 0 || universities.value.length === 0) {
+      await getFilters()
+      if (filters.value) {
+        universities.value = filters.value.universities
+        years.value = filters.value.years
+      }
+    }
+  }
+
+  // TODO: find another way to do this with async and await
+  setupFilters()
+
+  return { universities, years }
 })
