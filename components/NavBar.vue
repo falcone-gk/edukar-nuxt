@@ -12,6 +12,10 @@ const toggleColorMode = () => {
   colorMode.preference = colorSwitcher[colorMode.value as 'light' | 'dark']
 }
 
+const iconColorMode = computed(() => {
+  return colorMode.value === 'dark' ? 'i-heroicons-moon-solid' : 'i-heroicons-sun-solid'
+})
+
 const logout = () => {
   useApiFetch('/account/logout', {
     method: 'post'
@@ -25,16 +29,15 @@ const links = [
   { text: 'Descargas', path: '/downloads', name: 'download', id: 4 },
 ]
 
-const darkModeItem = [
+/* const darkModeItem = [
   { icon: 'i-heroicons-moon-solid', label: 'Dark mode', slot: 'theme' }
-]
+] */
 
 const menuItems = [
   [
     { icon: 'i-heroicons-user-solid', label: 'Ver perfil' },
     { icon: 'i-heroicons-envelope-solid', label: 'Notificaciones' },
   ],
-    darkModeItem,
   [
     { icon: 'i-heroicons-arrow-right-end-on-rectangle-solid', label: 'Cerrar sesión', click: logout }
   ]
@@ -51,15 +54,23 @@ const menuItems = [
       </div>
       <nav>
         <ul class="h-full">
-          <li class="inline-flex w-full h-12 justify-center items-center md:h-full md:w-24 [&>a]:w-full [&>a]:h-full [&>a]:grid [&>a]:place-items-center"" v-for="link in links" :key="link.id">
+          <li
+            class="inline-flex w-full h-12 justify-center items-center md:h-full md:w-24 [&>a]:w-full [&>a]:h-full [&>a]:grid [&>a]:place-items-center"" v-for="
+            link in links" :key="link.id">
             <ULink :to="link.path" active-class="h-full w-full border-b-2 border-b-primary"
-              inactive-class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">{{ link.text}}
+              inactive-class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">{{
+              link.text }}
             </ULink>
           </li>
         </ul>
       </nav>
       <div class="flex flex-grow-0 my-auto gap-4">
-        <UButton v-if="!userStore.isLogged" to="/login" type="button" label="Iniciar sesión"/>
+        <div v-if="userStore.isLogged">
+          <ColorScheme>
+            <UButton :icon="iconColorMode" color="gray" variant="ghost" @click="toggleColorMode" />
+          </ColorScheme>
+        </div>
+        <UButton v-if="!userStore.isLogged" to="/login" type="button" label="Iniciar sesión" />
         <UButton v-if="!userStore.isLogged" to="/signup" type="button" variant="outline" label="Registrarse" />
         <div v-if="userStore.user" class="flex gap-2">
           <UDropdown :items="menuItems" :popper="{ placement: 'bottom-start' }">
@@ -67,23 +78,16 @@ const menuItems = [
               <UIcon class="flex-shrink-0 w-5 h-5 text-gray-400 dark:text-gray-500" :name="item.icon" />
               <span class="truncate">{{ item.label }}</span>
               <div class="flex items-center ml-auto">
-                <UToggle v-model="selected" @click="toggleColorMode"/>
+                <UToggle v-model="selected" @click="toggleColorMode" />
               </div>
             </template>
             <UAvatar :src="userStore.getPicturePath()" />
           </UDropdown>
         </div>
-        <div v-else class="flex gap-2">
-          <UDropdown :items="[darkModeItem]" :popper="{ placement: 'bottom-start' }">
-            <template #theme="{ item }">
-              <UIcon class="flex-shrink-0 w-5 h-5 text-gray-400 dark:text-gray-500" :name="item.icon" />
-              <span class="truncate">{{ item.label }}</span>
-              <div class="flex items-center ml-auto">
-                <UToggle v-model="selected" @click="toggleColorMode"/>
-              </div>
-            </template>
-            <UButton icon="i-heroicons-ellipsis-vertical-solid" variant="ghost" />
-          </UDropdown>
+        <div v-if="!userStore.isLogged">
+          <ColorScheme>
+            <UButton :icon="iconColorMode" color="gray" variant="ghost" @click="toggleColorMode" />
+          </ColorScheme>
         </div>
       </div>
     </div>

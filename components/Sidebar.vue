@@ -6,19 +6,12 @@
           <LogoEdukar />
         </NuxtLink>
       </div>
-      <UButton
-      v-show="!isOpen"
-      icon="i-heroicons-bars-3-20-solid"
-      color="primary"
-      variant="link"
-      @click="isOpen = true"/>
+      <UButton v-show="!isOpen" icon="i-heroicons-bars-3-20-solid" color="primary" variant="link"
+        @click="isOpen = true" />
     </div>
   </header>
   <USlideover class="fixed top-0 z-30 md:hidden" v-model="isOpen" side="left">
-    <UCard
-      class="fixed top-0 h-screen w-5/6"
-      :ui="{ base: 'flex flex-col', footer: { base: 'mt-auto' } }"
-    >
+    <UCard class="fixed top-0 h-screen w-5/6" :ui="{ base: 'flex flex-col', footer: { base: 'mt-auto' } }">
       <template v-if="userStore.user" #header>
         <ul>
           <li>
@@ -31,24 +24,22 @@
           </li>
         </ul>
       </template>
-      <UVerticalNavigation :links="links"
-      :ui="{
-        active: 'bg-primary dark:before:bg-primary-500',
+      <UVerticalNavigation :links="links" :ui="{
+        active: 'text-white bg-primary dark:before:bg-primary-500',
+        icon: {
+          active: 'text-white'
+        },
       }">
         <template #badge="{ link }">
           <div v-if="link.input" class="flex items-center ml-auto">
-            <UToggle v-model="selected" @click="toggleColorMode"/>
+            <UToggle v-model="selected" @click="toggleColorMode" />
           </div>
         </template>
       </UVerticalNavigation>
       <template v-if="userStore.isLogged" #footer>
-        <UButton
-          icon="i-heroicons-arrow-right-end-on-rectangle-solid"
-          label="Cerrar sesión"
-          variant="ghost"
-          @click="userStore.logout"
-        />
-    </template>
+        <UButton icon="i-heroicons-arrow-right-end-on-rectangle-solid" label="Cerrar sesión" variant="ghost"
+          @click="userStore.logout" />
+      </template>
     </UCard>
   </USlideover>
 </template>
@@ -79,7 +70,7 @@ const userLoggedLinks = [
 ]
 
 const navLinks = [
-  { label: 'Inicio', to: '/', icon: 'i-heroicons-home'},
+  { label: 'Inicio', to: '/', icon: 'i-heroicons-home' },
   { label: 'Cursos', to: '/courses', icon: 'i-heroicons-book-open-20-solid' },
   { label: 'Foro', to: '/forum', icon: 'i-heroicons-chat-bubble-left-right-20-solid' },
   { label: 'Descargas', to: '/downloads', icon: 'i-heroicons-arrow-down-circle-20-solid' },
