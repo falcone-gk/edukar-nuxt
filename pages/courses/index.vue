@@ -1,12 +1,16 @@
 <template>
   <section id="courses" class="flex justify-center px-2">
-    <UContainer>
-      <UCard>
+    <UContainer :ui="{
+      base: 'w-full max-w-[900px]',
+    }">
+      <UCard class="flex-grow flex-shrink-0 basis-full">
         <template #header>
-          <h1 class="title-section">Cursos</h1>
+          <Typography tag="h1" variant="h1" color="primary">
+            Cursos
+          </Typography>
         </template>
         <SkeletonCardList v-if="pending" />
-        <div v-if="!pending" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div v-else class="grid gap-4 auto-cols-auto grid-cols-[repeat(auto-fill,minmax(15rem,1fr))]">
           <CardResume v-for="course in data?.results" :image="course.image" :title="course.name"
             @callback="openURL(course.url)" />
         </div>
@@ -14,7 +18,7 @@
           <div class="flex justify-center">
             <UPagination :total="data?.count" :page-count="pageCount" v-model="page" />
           </div>
-      </template>
+        </template>
       </UCard>
     </UContainer>
   </section>
@@ -36,7 +40,10 @@ const { data, pending } = await useLazyAsyncData<CoursePagination>(
       size: pageCount.value
     }
   }),
-  { watch: [page,] }
+  {
+    server: false,
+    watch: [page,]
+  }
 )
 
 const openURL = async (url: string) => {

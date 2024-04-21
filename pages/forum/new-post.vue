@@ -2,7 +2,9 @@
   <div>
     <UCard class="w-full">
       <div class="text-center">
-        <h1 class="title-section">Nuevo post</h1>
+        <Typography tag="h1" variant="h1" color="primary">
+          Nuevo Post
+        </Typography>
       </div>
       <div>
         <UForm ref="form" :state="body" :schema="postSchema" @submit="onSubmit" class="flex flex-col gap-4">

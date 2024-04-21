@@ -2,7 +2,9 @@
   <div class="mx-auto max-w-[900px] space-y-4">
     <UCard>
       <template #header>
-        <h1 class="title-section">Foro Edukar</h1>
+        <Typography tag="h1" variant="h1" color="primary">
+          Foro Edukar
+        </Typography>
       </template>
       <div>
         <p>Este es el foro EDUKAR, donde podrán compartir y ayudar a otros estudiantes con ejercicios, dudas, consultas

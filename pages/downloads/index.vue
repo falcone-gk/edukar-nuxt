@@ -36,8 +36,8 @@
               </p>
             </div>
             <div class="flex flex-wrap justify-start gap-2">
-              <UButton label="Descargar" size="xs" variant="soft" rounded :to="examSelectData?.source_exam" target="_blank"
-              :ui="customUIBtn" />
+              <UButton label="Descargar" size="xs" variant="soft" rounded :to="examSelectData?.source_exam"
+                target="_blank" :ui="customUIBtn" />
 
               <UButton v-if="examSelectData?.source_video_solution" label="Video solucionario" size="xs" variant="soft"
                 rounded :to="examSelectData?.source_exam" target="_blank" :ui="customUIBtn">
@@ -62,10 +62,14 @@
     </LazyUModal>
 
     <!-- Downloads content -->
-    <UContainer>
-      <UCard>
+    <UContainer :ui="{
+      base: 'w-full max-w-[900px]',
+    }">
+      <UCard class="flex-grow flex-shrink-0 basis-full">
         <template #header>
-          <h1 class="title-section">Exámenes</h1>
+          <Typography tag="h1" variant="h1" color="primary">
+            Exámenes
+          </Typography>
         </template>
         <SkeletonCardList v-if="pending" />
         <div class="space-y-4" v-if="!pending">
@@ -74,7 +78,7 @@
               <USelect v-model="year" :options="serviceStore.years" />
             </UFormGroup>
           </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div class="grid gap-4 auto-cols-auto grid-cols-[repeat(auto-fill,minmax(15rem,1fr))]">
             <CardResume v-for="exam in data?.results" :image="exam.cover" :title="exam.title"
               @callback="showSelectedExam(exam)" />
           </div>
@@ -109,10 +113,13 @@ const { data, pending } = await useLazyAsyncData<ExamPagination>(
       year: year.value
     }
   }),
-  { watch: [page, year] }
+  {
+    server: false,
+    watch: [page, year]
+  }
 )
 
-const customUIBtn = {rounded: 'rounded-full'}
+const customUIBtn = { rounded: 'rounded-full' }
 
 const examSelectData = ref<Exams | undefined>(undefined)
 const showSelectedExam = (examData: Exams) => {
@@ -138,7 +145,6 @@ if (statusFilters.value === 'success') {
   if (selectOptions) {
     serviceStore.years?.push(...selectOptions)
   }
-  console.log(serviceStore.years)
 }
 
 </script>

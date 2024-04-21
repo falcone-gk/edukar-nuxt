@@ -1,6 +1,9 @@
 <template>
-  <section ref="mySection" class="demo flex flex-col mx-2 md:mx-0 text-center gap-12 h-full" :id="props.id">
-    <h1 class="text-primary font-extrabold text-[2.50rem] md:text-[3.25rem] leading-[1.25]">{{ props.title }}</h1>
+  <section ref="mySection" class="flex flex-col mx-2 md:mx-0 text-center gap-12 h-full"
+    :class="{ ['demo']: props.transition }" :id="props.id">
+    <Typography tag="h1" variant="bigger" color="primary" class="font-extrabold leading-[1.25]">
+      {{ props.title }}
+    </Typography>
     <slot />
   </section>
 </template>
@@ -9,6 +12,10 @@
 const props = defineProps({
   id: String,
   title: String,
+  transition: {
+    type: Boolean,
+    default: true
+  }
 })
 
 const mySection = ref(null)
@@ -27,7 +34,7 @@ onMounted(() => {
     }
   );
 
-  if (mySection.value) {
+  if (mySection.value && props.transition) {
     observer.observe(mySection.value);
   }
 });
