@@ -9,7 +9,7 @@
     </figure>
     <template #footer>
       <div class="text-center">
-        <UButton @click="emit('callback')" variant="ghost" :label="props.title" />
+        <UButton @click="emit('callback')" variant="ghost" color="gray" :label="props.title" />
       </div>
     </template>
   </UCard>
