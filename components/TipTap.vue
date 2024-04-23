@@ -43,6 +43,10 @@ const props = defineProps({
   },
   errors: {
     type: Array<FormError>
+  },
+  module: {
+    type: String,
+    required: true
   }
 })
 const emits = defineEmits(['update:modelValue'])
@@ -87,6 +91,17 @@ function getBase64(file: File) {
   });
 }
 
+function uploadImage(file: File) {
+  const formData = new FormData()
+  formData.append('image', file)
+  formData.append('module', props.module)
+
+  return useApiFetch('account/image/upload', {
+    method: 'post',
+    body: formData
+  })
+}
+
 ImageTipTap.configure({
   allowBase64: true,
   inline: true
@@ -97,7 +112,7 @@ const editor = useEditor({
   extensions: [TiptapStarterKit, ImageTipTap],
   editorProps: {
     attributes: {
-      class: 'outline-none rounded-b-md px-2 py-2 min-h-[300px]',
+      class: 'outline-none rounded-b-md px-2 py-2 h-[400px] overflow-y-auto',
     },
     handleDrop: function (view, event, slice, moved) {
       if (!moved && event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0]) { // if dropping external files
@@ -105,7 +120,26 @@ const editor = useEditor({
         let filesize = toFixedNumber((file.size / 1024) / 1024, 4); // get the filesize in MB
         if ((file.type === "image/jpeg" || file.type === "image/png") && filesize < 10) { // check valid image type under 10MB
 
-          getBase64(file).then((base64url) => {
+          let _URL = window.URL || window.webkitURL;
+          let img = new Image(); /* global Image */
+          img.src = _URL.createObjectURL(file);
+          img.onload = function () {
+            uploadImage(file).then((response) => {
+              // place the now uploaded image in the editor where it was dropped
+              console.log(response)
+              const imgSrc = useImgFullPath(response.image)
+              const { schema } = view.state;
+              const coordinates = view.posAtCoords({ left: event.clientX, top: event.clientY });
+              const node = schema.nodes.image.create({ src: imgSrc }); // creates the image element
+              const transaction = view.state.tr.insert(coordinates!.pos, node); // places it in the correct position
+              return view.dispatch(transaction);
+            }).catch((error) => {
+              if (error) {
+                window.alert(error);
+              }
+            })
+          }
+          /* getBase64(file).then((base64url) => {
             const { schema } = view.state;
             const coordinates = view.posAtCoords({ left: event.clientX, top: event.clientY });
 
@@ -124,7 +158,7 @@ const editor = useEditor({
               const transaction = view.state.tr.insert(coordinates!.pos, node); // places it in the correct position
               view.dispatch(transaction);
             }
-          })
+          }) */
         } else {
           window.alert("Las imágenes deben ser 'jpg' o 'png'");
         }
