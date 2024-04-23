@@ -1,5 +1,5 @@
 <template>
-  <section id="login" class="flex mx-4">
+  <section id="login" class="translate-y-32">
     <UCard :ui="{
       base: 'mx-auto max-w-[400px]'
     }">
@@ -36,7 +36,6 @@ import { z } from 'zod'
 
 definePageMeta({
   middleware: ['anonymous'],
-  layout: 'centered',
 })
 
 type UserLogin = z.infer<typeof userLoginSchema>
