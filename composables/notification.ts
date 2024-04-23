@@ -14,6 +14,9 @@ export const useNotification = () => {
         info.message = info.message || 'Ha ocurrido un error'
         toast.add({ title: info.title, description: info.message, icon: "i-heroicons-x-circle", color: 'red' })
         break
+      case 'info':
+        info.title = info.title || 'Información'
+        toast.add({ title: info.title, description: info.message, icon: "i-heroicons-information-circle", color: 'cyan' })
     }
   }
 
