@@ -11,8 +11,9 @@ export interface Subsection {
 }
 
 export interface PostData {
-    id: number
-    subsection: string
+    id: number,
+    section: Section
+    subsection: Subsection
     author: Author
     date: string
     comments: Comment[]

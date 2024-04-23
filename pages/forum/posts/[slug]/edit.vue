@@ -6,7 +6,10 @@
           Nuevo Post
         </Typography>
       </div>
-      <div>
+      <div v-if="!body">
+        cargando...
+      </div>
+      <div v-else>
         <UForm ref="form" :state="body" :schema="postSchema" @submit="onSubmit" class="flex flex-col gap-4">
           <UFormGroup id="section" label="Sección:" name="section" required>
             <USelect v-model="body.section" label="Sección" :options="sections" placeholder="--Seleccionar sección--" />
@@ -18,7 +21,8 @@
           <UFormGroup id="title" label="Título:" name="title" required>
             <UInput v-model="body.title" label="Título" />
           </UFormGroup>
-          <TipTap v-model="body.body" :errors="form?.getErrors('body')" />
+          <TipTap v-if="body.body !== ''" v-model="body.body" :value="body.body" :errors="form?.getErrors('body')"
+            module="forum" />
           <UButton type="submit" :loading="loading" block>Publicar Post</UButton>
         </UForm>
       </div>
@@ -30,45 +34,64 @@
 import { z } from 'zod'
 import { postSchema } from '~/schemas/forum';
 import type { Form, FormSubmitEvent } from '#ui/types'
+import type { PostData } from '@/types/forum';
 
 definePageMeta({
+  middleware: ['auth'],
   breadCrumb: {
     icon: 'i-heroicons-chat-bubble-bottom-center-text-solid',
-    label: 'Nuevo post'
+    label: 'Editar post'
   }
 })
+
+type Schema = z.output<typeof postSchema>
+
+const route = useRoute()
+const postSlug = route.params.slug
+const body = ref<{
+  section: string | null,
+  subsection: string | null,
+  title: string,
+  body: string
+} | null>(null)
 
 const loading = ref(false)
 const { showNotification } = useNotification()
 const form = ref<Form<any>>()
+
 const forumStore = useForumStore()
 const sections = await forumStore.getSectionOptions()
 const subsections = computed(() => {
-  if (body.value.section !== null) {
+  if (body.value === null) return
+  if (body.value && body.value.section !== null) {
     return forumStore.getSubsectionsBySectionId(Number(body.value.section))
   }
   return []
 })
 
-type Schema = z.output<typeof postSchema>
+const { data, pending } = await useAsyncData(
+  'post-retrieve',
+  () => useApiFetch<PostData>(`/forum/posts/${postSlug}`, {
+    onResponse({ request, response }) {
+      if (response.status === 200) {
+        const data = response._data as PostData
+        body.value = {
+          section: String(data.section.id),
+          subsection: String(data.subsection.id),
+          title: data.title,
+          body: data.body
+        }
+      }
+    },
+  }),
+  { lazy: true, server: false }
+)
 
-const body = ref<{
-  section: number | null,
-  subsection: number | null,
-  title: string,
-  body: string
-}>({
-  section: null,
-  subsection: null,
-  title: '',
-  body: ''
-})
-
-const { data, error, pending, status, execute } = await useAsyncData(
-  'post-create',
-  () => useApiFetch('/forum/posts/', {
-    method: 'post',
-    body: body.value
+const { data: newPost, status: statusUpdate, error: postError, execute } = await useAsyncData(
+  'post-update',
+  () => useApiFetch(`/forum/posts/${postSlug}/`, {
+    method: 'put',
+    body: body.value,
   }), {
   lazy: true,
   server: false,
@@ -85,20 +108,13 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
 
   loading.value = true
   await execute()
-  if (status.value === 'success') {
+  if (statusUpdate.value === 'success') {
     loading.value = false
+    navigateTo(`/forum/${newPost.value.section.slug}/posts/${newPost.value.slug}`)
   } else {
     loading.value = false
-    if (error.value?.statusCode === 429) {
-      showNotification({
-        type: 'error',
-        message: 'Demasiados intentos del día (máximo 2). Inténtalo de nuevo mañana.'
-      })
-    }
-    showNotification({ type: 'error' })
+    showNotification({ type: 'error', message: postError.value?.message })
   }
 }
 
 </script>
-
-<style></style>

@@ -15,7 +15,7 @@
       </div>
     </UCard>
     <div>
-      <UButton label="Crear nuevo post" icon="i-heroicons-plus-circle-solid" to="/forum/new-post" />
+      <UButton label="Crear nuevo post" icon="i-heroicons-plus-circle-solid" to="/forum/posts/create" />
     </div>
 
     <SkeletonForumPost v-if="pending" />
