@@ -35,7 +35,8 @@ import { userLoginSchema } from '~/schemas/auth';
 import { z } from 'zod'
 
 definePageMeta({
-  middleware: ['anonymous']
+  middleware: ['anonymous'],
+  layout: 'centered',
 })
 
 type UserLogin = z.infer<typeof userLoginSchema>

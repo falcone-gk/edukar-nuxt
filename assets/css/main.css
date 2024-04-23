@@ -3,6 +3,8 @@
   --secondary-color: 18 26 45;
   --accent-color: 239 239 239;
   --dark-accent-color: 38 57 102;
+
+  --header-height: 3rem;
 }
 
 @font-face {

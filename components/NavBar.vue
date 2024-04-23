@@ -45,7 +45,7 @@ const menuItems = [
 </script>
 
 <template>
-  <header class="sticky top-0 px-4 h-12 hidden md:block shadow-xl z-10 bg-white dark:bg-secondary">
+  <header class="sticky top-0 px-4 h-[var(--header-height)] hidden md:block shadow-xl z-10 bg-white dark:bg-secondary">
     <div class="flex justify-between h-full items-stretch">
       <div class="flex my-auto">
         <NuxtLink to="/">
