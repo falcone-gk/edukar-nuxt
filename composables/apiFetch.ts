@@ -1,16 +1,16 @@
-export const useApiFetch = <T>(request: any, opts?: any): Promise<any> => {
+import type { NitroFetchOptions, NitroFetchRequest } from 'nitropack'
+
+export const useApiFetch = <DefaultT = any, DefaultR extends NitroFetchRequest = NitroFetchRequest, T = DefaultT, R extends NitroFetchRequest = DefaultR, O extends NitroFetchOptions<R> = NitroFetchOptions<R>>(
+  url: R,
+  options?: O
+) => {
   const config = useRuntimeConfig()
-
-  return $fetch<T>(request, {
+  const token = useCookie('token')
+  return $fetch<T>(url, {
+    ...options,
     baseURL: config.public.apiURL,
-    onRequest({ request, options }) {
-      const token = useCookie('token')
-      options.headers = new Headers(options.headers)
-
-      if (token.value) {
-        options.headers.set('Authorization', 'Token ' + token.value)
-      }
-    },
-    ...opts
+    headers: {
+      Authorization: token.value ? 'Token ' + token.value : ''
+    }
   })
 }
