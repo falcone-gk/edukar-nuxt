@@ -1,9 +1,9 @@
 <template>
   <div :class="type === 'comment' ? 'border-b border-gray-200 dark:border-gray-800' : ''">
     <UCard :ui="{
-        ring: '', divide: '', shadow: '',
-        body: { padding: 'py-5' }, header: { padding: 'py-5' }, footer: { padding: 'py-5' },
-      }">
+    ring: '', divide: '', shadow: '',
+    body: { padding: 'py-5' }, header: { padding: 'py-5' }, footer: { padding: 'py-5' },
+  }">
       <template #header>
         <div class="flex gap-4">
           <div class="flex items-center">
@@ -16,8 +16,9 @@
               <h3 v-else class="text-primary"> {{ props.username }} </h3>
             </div>
             <div>
-              <p v-if="props.type === 'post'" class="text-sm">Publicado por <span class="text-primary">{{ props.username }}</span> ({{
-              translateDateMonth(props.date) }})</p>
+              <p v-if="props.type === 'post'" class="text-sm">Publicado por <span class="text-primary">{{ props.username
+                  }}</span> ({{
+    translateDateMonth(props.date) }})</p>
               <p v-else class="text-sm">{{ translateDateMonth(props.date) }}</p>
             </div>
           </div>
@@ -27,26 +28,14 @@
 
       <template v-if="props.type !== 'reply' || userStore.isAuthorUser(props.username)" #footer>
         <div class="space-x-2">
-          <UButton v-if="props.type !== 'reply'"
-          @click="emits('showTextEditor')"
-          label="Responder"
-          size="2xs"
-          icon="i-heroicons-arrow-uturn-left-solid"
-          color="gray" />
-  
-          <UButton v-if="userStore.isAuthorUser(props.username)"
-          @click="emits('showUpdateTextEditor')"
-          label="Editar"
-          size="2xs"
-          icon="i-heroicons-pencil-solid"
-          color="gray" />
+          <UButton v-if="props.type !== 'reply'" @click="emits('onReply')" label="Responder" size="2xs"
+            icon="i-heroicons-arrow-uturn-left-solid" color="gray" />
 
-          <UButton v-if="userStore.isAuthorUser(props.username)"
-          @click="emits('deleteComment')"
-          label="Eliminar"
-          size="2xs"
-          icon="i-heroicons-trash-solid"
-          color="gray" />
+          <UButton v-if="userStore.isAuthorUser(props.username)" @click="emits('onUpdate')" label="Editar" size="2xs"
+            icon="i-heroicons-pencil-solid" color="gray" />
+
+          <UButton v-if="userStore.isAuthorUser(props.username)" @click="emits('onDelete')" label="Eliminar" size="2xs"
+            icon="i-heroicons-trash-solid" color="gray" />
         </div>
 
       </template>
@@ -76,8 +65,8 @@ const props = defineProps<{
 }>()
 
 const emits = defineEmits([
-  'showTextEditor',
-  'showUpdateTextEditor',
-  'deleteComment'
+  'onReply',
+  'onUpdate',
+  'onDelete'
 ])
 </script>

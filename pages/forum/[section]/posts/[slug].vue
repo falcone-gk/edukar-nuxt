@@ -15,7 +15,7 @@
           </div>
         </template>
 
-        <TipTap :value="commentModal.body" v-model="commentModal.body" />
+        <TipTap :value="commentModal.body" v-model="commentModal.body" module="forum" />
 
         <template #footer>
           <UButton @click="sendRequest" label="Enviar" />
@@ -29,9 +29,9 @@
 
     <UCard v-else>
       <div>
-        <PostContent @show-text-editor="setupModal('post', 'comment', sendComment, post)" type="post"
-          :title="post.title" :date="post.date" :username="post.author.username" :picture="post.author.picture"
-          :body="post.body" />
+        <PostContent @on-reply="setupModal('post', 'comment', sendComment, post)"
+          @on-update="navigateTo(`/forum/posts/${post.slug}/edit`)" type="post" :title="post.title" :date="post.date"
+          :username="post.author.username" :picture="post.author.picture" :body="post.body" />
 
         <UDivider>
           <LogoEdukarIcon />
@@ -40,14 +40,13 @@
         <h2>Comentarios:</h2>
 
         <div class="space-y-4">
-          <PostContent v-for="comment in post.comments"
-            @show-text-editor="setupModal('post', 'reply', sendReply, comment)"
-            @show-update-text-editor="setupModal('update', 'comment', updateComment, comment, post.id)" type="comment"
+          <PostContent v-for="comment in post.comments" @on-reply="setupModal('post', 'reply', sendReply, comment)"
+            @on-update="setupModal('update', 'comment', updateComment, comment, post.id)" type="comment"
             :date="comment.date" :username="comment.author.username" :picture="comment.author.picture"
             :body="comment.body">
             <template v-if="comment.replies.length > 0" #replies>
               <PostContent v-for="reply in comment.replies"
-                @show-update-text-editor="setupModal('update', 'reply', updateReply, reply, comment.id)" type="reply"
+                @on-update="setupModal('update', 'reply', updateReply, reply, comment.id)" type="reply"
                 :date="reply.date" :username="reply.author.username" :picture="reply.author.picture"
                 :body="reply.body" />
             </template>
