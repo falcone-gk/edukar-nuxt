@@ -32,8 +32,9 @@
         <PostContent
           @on-reply="openModal({ method: 'post', url: '/forum/comments/', key: 'comment', parentId: post.id, parentKey: 'post' })"
           @on-update="navigateTo(`/forum/posts/${post.slug}/edit`)"
-          @on-delete="deleteRequest({ key: 'post', url: '/forum/posts/', id: post.id })" type="post" :title="post.title"
-          :date="post.date" :username="post.author.username" :picture="post.author.picture" :body="post.body" />
+          @on-delete="deleteRequest({ key: 'post', url: '/forum/posts/', id: post.slug })" type="post"
+          :title="post.title" :date="post.date" :username="post.author.username" :picture="post.author.picture"
+          :body="post.body" />
 
         <UDivider>
           <LogoEdukarIcon />
@@ -149,7 +150,13 @@ const deleteRequest = async (
   const { key, url, id } = info
   crudMethods.setup({ baseKey: key, idField: id, urlCrud: url })
   await crudMethods.destroyData()
-  await refresh()
+
+  // if post is deleted then redirect to forum
+  if (key === 'post') {
+    navigateTo('/forum')
+  } else {
+    await refresh()
+  }
 }
 
 </script>
