@@ -5,9 +5,9 @@
       <UCard class="w-full">
         <template #header>
           <div class="flex justify-between">
-            <h1 class="title-section">
-              {{ sectionName }}: <span class="text-black dark:text-white">{{ subsections[subsection].name }}</span>
-            </h1>
+            <Typography tag="h1" variant="h1">
+              {{ sectionName }}: <span class="text-black dark:text-white">{{ subsectionName }}</span>
+            </Typography>
           </div>
         </template>
         <div class="space-y-4">
@@ -96,6 +96,13 @@ if (statusList.value === 'success') {
 }
 
 const sectionName = forumStore.getSectionBySlug(sectionSlug as string)
+const subsectionName = computed(() => {
+  const subsectionSelected = subsections.find(el => el.id === Number(subsection.value))
+  if (subsectionSelected) {
+    return subsectionSelected.name
+  }
+  return ''
+})
 subsections.push(
   ...forumStore.getSubsectionsBySectionSlug(sectionSlug as string) as Subsection[]
 )
