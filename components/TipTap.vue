@@ -38,9 +38,6 @@ import { Image as ImageTipTap } from '@tiptap/extension-image'
 import type { FormError } from '#ui/types'
 
 const props = defineProps({
-  value: {
-    type: String,
-  },
   errors: {
     type: Array<FormError>
   },
@@ -49,7 +46,8 @@ const props = defineProps({
     required: true
   }
 })
-const emits = defineEmits(['update:modelValue'])
+//const emits = defineEmits(['update:modelValue'])
+const model = defineModel({ required: true })
 
 function toFixedNumber(num: number, digits: number, base: number = 10) {
   const pow = Math.pow(base, digits);
@@ -108,7 +106,7 @@ ImageTipTap.configure({
 })
 
 const editor = useEditor({
-  content: props.value,
+  content: model.value as string,
   extensions: [TiptapStarterKit, ImageTipTap],
   editorProps: {
     attributes: {
@@ -126,7 +124,6 @@ const editor = useEditor({
           img.onload = function () {
             uploadImage(file).then((response) => {
               // place the now uploaded image in the editor where it was dropped
-              console.log(response)
               const imgSrc = useImgFullPath(response.image)
               const { schema } = view.state;
               const coordinates = view.posAtCoords({ left: event.clientX, top: event.clientY });
@@ -168,7 +165,8 @@ const editor = useEditor({
     }
   },
   onUpdate: (props) => {
-    emits('update:modelValue', props.editor.getHTML())
+    //emits('update:modelValue', props.editor.getHTML())
+    model.value = props.editor.getHTML()
   }
 });
 
