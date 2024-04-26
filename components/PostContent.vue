@@ -16,9 +16,8 @@
               <h3 v-else class="text-primary"> {{ props.username }} </h3>
             </div>
             <div>
-              <p v-if="props.type === 'post'" class="text-sm">Publicado por <span class="text-primary">{{ props.username
-                  }}</span> ({{
-    translateDateMonth(props.date) }})</p>
+              <p v-if="props.type === 'post'" class="text-sm">Publicado por <span class="text-primary">
+                  {{ props.username }}</span> ({{ translateDateMonth(props.date) }})</p>
               <p v-else class="text-sm">{{ translateDateMonth(props.date) }}</p>
             </div>
           </div>
@@ -28,13 +27,13 @@
 
       <template v-if="props.type !== 'reply' || userStore.isAuthorUser(props.username)" #footer>
         <div class="space-x-2">
-          <UButton v-if="props.type !== 'reply'" @click="emits('onReply')" label="Responder" size="2xs"
+          <UButton v-if="props.type !== 'reply'" @click="replyCallback" label="Responder" size="2xs"
             icon="i-heroicons-arrow-uturn-left-solid" color="gray" />
 
           <UButton v-if="userStore.isAuthorUser(props.username)" @click="emits('onUpdate')" label="Editar" size="2xs"
             icon="i-heroicons-pencil-solid" color="gray" />
 
-          <UButton v-if="userStore.isAuthorUser(props.username)" @click="emits('onDelete')" label="Eliminar" size="2xs"
+          <UButton v-if="userStore.isAuthorUser(props.username)" @click="deleteCallback" label="Eliminar" size="2xs"
             icon="i-heroicons-trash-solid" color="gray" />
         </div>
 
@@ -52,6 +51,8 @@ import { translateDateMonth } from '~/utils/text';
 
 const userStore = useUserStore()
 const slots = useSlots()
+const { showNotification } = useNotification()
+const confimation = useConfirmDialog()
 
 type Content = 'post' | 'comment' | 'reply'
 
@@ -69,4 +70,22 @@ const emits = defineEmits([
   'onUpdate',
   'onDelete'
 ])
+
+const replyCallback = () => {
+  if (userStore.isLogged) {
+    emits('onReply')
+  } else {
+    showNotification({ message: 'Por favor inicia sesión', type: 'info' })
+  }
+}
+
+const deleteCallback = async () => {
+  confimation.showConfirmDialog({
+    title: 'Eliminar',
+    message: '¿Deseas eliminar este registro?',
+    severity: 'danger',
+    acceptLabel: 'Eliminar',
+    accept: () => emits('onDelete'),
+  })
+}
 </script>
