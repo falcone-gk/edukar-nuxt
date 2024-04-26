@@ -1,4 +1,5 @@
 <template>
+  <UModals />
   <UNotifications />
   <NuxtLayout>
     <NuxtPage />
