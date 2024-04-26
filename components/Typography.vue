@@ -10,21 +10,21 @@ const props = defineProps({
     type: String,
     default: 'p',
     validator: (value: string) => {
-      return ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p'].includes(value)
+      return ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span'].includes(value)
     },
   },
   variant: {
     type: String,
     default: 'body',
     validator: (value: string) => {
-      return ['body', 'h1', 'h2', 'h3', 'bigger'].includes(value)
+      return ['body', 'h1', 'h2', 'h3', 'big', 'bigger'].includes(value)
     }
   },
   color: {
     type: String,
     default: 'primary',
     validator: (value: string) => {
-      return ['primary', 'secondary', 'accent', 'dark-accent'].includes(value)
+      return ['primary', 'danger', 'base'].includes(value)
     }
   }
 })
@@ -34,6 +34,7 @@ const variantClasses = computed(() => {
     h1: 'text-4xl',
     h2: 'text-3xl',
     h3: 'text-2xl',
+    big: 'text-xl',
     bigger: 'text-[2.50rem] md:text-[3.25rem]',
     body: 'text-base'
   }
@@ -42,10 +43,9 @@ const variantClasses = computed(() => {
 
 const colorClasses = computed(() => {
   const classLookup = {
-    primary: 'text-primary',
-    secondary: 'text-secondary',
-    accent: 'text-accent',
-    'dark-accent': 'text-dark-accent'
+    primary: 'text-primary-500 dark:text-primary-400',
+    danger: 'text-red-500 dark:text-red-400',
+    base: 'text-base'
   }
   return classLookup[props.color as keyof typeof classLookup]
 })
