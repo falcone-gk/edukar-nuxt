@@ -15,5 +15,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
 
     if (status.value === 'success') {
         userStore.setUser(data.value)
+    } else {
+        token.value = null
     }
 })
