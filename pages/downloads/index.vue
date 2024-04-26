@@ -103,13 +103,15 @@ import type { Exams } from '~/types/resultApiTypes';
 
 type ExamPagination = PaginationData<Exams>
 
+const route = useRoute()
+
 const serviceStore = useServiceStore()
-const year = ref<number | undefined>()
-const university = ref<string | undefined>()
+const year = ref<string | undefined>(route.query.year as string | undefined)
+const university = ref<string | undefined>(route.query.university as string | undefined)
 const page = ref(1)
 const pageCount = ref(8)
 const isOpen = ref(false)
-const { data, pending } = await useLazyAsyncData<ExamPagination>(
+const { data, pending } = useLazyAsyncData<ExamPagination>(
   'exams',
   () => useApiFetch<ExamPagination>('/services/exams-list', {
     query: {
@@ -120,7 +122,6 @@ const { data, pending } = await useLazyAsyncData<ExamPagination>(
     }
   }),
   {
-    server: false,
     watch: [page, year, university]
   }
 )
