@@ -28,11 +28,11 @@
         <div class="flex flex-col gap-8">
           <UCard v-for="section in sections" :key="'section-' + section.id" :ui="{ body: { padding: '' } }">
             <template #header>
-              <h2 class="text-primary text-xl">
+              <Typography tag="h2" variant="h2">
                 <ULink @click="subsectionSelected = 0" class="hover:underline" :to="'/forum/' + section.slug">
                   {{ section.name }}
                 </ULink>
-              </h2>
+              </Typography>
             </template>
             <div
               class="flex items-center justify-between px-4 sm:px-6 border-b last:border-b-0 dark:border-gray-700 py-4"
