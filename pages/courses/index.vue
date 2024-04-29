@@ -23,7 +23,7 @@
           </template>
 
         </DataLoading>
-        <template v-if="!pending" #footer>
+        <template v-if="!pending && data" #footer>
           <div class="flex justify-center">
             <UPagination :total="data?.count" :page-count="pageCount" v-model="page" />
           </div>
