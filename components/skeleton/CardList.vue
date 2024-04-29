@@ -6,7 +6,7 @@
       </div>
       <template #footer>
         <div class="flex justify-center">
-          <USkeleton class="h-4 min-w-[250px]" />
+          <USkeleton class="h-4 w-[98%]" />
         </div>
       </template>
     </UCard>
