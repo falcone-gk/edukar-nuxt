@@ -9,11 +9,20 @@
             Cursos
           </Typography>
         </template>
-        <SkeletonCardList v-if="pending" />
-        <div v-else class="grid gap-4 auto-cols-auto grid-cols-[repeat(auto-fill,minmax(15rem,1fr))]">
-          <CardResume v-for="course in data?.results" :image="course.image" :title="course.name"
-            @callback="openURL(course.url)" />
-        </div>
+
+        <DataLoading :loading="pending" :data="data">
+          <template #loading>
+            <SkeletonCardList />
+          </template>
+
+          <template #data="{ data: courses }">
+            <div class="grid gap-4 auto-cols-auto grid-cols-[repeat(auto-fill,minmax(15rem,1fr))]">
+              <CardResume v-for="course in courses.results" :image="course.image" :title="course.name"
+                @callback="openURL(course.url)" />
+            </div>
+          </template>
+
+        </DataLoading>
         <template v-if="!pending" #footer>
           <div class="flex justify-center">
             <UPagination :total="data?.count" :page-count="pageCount" v-model="page" />

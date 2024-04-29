@@ -71,8 +71,8 @@
             Exámenes
           </Typography>
         </template>
-        <SkeletonCardList v-if="pending" />
-        <div class="space-y-4" v-if="!pending">
+
+        <div class="space-y-4">
           <div class="flex gap-2">
             <UFormGroup>
               <USelect v-model="year" :options="serviceStore.years" placeholder="--Seleccionar año--" />
@@ -83,10 +83,21 @@
             </UFormGroup>
           </div>
 
-          <div class="grid gap-4 auto-cols-auto grid-cols-[repeat(auto-fill,minmax(15rem,1fr))]">
-            <CardResume v-for="exam in data?.results" :image="exam.cover" :title="exam.title"
-              @callback="showSelectedExam(exam)" />
-          </div>
+          <DataLoading :loading="pending" :data="data">
+
+            <template #loading>
+              <SkeletonCardList />
+            </template>
+
+            <template #data="{ data }">
+              <div class="grid gap-4 auto-cols-auto grid-cols-[repeat(auto-fill,minmax(15rem,1fr))]">
+                <CardResume v-for="exam in data.results" :image="exam.cover" :title="exam.title"
+                  @callback="showSelectedExam(exam)" />
+              </div>
+            </template>
+
+          </DataLoading>
+
         </div>
         <template v-if="!pending" #footer>
           <div class="flex justify-center">
@@ -122,6 +133,7 @@ const { data, pending } = useLazyAsyncData<ExamPagination>(
     }
   }),
   {
+    server: false,
     watch: [page, year, university]
   }
 )

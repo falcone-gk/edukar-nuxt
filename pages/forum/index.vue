@@ -18,44 +18,51 @@
       <UButton label="Crear nuevo post" icon="i-heroicons-plus-circle-solid" to="/forum/posts/create" />
     </div>
 
-    <SkeletonForumPost v-if="pending" />
+    <DataLoading :loading="pending" :data="sections">
 
-    <div v-else class="flex flex-col gap-8">
-      <UCard v-for="section in sections" :key="'section-' + section.id" :ui="{
-      body: { padding: '' }
-    }">
-        <template #header>
-          <h2 class="text-primary text-xl">
-            <ULink @click="subsectionSelected = 0" class="hover:underline" :to="'/forum/' + section.slug">{{
-      section.name }}
-            </ULink>
-          </h2>
-        </template>
-        <div class="flex items-center justify-between px-4 sm:px-6 border-b last:border-b-0 dark:border-gray-700 py-4"
-          v-for="subsection in section.subsections" :key="'subsection-' + subsection.id">
-          <div>
-            <ULink @click="subsectionSelected = subsection.id" :to="`/forum/${section.slug}`"
-              class="text-left hover:underline">{{ subsection.name }}</ULink>
-          </div>
-          <div v-if="subsection.last_post" class="text-right">
-            <div>
-              <ULink class="hidden sm:block hover:underline"
-                :to="`/forum/${section.slug}/posts/${subsection.last_post.slug}`">
-                {{ truncateText(subsection.last_post.title) }}
-              </ULink>
-              <ULink class="text-sm sm:hidden hover:underline"
-                :to="`/forum/${section.slug}/posts/${subsection.last_post.slug}`">
-                {{ truncateText(subsection.last_post.title, 15) }}
-              </ULink>
+      <template #loading>
+        <SkeletonForumPost />
+      </template>
+
+      <template #data="{ data: sections }">
+        <div class="flex flex-col gap-8">
+          <UCard v-for="section in sections" :key="'section-' + section.id" :ui="{ body: { padding: '' } }">
+            <template #header>
+              <h2 class="text-primary text-xl">
+                <ULink @click="subsectionSelected = 0" class="hover:underline" :to="'/forum/' + section.slug">
+                  {{ section.name }}
+                </ULink>
+              </h2>
+            </template>
+            <div
+              class="flex items-center justify-between px-4 sm:px-6 border-b last:border-b-0 dark:border-gray-700 py-4"
+              v-for="subsection in section.subsections" :key="'subsection-' + subsection.id">
+              <div>
+                <ULink @click="subsectionSelected = subsection.id" :to="`/forum/${section.slug}`"
+                  class="text-left hover:underline">{{ subsection.name }}</ULink>
+              </div>
+              <div v-if="subsection.last_post" class="text-right">
+                <div>
+                  <ULink class="hidden sm:block hover:underline"
+                    :to="`/forum/${section.slug}/posts/${subsection.last_post.slug}`">
+                    {{ truncateText(subsection.last_post.title) }}
+                  </ULink>
+                  <ULink class="text-sm sm:hidden hover:underline"
+                    :to="`/forum/${section.slug}/posts/${subsection.last_post.slug}`">
+                    {{ truncateText(subsection.last_post.title, 15) }}
+                  </ULink>
+                </div>
+                <div class="text-xs">
+                  <p><span class="text-primary">{{ subsection.last_post.author }}</span>, {{ subsection.last_post.date
+                    }}
+                  </p>
+                </div>
+              </div>
             </div>
-            <div class="text-xs">
-              <p><span class="text-primary">{{ subsection.last_post.author }}</span>, {{ subsection.last_post.date }}
-              </p>
-            </div>
-          </div>
+          </UCard>
         </div>
-      </UCard>
-    </div>
+      </template>
+    </DataLoading>
   </div>
 </template>
 
