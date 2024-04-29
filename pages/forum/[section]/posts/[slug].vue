@@ -25,7 +25,7 @@
 
     <UCard>
       <div>
-        <DataLoading :status="postStatus" :loading="pending" :data="post">
+        <DataLoading :loading="pending" :data="post">
           <template #loading>
             <SkeletonPostContent />
           </template>
@@ -46,7 +46,7 @@
         <h2>Comentarios:</h2>
 
         <div class="space-y-4">
-          <DataLoading :status="postStatus" :loading="pending" :data="post">
+          <DataLoading :loading="pending" :data="post">
             <template #loading>
               <SkeletonPostContent />
             </template>
