@@ -23,18 +23,21 @@
       </UCard>
     </UModal>
 
-    <div v-if="!post">
-      <p>No existe post</p>
-    </div>
-
-    <UCard v-else>
+    <UCard>
       <div>
-        <PostContent
-          @on-reply="openModal({ method: 'post', url: '/forum/comments/', key: 'comment', parentId: post.id, parentKey: 'post' })"
-          @on-update="navigateTo(`/forum/posts/${post.slug}/edit`)"
-          @on-delete="deleteRequest({ key: 'post', url: '/forum/posts/', id: post.slug })" type="post"
-          :title="post.title" :date="post.date" :username="post.author.username" :picture="post.author.picture"
-          :body="post.body" />
+        <DataLoading :status="postStatus" :loading="pending" :data="post">
+          <template #loading>
+            <SkeletonPostContent />
+          </template>
+          <template #data="{ data: post }">
+            <PostContent
+              @on-reply="openModal({ method: 'post', url: '/forum/comments/', key: 'comment', parentId: post.id, parentKey: 'post' })"
+              @on-update="navigateTo(`/forum/posts/${post.slug}/edit`)"
+              @on-delete="deleteRequest({ key: 'post', url: '/forum/posts/', id: post.slug })" type="post"
+              :title="post.title" :date="post.date" :username="post.author.username" :picture="post.author.picture"
+              :body="post.body" />
+          </template>
+        </DataLoading>
 
         <UDivider>
           <LogoEdukarIcon />
@@ -43,20 +46,32 @@
         <h2>Comentarios:</h2>
 
         <div class="space-y-4">
-          <PostContent v-for="comment in post.comments"
-            @on-reply="openModal({ method: 'post', url: '/forum/replies/', key: 'reply', parentId: comment.id, parentKey: 'comment' })"
-            @on-update="openModal({ method: 'update', url: '/forum/comments/', content: comment.body, key: 'comment', id: comment.id })"
-            @on-delete="deleteRequest({ key: 'comment', url: '/forum/comments/', id: comment.id })" type="comment"
-            :date="comment.date" :username="comment.author.username" :picture="comment.author.picture"
-            :body="comment.body">
-            <template v-if="comment.replies.length > 0" #replies>
-              <PostContent v-for="reply in comment.replies"
-                @on-update="openModal({ method: 'update', url: '/forum/replies/', content: reply.body, key: 'reply', id: reply.id })"
-                @on-delete="deleteRequest({ key: 'reply', url: '/forum/replies/', id: reply.id })" type="reply"
-                :date="reply.date" :username="reply.author.username" :picture="reply.author.picture"
-                :body="reply.body" />
+          <DataLoading :status="postStatus" :loading="pending" :data="post">
+            <template #loading>
+              <SkeletonPostContent />
             </template>
-          </PostContent>
+            <template #data="{ data: post }">
+              <div v-if="post.comments.length > 0">
+                <PostContent v-for="comment in post.comments"
+                  @on-reply="openModal({ method: 'post', url: '/forum/replies/', key: 'reply', parentId: comment.id, parentKey: 'comment' })"
+                  @on-update="openModal({ method: 'update', url: '/forum/comments/', content: comment.body, key: 'comment', id: comment.id })"
+                  @on-delete="deleteRequest({ key: 'comment', url: '/forum/comments/', id: comment.id })" type="comment"
+                  :date="comment.date" :username="comment.author.username" :picture="comment.author.picture"
+                  :body="comment.body">
+                  <template v-if="comment.replies.length > 0" #replies>
+                    <PostContent v-for="reply in comment.replies"
+                      @on-update="openModal({ method: 'update', url: '/forum/replies/', content: reply.body, key: 'reply', id: reply.id })"
+                      @on-delete="deleteRequest({ key: 'reply', url: '/forum/replies/', id: reply.id })" type="reply"
+                      :date="reply.date" :username="reply.author.username" :picture="reply.author.picture"
+                      :body="reply.body" />
+                  </template>
+                </PostContent>
+              </div>
+              <div v-else>
+                <DataEmpty message="No hay comentarios" />
+              </div>
+            </template>
+          </DataLoading>
         </div>
       </div>
     </UCard>
@@ -85,7 +100,7 @@ interface CommentPost {
   type: 'comment' | 'reply' | null,
   id: number | null,
   parentId: number | null,
-  send: (body?: any) => void
+  send: (body?: any) => Promise<any>
 }
 
 const commentModal = reactive<CommentPost>({
@@ -94,7 +109,7 @@ const commentModal = reactive<CommentPost>({
   type: null,
   id: null,
   parentId: null,
-  send: () => { },
+  send: async () => { },
 })
 
 const route = useRoute()
@@ -103,7 +118,6 @@ const postSlug = route.params.slug
 const { data: post, pending, refresh } = await useLazyAsyncData<PostData>(
   'postData',
   () => useApiFetch<PostData>(`/forum/posts/${postSlug}`),
-  { server: false }
 )
 
 interface ModalOptions {
@@ -139,7 +153,7 @@ const closeModal = () => {
 }
 
 const sendRequest = async () => {
-  commentModal.send()
+  await commentModal.send()
   await refresh()
   closeModal()
 }
