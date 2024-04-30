@@ -19,7 +19,7 @@
           </div>
         </div>
       </template>
-      <UForm id="form" :schema="userRegisterSchema" :state="state" @submit="onSubmit">
+      <UForm id="form" ref="form" :schema="userRegisterSchema" :state="state" @submit="onSubmit">
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <UFormGroup label="Nombre de usuario" name="username" required>
             <UInput v-model="state.username" />
@@ -30,32 +30,32 @@
           <UFormGroup label="Nombre(s)" name="name" required>
             <UInput v-model="state.name" />
           </UFormGroup>
-          <UFormGroup label="Apellido(s)" name="lastname" required>
-            <UInput v-model="state.lastName" />
+          <UFormGroup label="Apellido(s)" name="last_name" required>
+            <UInput v-model="state.last_name" />
           </UFormGroup>
           <UFormGroup label="Contraseña" name="password" required>
             <UInput v-model="state.password" type="password" />
           </UFormGroup>
-          <UFormGroup label="Confirmar contraseña" name="confirm_password" required>
-            <UInput v-model="state.confirmPassword" type="password" />
+          <UFormGroup label="Confirmar contraseña" name="re_password" required>
+            <UInput v-model="state.re_password" type="password" />
           </UFormGroup>
         </div>
         <div class="flex flex-col gap-4 mt-4">
           <UFormGroup label="Sobre mí:" name="about_me">
-            <UTextarea v-model="state.aboutMe" :rows="10" />
+            <UTextarea v-model="state.about_me" :rows="10" />
           </UFormGroup>
           <UFormGroup label="Imágen de perfil:" name="picture">
             <UInput ref="fileImg" type="file" accept="image/*" />
           </UFormGroup>
         </div>
-        <UButton type="submit" class="mt-4" block :loading="isLoading">Registrarse</UButton>
+        <UButton type="submit" class="mt-4" block :loading="status === 'pending'">Registrarse</UButton>
       </UForm>
     </UCard>
   </section>
 </template>
 
 <script lang="ts" setup>
-import type { FormSubmitEvent } from '#ui/types'
+import type { Form, FormSubmitEvent } from '#ui/types'
 import { userRegisterSchema } from '~/schemas/auth';
 import { z } from 'zod'
 
@@ -63,7 +63,9 @@ definePageMeta({
   middleware: ['anonymous']
 })
 
+const signupEmail = useState<string | null>('signupEmail', () => null)
 type UserRegister = z.infer<typeof userRegisterSchema>
+const form = ref<Form<UserRegister> | undefined>()
 const registerData = ref(new FormData())
 const fileImg = ref()
 
@@ -71,22 +73,25 @@ const state = reactive<UserRegister>({
   username: '',
   email: '',
   name: '',
-  lastName: '',
+  last_name: '',
   password: '',
-  confirmPassword: '',
-  aboutMe: ''
+  re_password: '',
+  about_me: ''
 })
 
-/* const { execute } = await useLazyFetch('/api/auth/register', {
-  method: 'post',
-  body: registerData.value,
-  immediate: false,
-  server: false
-}) */
+const { error, status, execute } = useAsyncData('signup',
+  () => useApiFetch('account/users/', {
+    method: 'post',
+    body: registerData.value
+  }),
+  {
+    lazy: true,
+    server: false,
+    immediate: false,
+  }
+)
 
-const isLoading = ref(false)
 const onSubmit = async (event: FormSubmitEvent<UserRegister>) => {
-  isLoading.value = true
   Object.keys(event.data).forEach(key => {
     const value = event.data[key as keyof typeof event.data]
     if (value !== undefined)
@@ -96,8 +101,17 @@ const onSubmit = async (event: FormSubmitEvent<UserRegister>) => {
   const file = fileImg.value.input.files[0]
   if (file !== undefined) registerData.value.append('picture', file)
 
-  //await execute()
-  isLoading.value = false
+  await execute()
+
+  if (status.value === 'error') {
+    const errorData = error.value?.data as { [key: string]: string[] }
+    form.value?.setErrors(
+      Object.keys(errorData).map(key => ({ path: key, message: errorData[key][0] }))
+    )
+  } else {
+    signupEmail.value = state.email
+    navigateTo('/account/after-signup', { replace: true })
+  }
 }
 
 </script>
