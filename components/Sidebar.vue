@@ -10,8 +10,11 @@
         @click="isOpen = true" />
     </div>
   </header>
-  <USlideover class="fixed top-0 z-30 md:hidden" v-model="isOpen" side="left">
-    <UCard class="fixed top-0 h-screen w-5/6" :ui="{ base: 'flex flex-col', footer: { base: 'mt-auto' } }">
+  <USlideover class="md:hidden" v-model="isOpen" side="left" :ui="{
+        width: 'relative w-5/6 max-w-md',
+        base: ''
+      }">
+    <UCard class="h-screen" :ui="{ base: 'flex flex-col', footer: { base: 'mt-auto' } }">
       <template v-if="userStore.user" #header>
         <ul>
           <li>
@@ -25,10 +28,7 @@
         </ul>
       </template>
       <UVerticalNavigation :links="links" :ui="{
-        active: 'text-white bg-primary dark:before:bg-primary-500',
-        icon: {
-          active: 'text-white'
-        },
+        active: 'bg-primary dark:before:bg-primary-500',
       }">
         <template #badge="{ link }">
           <div v-if="link.input" class="flex items-center ml-auto">
@@ -64,10 +64,19 @@ const userLinks = [
   { label: 'Registrarse', to: '/signup', icon: 'i-heroicons-user-plus-solid' }
 ]
 
-const userLoggedLinks = [
-  { label: 'Ver perfil', to: '/account', icon: 'i-heroicons-user-solid' },
-  { label: 'Notificaciones', to: '/account/notifications', icon: 'i-heroicons-envelope-solid' }
-]
+const userLoggedLinks = [{
+  label: 'Perfil',
+  icon: 'i-heroicons-user-solid',
+  to: '/account/me'
+}, {
+  label: 'Mis Publicaciones',
+  icon: 'i-heroicons-chat-bubble-left-right-solid',
+  //to: '/getting-started/installation'
+}, {
+  label: 'Notificaciones',
+  icon: 'i-heroicons-envelope-solid',
+  //to: `${route.path.startsWith('/dev') ? '/dev' : ''}/components/vertical-navigation`
+}]
 
 const navLinks = [
   { label: 'Inicio', to: '/', icon: 'i-heroicons-home' },
@@ -81,8 +90,8 @@ const darkMode = [
 ]
 
 const links = computed(() => [
-  userStore.isLogged ? userLoggedLinks : userLinks,
   navLinks,
+  userStore.isLogged ? userLoggedLinks : userLinks,
   darkMode
 ])
 </script>
