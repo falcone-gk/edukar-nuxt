@@ -7,7 +7,7 @@
       </Typography>
     </template>
 
-    <DataLoading :loading="pending" :data="data">
+    <DataLoading :loading="pending" :data="data" :list="data?.results" empty-message="No hay publicaciones">
       <template #loading>
         <SkeletonForumPost />
       </template>
@@ -35,9 +35,6 @@
               </div>
             </template>
           </UCard>
-          <div v-else>
-            <DataEmpty />
-          </div>
         </div>
       </template>
     </DataLoading>

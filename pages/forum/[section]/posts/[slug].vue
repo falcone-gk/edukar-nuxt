@@ -46,12 +46,12 @@
         <h2>Comentarios:</h2>
 
         <div class="space-y-4">
-          <DataLoading :loading="pending" :data="post">
+          <DataLoading :loading="pending" :data="post" :list="post?.comments" empty-message="No hay comentarios">
             <template #loading>
               <SkeletonPostContent />
             </template>
             <template #data="{ data: post }">
-              <div v-if="post.comments.length > 0">
+              <div>
                 <PostContent v-for="comment in post.comments"
                   @on-reply="openModal({ method: 'post', url: '/forum/replies/', key: 'reply', parentId: comment.id, parentKey: 'comment' })"
                   @on-update="openModal({ method: 'update', url: '/forum/comments/', content: comment.body, key: 'comment', id: comment.id })"
@@ -66,9 +66,6 @@
                       :body="reply.body" />
                   </template>
                 </PostContent>
-              </div>
-              <div v-else>
-                <DataEmpty message="No hay comentarios" />
               </div>
             </template>
           </DataLoading>

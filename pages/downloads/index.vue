@@ -83,7 +83,7 @@
             </UFormGroup>
           </div>
 
-          <DataLoading :loading="pending" :data="data">
+          <DataLoading :loading="pending" :data="data" :list="data?.results">
 
             <template #loading>
               <SkeletonCardList />
@@ -124,12 +124,12 @@ const pageCount = ref(8)
 const isOpen = ref(false)
 const { data, pending } = useLazyAsyncData<ExamPagination>(
   'exams',
-  () => useApiFetch<ExamPagination>('/services/exams-list', {
+  () => useApiFetch<ExamPagination>('/services/exams-list/', {
     query: {
       page: page.value,
       size: pageCount.value,
       year: year.value,
-      university: university.value
+      univ: university.value
     }
   }),
   {

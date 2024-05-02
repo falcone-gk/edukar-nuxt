@@ -13,8 +13,8 @@
 
       <!--Data section-->
       <div v-else>
-        <div v-if="Array.isArray(props.data) && props.data.length === 0">
-          <DataEmpty />
+        <div v-if="(Array.isArray(props.data) && props.data.length === 0) || (props.list && props.list.length === 0)">
+          <DataEmpty :message="props.emptyMessage" />
         </div>
         <div v-else>
           <slot name="data" :data="props.data"></slot>
@@ -25,9 +25,11 @@
   </div>
 </template>
 
-<script lang="ts" setup generic="T">
+<script lang="ts" setup generic="T, E">
 const props = defineProps<{
   loading: boolean,
-  data: T | null
+  data: T | null,
+  list?: E[] | null,
+  emptyMessage?: string
 }>()
 </script>
