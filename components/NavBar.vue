@@ -16,12 +16,6 @@ const iconColorMode = computed(() => {
   return colorMode.value === 'dark' ? 'i-heroicons-moon-solid' : 'i-heroicons-sun-solid'
 })
 
-const logout = () => {
-  useApiFetch('/account/logout', {
-    method: 'post'
-  }).then(() => userStore.logout())
-}
-
 const links = [
   { text: 'Inicio', path: '/', name: 'home', id: 1 },
   { text: 'Cursos', path: '/courses', name: 'course', id: 2 },
@@ -37,9 +31,10 @@ const menuItems = [
   [
     { icon: 'i-heroicons-user-solid', label: 'Ver perfil', click: () => navigateTo('/account/me') },
     { icon: 'i-heroicons-chat-bubble-left-right-solid', label: 'Mis publicaciones', click: () => navigateTo('/account/me/posts') },
+    { icon: 'i-heroicons-envelope-solid', label: 'Notificaciones', click: () => navigateTo('/account/me/notifications') },
   ],
   [
-    { icon: 'i-heroicons-arrow-right-end-on-rectangle-solid', label: 'Cerrar sesión', click: logout }
+    { icon: 'i-heroicons-arrow-right-end-on-rectangle-solid', label: 'Cerrar sesión', click: userStore.logout }
   ]
 ]
 </script>

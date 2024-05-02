@@ -67,15 +67,18 @@ const userLinks = [
 const userLoggedLinks = [{
   label: 'Perfil',
   icon: 'i-heroicons-user-solid',
-  to: '/account/me'
+  to: '/account/me',
+  exact: true
 }, {
   label: 'Mis Publicaciones',
   icon: 'i-heroicons-chat-bubble-left-right-solid',
-  to: '/account/me/posts'
+  to: '/account/me/posts',
+  exact: true
 }, {
   label: 'Notificaciones',
   icon: 'i-heroicons-envelope-solid',
-  //to: `${route.path.startsWith('/dev') ? '/dev' : ''}/components/vertical-navigation`
+  to: '/account/me/notifications',
+  exact: true
 }]
 
 const navLinks = [

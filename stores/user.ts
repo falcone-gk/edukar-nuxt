@@ -6,12 +6,19 @@ export const useUserStore = defineStore('user', () => {
   const user = ref<userInfo | null>(null)
 
   const logout = () => {
+    // logout in backend
+    useApiFetch('/account/logout', {
+      method: 'post'
+    })
+
     const token = useCookie('token', {
       sameSite: true
     })
     isLogged.value = false
     user.value = null
     token.value = null
+
+    navigateTo('/login', { replace: true })
   }
 
   const setUser = (data: userInfo | null) => {
