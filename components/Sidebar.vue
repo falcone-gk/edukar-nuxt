@@ -71,7 +71,7 @@ const userLoggedLinks = [{
 }, {
   label: 'Mis Publicaciones',
   icon: 'i-heroicons-chat-bubble-left-right-solid',
-  //to: '/getting-started/installation'
+  to: '/account/me/posts'
 }, {
   label: 'Notificaciones',
   icon: 'i-heroicons-envelope-solid',

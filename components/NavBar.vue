@@ -36,7 +36,7 @@ const links = [
 const menuItems = [
   [
     { icon: 'i-heroicons-user-solid', label: 'Ver perfil', click: () => navigateTo('/account/me') },
-    //{ icon: 'i-heroicons-envelope-solid', label: 'Notificaciones' },
+    { icon: 'i-heroicons-chat-bubble-left-right-solid', label: 'Mis publicaciones', click: () => navigateTo('/account/me/posts') },
   ],
   [
     { icon: 'i-heroicons-arrow-right-end-on-rectangle-solid', label: 'Cerrar sesión', click: logout }
