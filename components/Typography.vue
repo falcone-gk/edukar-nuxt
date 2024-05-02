@@ -1,5 +1,5 @@
 <template>
-  <component :is="props.tag" :class="{ [classes]: true }" v-bind="$attrs">
+  <component :is="computedTag" :class="{ [classes]: true }" v-bind="$attrs">
     <slot />
   </component>
 </template>
@@ -10,7 +10,7 @@ const props = defineProps({
     type: String,
     default: 'p',
     validator: (value: string) => {
-      return ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span'].includes(value)
+      return ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span', 'a'].includes(value)
     },
   },
   variant: {
@@ -27,6 +27,13 @@ const props = defineProps({
       return ['primary', 'danger', 'base'].includes(value)
     }
   }
+})
+
+const computedTag = computed(() => {
+  if (props.tag === 'a') {
+    return resolveComponent('NuxtLink')
+  }
+  return props.tag
 })
 
 const variantClasses = computed(() => {
