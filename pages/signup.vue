@@ -27,8 +27,8 @@
           <UFormGroup label="Email" name="email" required>
             <UInput v-model="state.email" type="email" placeholder="you@example.com" icon="i-heroicons-envelope" />
           </UFormGroup>
-          <UFormGroup label="Nombre(s)" name="name" required>
-            <UInput v-model="state.name" />
+          <UFormGroup label="Nombre(s)" name="first_name" required>
+            <UInput v-model="state.first_name" />
           </UFormGroup>
           <UFormGroup label="Apellido(s)" name="last_name" required>
             <UInput v-model="state.last_name" />
@@ -72,7 +72,7 @@ const fileImg = ref()
 const state = reactive<UserRegister>({
   username: '',
   email: '',
-  name: '',
+  first_name: '',
   last_name: '',
   password: '',
   re_password: '',
