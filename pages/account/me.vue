@@ -9,14 +9,17 @@
 const links = [{
   label: 'Perfil',
   icon: 'i-heroicons-user-solid',
-  to: '/account/me'
+  to: '/account/me',
+  exact: true
 }, {
   label: 'Mis Publicaciones',
   icon: 'i-heroicons-chat-bubble-left-right-solid',
-  to: '/'
+  to: '/account/me/posts',
+  exact: true
 }, {
   label: 'Notificaciones',
   icon: 'i-heroicons-envelope-solid',
-  to: '/'
+  to: '/',
+  exact: true
 }]
 </script>
