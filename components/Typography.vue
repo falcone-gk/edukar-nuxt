@@ -17,14 +17,14 @@ const props = defineProps({
     type: String,
     default: 'body',
     validator: (value: string) => {
-      return ['body', 'h1', 'h2', 'h3', 'big', 'bigger'].includes(value)
+      return ['body', 'h1', 'h2', 'h3', 'big', 'bigger', 'small', 'smaller'].includes(value)
     }
   },
   color: {
     type: String,
     default: 'primary',
     validator: (value: string) => {
-      return ['primary', 'danger', 'base'].includes(value)
+      return ['primary', 'danger', 'base', 'gray'].includes(value)
     }
   }
 })
@@ -43,7 +43,9 @@ const variantClasses = computed(() => {
     h3: 'text-2xl',
     big: 'text-xl',
     bigger: 'text-[2.50rem] md:text-[3.25rem]',
-    body: 'text-base'
+    body: 'text-base',
+    small: 'text-sm',
+    smaller: 'text-xs'
   }
   return classLookup[props.variant as keyof typeof classLookup]
 })
@@ -52,7 +54,8 @@ const colorClasses = computed(() => {
   const classLookup = {
     primary: 'text-primary-500 dark:text-primary-400',
     danger: 'text-red-500 dark:text-red-400',
-    base: 'text-base'
+    base: 'text-base',
+    gray: 'text-gray-500 dark:text-gray-400'
   }
   return classLookup[props.color as keyof typeof classLookup]
 })
