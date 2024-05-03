@@ -15,7 +15,7 @@
       </div>
       <template #footer>
         <div class="flex gap-2 justify-end">
-          <UButton color="gray" :label="props.rejectLabel" variant="outline" @click="emits('close')" />
+          <UButton color="gray" :label="props.rejectLabel" @click="emits('close')" />
           <UButton :color="colorName" :label="props.acceptLabel" :loading="loading" @click="onConfirm" />
         </div>
       </template>

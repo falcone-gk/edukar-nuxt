@@ -1,5 +1,5 @@
 <template>
-  <UModals />
+  <UModals :ui="{ container: 'items-center' }" />
   <UNotifications />
   <NuxtLayout>
     <NuxtPage />
