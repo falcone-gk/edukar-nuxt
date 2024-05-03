@@ -72,15 +72,21 @@
           </Typography>
         </template>
 
-        <div class="space-y-4">
-          <div class="flex gap-2">
-            <UFormGroup>
-              <USelect v-model="year" :options="serviceStore.years" placeholder="--Seleccionar año--" />
-            </UFormGroup>
-            <UFormGroup>
-              <USelect v-model="university" :options="serviceStore.universities"
-                placeholder="--Seleccionar universidad--" />
-            </UFormGroup>
+        <div>
+          <div class="flex flex-col-reverse md:flex-row gap-2 px-3 py-3.5">
+            <div class="flex gap-2">
+              <UFormGroup>
+                <USelect v-model="year" :options="serviceStore.years" placeholder="--Seleccionar año--" />
+              </UFormGroup>
+              <UFormGroup>
+                <USelect v-model="university" :options="serviceStore.universities"
+                  placeholder="--Seleccionar universidad--" />
+              </UFormGroup>
+            </div>
+
+            <div class="md:ml-auto">
+              <UButton label="Limpiar filtros" variant="ghost" color="gray" @click="clearFilters" />
+            </div>
           </div>
 
           <DataLoading :loading="pending" :data="data" :list="data?.results">
@@ -120,9 +126,9 @@ const serviceStore = useServiceStore()
 const year = ref<string | undefined>(route.query.year as string | undefined)
 const university = ref<string | undefined>(route.query.university as string | undefined)
 const page = ref(1)
-const pageCount = ref(8)
+const pageCount = ref(4)
 const isOpen = ref(false)
-const { data, pending } = useLazyAsyncData<ExamPagination>(
+const { data, pending, refresh } = useLazyAsyncData<ExamPagination>(
   'exams',
   () => useApiFetch<ExamPagination>('/services/exams-list/', {
     query: {
@@ -134,9 +140,24 @@ const { data, pending } = useLazyAsyncData<ExamPagination>(
   }),
   {
     server: false,
-    watch: [page, year, university]
+    watch: [page]
   }
 )
+
+watch([year, university], async () => {
+  if (page.value !== 1) {
+    // This will trigger auto refresh
+    page.value = 1
+  } else {
+    await refresh()
+  }
+})
+
+const clearFilters = async () => {
+  // Because of watch section and subsection, we don't need to call refresh
+  year.value = undefined
+  university.value = undefined
+}
 
 const customUIBtn = { rounded: 'rounded-full' }
 
