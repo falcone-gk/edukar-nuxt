@@ -98,8 +98,12 @@ const { data, pending, refresh } = useAsyncData('user-posts',
 )
 
 watch([section, subsection], async () => {
-  page.value = 1
-  await refresh()
+  if (page.value !== 1) {
+    // This will trigger auto refresh
+    page.value = 1
+  } else {
+    await refresh()
+  }
 })
 
 const q = ref()
