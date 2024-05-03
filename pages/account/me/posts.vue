@@ -7,6 +7,20 @@
       </Typography>
     </template>
 
+    <div class="flex flex-col-reverse md:flex-row gap-2 px-3 py-3.5 border-b border-gray-200 dark:border-gray-700">
+      <div class="grid flex-1 auto-cols-auto grid-cols-[repeat(auto-fill,minmax(12rem,1fr))] gap-2">
+        <UInput placeholder="Buscar..." icon="i-heroicons-magnifying-glass-solid" :value="q" @input="onInputSearch" />
+        <USelect v-model="section" label="Sección" :options="sections" placeholder="--Seleccionar sección--"
+          @change="subsection = undefined" />
+        <USelect v-model="subsection" label="Sección" :options="subsections" placeholder="--Seleccionar subsección--"
+          option-attribute="name" value-attribute="id" />
+      </div>
+
+      <div>
+        <UButton label="Limpiar filtros" variant="ghost" color="gray" @click="clearFilters" />
+      </div>
+    </div>
+
     <UTable :loading="pending" :rows="data?.results"
       :loading-state="{ icon: 'i-heroicons-arrow-path-20-solid', label: 'Cargando...' }"
       :empty-state="{ icon: 'i-heroicons-circle-stack-20-solid', label: 'No hay publicaciones' }"
@@ -30,7 +44,8 @@
       </template>
     </UTable>
 
-    <div v-if="!pending" class="flex justify-between px-3 py-3.5 border-t border-gray-200 dark:border-gray-700">
+    <div v-if="!pending && data?.count"
+      class="flex justify-between px-3 py-3.5 border-t border-gray-200 dark:border-gray-700">
       <UPagination v-model="page" :page-count="pageCount" :total="data?.count" />
     </div>
 
@@ -51,14 +66,28 @@ const columns = ref([
   { key: 'actions', label: 'Acciones' }
 ])
 
+const forumStore = useForumStore()
+const section = ref()
+const sections = await forumStore.getSectionOptions()
+const subsection = ref()
+const subsections = computed(() => {
+  if (section.value) {
+    return forumStore.getSubsectionsBySectionId(Number(section.value))
+  }
+  return []
+})
+
 const page = ref(1)
 const pageCount = ref(5)
 const { data, pending, refresh } = useAsyncData('user-posts',
   () => useApiFetch<PostPagination>('/forum/posts/', {
     query: {
-      username: userStore.user?.username,
       page: page.value,
-      size: pageCount.value
+      q: q.value,
+      size: pageCount.value,
+      username: userStore.user?.username,
+      section: section.value,
+      subsection: subsection.value
     }
   }),
   {
@@ -67,6 +96,31 @@ const { data, pending, refresh } = useAsyncData('user-posts',
     watch: [page]
   }
 )
+
+watch([section, subsection], async () => {
+  page.value = 1
+  await refresh()
+})
+
+const q = ref()
+const timeout = ref()
+const onInputSearch = (event: Event) => {
+  q.value = (event.target as HTMLInputElement).value
+  if (timeout) {
+    clearTimeout(timeout.value);
+  }
+  timeout.value = setTimeout(async function () {
+    page.value = 1
+    await refresh()
+  }, 900);
+}
+
+const clearFilters = async () => {
+  // Because of watch section and subsection, we don't need to call refresh
+  q.value = undefined
+  section.value = undefined
+  subsection.value = undefined
+}
 
 const postSelected = ref()
 const postDeletePath = computed(() => {
