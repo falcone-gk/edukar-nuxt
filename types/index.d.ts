@@ -58,3 +58,15 @@ export interface UserProfile {
     about_me: string
     picture?: string
 }
+
+export interface Notification {
+    id: number
+    sender: string
+    date: string
+    title: string
+    description: string
+    is_read: boolean
+    source_path: string
+    full_source_path: string
+    time_difference: string
+}

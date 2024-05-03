@@ -19,7 +19,7 @@ const links = [{
 }, {
   label: 'Notificaciones',
   icon: 'i-heroicons-envelope-solid',
-  to: '/',
+  to: '/account/me/notifications',
   exact: true
 }]
 </script>
