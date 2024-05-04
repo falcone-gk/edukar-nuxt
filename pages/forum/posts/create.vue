@@ -31,6 +31,10 @@ import { z } from 'zod'
 import { postSchema } from '~/schemas/forum';
 import type { Form, FormSubmitEvent } from '#ui/types'
 
+useHead({
+  title: 'Crear Publicación'
+})
+
 definePageMeta({
   middleware: ['auth'],
   breadCrumb: {
@@ -54,13 +58,13 @@ const subsections = computed(() => {
 type Schema = z.output<typeof postSchema>
 
 const body = ref<{
-  section: number | null,
-  subsection: number | null,
+  section: number | undefined,
+  subsection: number | undefined,
   title: string,
   body: string
 }>({
-  section: null,
-  subsection: null,
+  section: undefined,
+  subsection: undefined,
   title: '',
   body: ''
 })

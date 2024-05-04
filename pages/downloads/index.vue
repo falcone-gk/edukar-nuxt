@@ -118,6 +118,10 @@
 <script lang="ts" setup>
 import type { Exams } from '~/types/resultApiTypes';
 
+useHead({
+  title: 'Descargas'
+})
+
 const customUIBtn = { rounded: 'rounded-full' }
 const serviceStore = useServiceStore()
 

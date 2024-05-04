@@ -36,6 +36,10 @@ import { postSchema } from '~/schemas/forum';
 import type { Form, FormSubmitEvent } from '#ui/types'
 import type { PostData } from '@/types/forum';
 
+useHead({
+  title: 'Editar Publicación'
+})
+
 definePageMeta({
   middleware: ['auth'],
   breadCrumb: {
@@ -49,8 +53,8 @@ type Schema = z.output<typeof postSchema>
 const route = useRoute()
 const postSlug = route.params.slug
 const body = ref<{
-  section: string | null,
-  subsection: string | null,
+  section: string | undefined,
+  subsection: string | undefined,
   title: string,
   body: string
 } | null>(null)

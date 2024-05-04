@@ -56,6 +56,10 @@
 </template>
 
 <script lang="ts" setup>
+useHead({
+  title: 'Registro Exitoso'
+})
+
 definePageMeta({
   middleware: [
     // Middleare to check if user just signed up

@@ -19,7 +19,13 @@
 </template>
 
 <script lang="ts" setup>
+useHead({
+  title: 'Recuperar Contraseña'
+})
+
 const isLoading = ref(false)
+
+// TODO: Agregar funcionalidad de recuperar contraseña
 const submitLogin = () => {
   isLoading.value = true
   setTimeout(() => {

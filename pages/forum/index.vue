@@ -69,6 +69,10 @@
 <script lang="ts" setup>
 import { truncateText } from '~/utils/text';
 
+useHead({
+  title: 'Foro'
+})
+
 interface sectionData {
   id: number,
   name: string,

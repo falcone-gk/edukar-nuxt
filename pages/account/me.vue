@@ -6,6 +6,10 @@
 </template>
 
 <script lang="ts" setup>
+useHead({
+  title: 'Cuenta'
+})
+
 const links = [{
   label: 'Perfil',
   icon: 'i-heroicons-user-solid',

@@ -78,6 +78,10 @@
 <script lang="ts" setup>
 import type { Comment, PostData, Reply } from '~/types/forum';
 
+useHead({
+  title: 'Publicación'
+})
+
 definePageMeta({
   name: 'post',
   breadCrumb: {

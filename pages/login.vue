@@ -34,6 +34,10 @@ import type { userInfo } from '~/types'
 import { userLoginSchema } from '~/schemas/auth';
 import { z } from 'zod'
 
+useHead({
+  title: 'Iniciar Sesión'
+})
+
 definePageMeta({
   middleware: ['anonymous'],
 })

@@ -10,7 +10,8 @@
 useHead({
   bodyAttrs: {
     class: 'min-h-screen dark:bg-secondary'
-  }
+  },
+  titleTemplate: '%s - Edukar'
 })
 </script>
 

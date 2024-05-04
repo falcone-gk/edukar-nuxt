@@ -42,9 +42,9 @@
             </div>
           </div>
         </div>
-        <template #footer>
+        <template v-if="data" #footer>
           <div class="flex justify-center">
-            <UPagination :total="data?.count" :page-count="pageCount" v-model="page" />
+            <UPagination :total="data.count" :page-count="pageCount" v-model="page" />
           </div>
         </template>
       </UCard>
@@ -57,6 +57,10 @@ import { truncateText } from '~/utils/text';
 import type { Section, Subsection } from '~/types/forum';
 import type { Post } from '~/types/resultApiTypes';
 
+useHead({
+  title: 'Secciones'
+})
+
 type PostPagination = PaginationData<Post>
 
 const subsection = useState('subsection', () => 0)
@@ -68,7 +72,7 @@ const route = useRoute()
 const forumStore = useForumStore()
 const sectionSlug = route.params.section
 
-const { data, pending } = await useLazyAsyncData<PostPagination>(
+const { data, pending } = useLazyAsyncData<PostPagination>(
   'post',
   () => useApiFetch<PostPagination>(`/forum/sections/${sectionSlug}/`, {
     query: {
@@ -77,7 +81,10 @@ const { data, pending } = await useLazyAsyncData<PostPagination>(
       size: pageCount.value
     }
   }),
-  { watch: [page, subsection] }
+  {
+    server: false,
+    watch: [page, subsection]
+  }
 )
 
 const { data: sectionList, status: statusList, execute: getSections } = await useLazyAsyncData<Section[]>(

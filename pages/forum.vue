@@ -17,5 +17,5 @@ definePageMeta({
   middleware: ['navigation']
 })
 
-const links = useState('navigation')
+const links = useState('navigation', () => [])
 </script>

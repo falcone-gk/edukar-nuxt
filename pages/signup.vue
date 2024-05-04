@@ -59,6 +59,10 @@ import type { Form, FormSubmitEvent } from '#ui/types'
 import { userRegisterSchema } from '~/schemas/auth';
 import { z } from 'zod'
 
+useHead({
+  title: 'Regristrar'
+})
+
 definePageMeta({
   middleware: ['anonymous']
 })

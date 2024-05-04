@@ -36,6 +36,10 @@
 <script lang="ts" setup>
 import type { Courses } from '~/types/resultApiTypes';
 
+useHead({
+  title: 'Cursos'
+})
+
 type CoursePagination = PaginationData<Courses>
 
 const page = ref(1)
