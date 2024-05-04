@@ -128,24 +128,10 @@ const filters = reactive({
   year: route.query.year as string | undefined,
   univ: route.query.university as string | undefined
 })
-const { page, clearFilters, setRefresh } = usePaginationFilter({ filters: filters })
-const pageCount = ref(4)
-const { data, pending, refresh } = useLazyAsyncData(
-  'exams',
-  () => useApiFetch<ExamPagination>('/services/exams-list/', {
-    query: {
-      page: page.value,
-      size: pageCount.value,
-      year: filters.year,
-      univ: filters.univ
-    }
-  }),
-  {
-    server: false,
-    watch: [page]
-  }
+const pageCount = ref(8)
+const { data, pending, page, clearFilters } = usePaginationFilter<ExamPagination>(
+  { key: 'exams', size: pageCount.value, filters: filters, url: '/services/exams-list/' }
 )
-setRefresh(refresh)
 
 
 const isOpen = ref(false)

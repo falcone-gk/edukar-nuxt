@@ -9,11 +9,12 @@
 
     <div class="flex flex-col-reverse md:flex-row gap-2 px-3 py-3.5 border-b border-gray-200 dark:border-gray-700">
       <div class="grid flex-1 auto-cols-auto grid-cols-[repeat(auto-fill,minmax(12rem,1fr))] gap-2">
-        <UInput placeholder="Buscar..." icon="i-heroicons-magnifying-glass-solid" :value="q" @input="onInputSearch" />
-        <USelect v-model="section" label="Sección" :options="sections" placeholder="--Seleccionar sección--"
-          @change="subsection = undefined" />
-        <USelect v-model="subsection" label="Sección" :options="subsections" placeholder="--Seleccionar subsección--"
-          option-attribute="name" value-attribute="id" />
+        <UInput placeholder="Buscar..." icon="i-heroicons-magnifying-glass-solid" :value="filters.q"
+          @input="onInputSearch" />
+        <USelect v-model="filters.section" label="Sección" :options="sections" placeholder="--Seleccionar sección--"
+          @change="filters.subsection = undefined" />
+        <USelect v-model="filters.subsection" label="Sección" :options="subsections"
+          placeholder="--Seleccionar subsección--" option-attribute="name" value-attribute="id" />
       </div>
 
       <div>
@@ -57,7 +58,6 @@ import type { PostData } from '~/types/forum';
 
 type PostPagination = PaginationData<PostData>
 
-const userStore = useUserStore()
 const columns = ref([
   { key: 'title', label: 'Título' },
   { key: 'section.name', label: 'Sección' },
@@ -66,65 +66,36 @@ const columns = ref([
   { key: 'actions', label: 'Acciones' }
 ])
 
+
+const userStore = useUserStore()
 const forumStore = useForumStore()
-const section = ref()
+const filters = reactive({
+  q: '',
+  section: undefined,
+  subsection: undefined,
+  username: userStore.user?.username
+})
 const sections = await forumStore.getSectionOptions()
-const subsection = ref()
 const subsections = computed(() => {
-  if (section.value) {
-    return forumStore.getSubsectionsBySectionId(Number(section.value))
+  if (filters.section) {
+    return forumStore.getSubsectionsBySectionId(Number(filters.section))
   }
   return []
 })
-
-const page = ref(1)
 const pageCount = ref(5)
-const { data, pending, refresh } = useAsyncData('user-posts',
-  () => useApiFetch<PostPagination>('/forum/posts/', {
-    query: {
-      page: page.value,
-      q: q.value,
-      size: pageCount.value,
-      username: userStore.user?.username,
-      section: section.value,
-      subsection: subsection.value
-    }
-  }),
-  {
-    lazy: true,
-    server: false,
-    watch: [page]
-  }
+const { data, pending, page, clearFilters, refresh } = usePaginationFilter<PostPagination>(
+  { key: 'user-posts', size: pageCount.value, filters: filters, url: '/forum/posts/' }
 )
-
-watch([section, subsection], async () => {
-  if (page.value !== 1) {
-    // This will trigger auto refresh
-    page.value = 1
-  } else {
-    await refresh()
-  }
-})
-
-const q = ref()
 const timeout = ref()
 const onInputSearch = (event: Event) => {
-  q.value = (event.target as HTMLInputElement).value
   if (timeout) {
     clearTimeout(timeout.value);
   }
   timeout.value = setTimeout(async function () {
-    page.value = 1
-    await refresh()
+    filters.q = (event.target as HTMLInputElement).value
   }, 900);
 }
 
-const clearFilters = async () => {
-  // Because of watch section and subsection, we don't need to call refresh
-  q.value = undefined
-  section.value = undefined
-  subsection.value = undefined
-}
 
 const postSelected = ref()
 const postDeletePath = computed(() => {
