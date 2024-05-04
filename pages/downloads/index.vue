@@ -76,10 +76,10 @@
           <div class="flex flex-col-reverse md:flex-row gap-2 px-3 py-3.5">
             <div class="flex gap-2">
               <UFormGroup>
-                <USelect v-model="year" :options="serviceStore.years" placeholder="--Seleccionar año--" />
+                <USelect v-model="filters.year" :options="serviceStore.years" placeholder="--Seleccionar año--" />
               </UFormGroup>
               <UFormGroup>
-                <USelect v-model="university" :options="serviceStore.universities"
+                <USelect v-model="filters.univ" :options="serviceStore.universities"
                   placeholder="--Seleccionar universidad--" />
               </UFormGroup>
             </div>
@@ -118,24 +118,26 @@
 <script lang="ts" setup>
 import type { Exams } from '~/types/resultApiTypes';
 
-type ExamPagination = PaginationData<Exams>
-
-const route = useRoute()
-
+const customUIBtn = { rounded: 'rounded-full' }
 const serviceStore = useServiceStore()
-const year = ref<string | undefined>(route.query.year as string | undefined)
-const university = ref<string | undefined>(route.query.university as string | undefined)
-const page = ref(1)
+
+
+type ExamPagination = PaginationData<Exams>
+const route = useRoute()
+const filters = reactive({
+  year: route.query.year as string | undefined,
+  univ: route.query.university as string | undefined
+})
+const { page, clearFilters, setRefresh } = usePaginationFilter({ filters: filters })
 const pageCount = ref(4)
-const isOpen = ref(false)
-const { data, pending, refresh } = useLazyAsyncData<ExamPagination>(
+const { data, pending, refresh } = useLazyAsyncData(
   'exams',
   () => useApiFetch<ExamPagination>('/services/exams-list/', {
     query: {
       page: page.value,
       size: pageCount.value,
-      year: year.value,
-      univ: university.value
+      year: filters.year,
+      univ: filters.univ
     }
   }),
   {
@@ -143,24 +145,10 @@ const { data, pending, refresh } = useLazyAsyncData<ExamPagination>(
     watch: [page]
   }
 )
+setRefresh(refresh)
 
-watch([year, university], async () => {
-  if (page.value !== 1) {
-    // This will trigger auto refresh
-    page.value = 1
-  } else {
-    await refresh()
-  }
-})
 
-const clearFilters = async () => {
-  // Because of watch section and subsection, we don't need to call refresh
-  year.value = undefined
-  university.value = undefined
-}
-
-const customUIBtn = { rounded: 'rounded-full' }
-
+const isOpen = ref(false)
 const examSelectData = ref<Exams | undefined>(undefined)
 const showSelectedExam = (examData: Exams) => {
   examSelectData.value = examData
