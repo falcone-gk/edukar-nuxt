@@ -20,7 +20,7 @@
       </UForm>
 
       <template #footer>
-        <p>¿Se ha olvidado su contraseña? <ULink to="/account/send-reset-password" class="text-primary underline">
+        <p>¿Se ha olvidado su contraseña? <ULink to="/account/reset-password" class="text-primary underline">
             Recuperar contraseña</ULink>
         </p>
       </template>
