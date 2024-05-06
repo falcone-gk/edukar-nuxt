@@ -18,23 +18,21 @@
     </div>
 
   </UCard>
-
 </template>
 
 <script lang="ts" setup>
 
 const route = useRoute()
 
-const { pending, error } = await useAsyncData('account-activation',
+const { pending, error } = await useLazyAsyncData('account-activation',
   () => useApiFetch('/account/users/activation/', {
     method: 'post',
     body: {
       uid: route.params.uid,
       token: route.params.token
     }
-  }), {
-  server: false,
-})
+  })
+)
 
 const title = computed(() => {
   return error.value ? 'Error en activación de cuenta' : 'Activación de cuenta satisfactoria'

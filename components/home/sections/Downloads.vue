@@ -17,13 +17,12 @@ import type { Exams } from '~/types/resultApiTypes'
 
 type ExamPagination = PaginationData<Exams>
 
-const { data: exams } = useLazyAsyncData(
+const { data: exams } = await useLazyAsyncData(
   'exams-home-page', () => useApiFetch<ExamPagination>('/services/exams-list', {
     query: {
       size: 4
     }
   }), {
-  server: false,
   transform: (data: ExamPagination) => {
     const _exams = data.results
     return _exams

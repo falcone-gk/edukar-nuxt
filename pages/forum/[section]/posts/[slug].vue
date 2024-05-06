@@ -10,8 +10,7 @@
         <template #header>
           <div class="flex items-center justify-between">
             <h3 class="text-primary">{{ commentModal.title }}</h3>
-            <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="-my-1"
-              @click="closeModal" />
+            <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="-my-1" @click="closeModal" />
           </div>
         </template>
 
@@ -118,7 +117,7 @@ const postSlug = route.params.slug
 
 const { data: post, pending, refresh } = await useLazyAsyncData<PostData>(
   'postData',
-  () => useApiFetch<PostData>(`/forum/posts/${postSlug}`),
+  () => useApiFetch<PostData>(`/forum/posts/${postSlug}`)
 )
 
 interface ModalOptions {

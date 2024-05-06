@@ -3,7 +3,7 @@
     <UCard class="w-full">
       <div class="text-center">
         <Typography tag="h1" variant="h1" color="primary">
-          Nuevo Post
+          Editar Post
         </Typography>
       </div>
       <div v-if="!body">
@@ -23,7 +23,7 @@
           </UFormGroup>
           <TipTap v-if="body.body !== ''" v-model="body.body" :value="body.body" :errors="form?.getErrors('body')"
             module="forum" />
-          <UButton type="submit" :loading="loading" block>Publicar Post</UButton>
+          <UButton type="submit" :loading="status === 'pending'" block>Publicar Post</UButton>
         </UForm>
       </div>
     </UCard>
@@ -59,7 +59,6 @@ const body = ref<{
   body: string
 } | null>(null)
 
-const loading = ref(false)
 const { showNotification } = useNotification()
 const form = ref<Form<any>>()
 
@@ -73,10 +72,10 @@ const subsections = computed(() => {
   return []
 })
 
-const { data, pending } = await useAsyncData(
+const { status } = await useLazyAsyncData(
   'post-retrieve',
   () => useApiFetch<PostData>(`/forum/posts/${postSlug}`, {
-    onResponse({ request, response }) {
+    onResponse({ response }) {
       if (response.status === 200) {
         const data = response._data as PostData
         body.value = {
@@ -86,9 +85,8 @@ const { data, pending } = await useAsyncData(
           body: data.body
         }
       }
-    },
-  }),
-  { lazy: true, server: false }
+    }
+  })
 )
 
 const { data: newPost, status: statusUpdate, error: postError, execute } = await useAsyncData(
@@ -97,8 +95,6 @@ const { data: newPost, status: statusUpdate, error: postError, execute } = await
     method: 'put',
     body: body.value,
   }), {
-  lazy: true,
-  server: false,
   immediate: false,
 })
 
@@ -110,13 +106,10 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
     return
   }
 
-  loading.value = true
   await execute()
   if (statusUpdate.value === 'success') {
-    loading.value = false
     navigateTo(`/forum/${newPost.value.section.slug}/posts/${newPost.value.slug}`)
   } else {
-    loading.value = false
     showNotification({ type: 'error', message: postError.value?.message })
   }
 }

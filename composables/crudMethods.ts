@@ -6,50 +6,46 @@ export const useCrudMethods = () => {
   const pathWithId = computed(() => `${_urlCrud.value}${_idField.value}/`)
   const body = reactive<{ [key: string]: string | number }>({})
 
-  const setup = <T>(information: { baseKey: string, idField?: string | number, urlCrud: string }) => {
+  const setup = (information: { baseKey: string, idField?: string | number, urlCrud: string }) => {
     const { baseKey, idField, urlCrud } = information
     _baseKey.value = baseKey
     _idField.value = idField
     _urlCrud.value = urlCrud
   }
 
-  const { data: retrieveData, status: retrieveStatus, execute: retrieveExecute } = useLazyAsyncData(
+  const { data: retrieveData, status: retrieveStatus, execute: retrieveExecute } = useAsyncData(
     _baseKey.value,
     () => useApiFetch(_urlCrud.value, {
       method: 'get'
     }), {
     immediate: false,
-  }
-  )
+  })
 
-  const { data: postData, status: postStatus, execute: postExecute } = useLazyAsyncData(
+  const { data: postData, status: postStatus, execute: postExecute } = useAsyncData(
     `${_baseKey.value}-post`,
     () => useApiFetch(_urlCrud.value, {
       method: 'post',
       body: body
     }), {
     immediate: false
-  }
-  )
+  })
 
-  const { data: putData, status: putStatus, execute: putExecute } = useLazyAsyncData(
+  const { data: putData, status: putStatus, execute: putExecute } = useAsyncData(
     `${_baseKey.value}-put`,
     () => useApiFetch(pathWithId.value, {
       method: 'put',
       body: body
     }), {
     immediate: false
-  }
-  )
+  })
 
-  const { data: deleteData, status: deleteStatus, execute: deleteExecute } = useLazyAsyncData(
+  const { data: deleteData, status: deleteStatus, execute: deleteExecute } = useAsyncData(
     `${_baseKey.value}-delete`,
     () => useApiFetch(pathWithId.value, {
       method: 'delete'
     }), {
     immediate: false
-  }
-  )
+  })
 
   const getData = async () => {
     await retrieveExecute()

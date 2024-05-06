@@ -5,10 +5,10 @@ export const useServiceStore = defineStore('serviceStore', () => {
   const universities = ref<UniversityOption[]>([])
   const years = ref<YearsOption[]>([])
 
-  const { data: filters, status: statusFilters, execute: getFilters } = useLazyAsyncData(
+  const { data: filters, execute: getFilters } = useAsyncData(
     'exams-filter',
     () => useApiFetch<ExamsFilter>('/services/exams-filters'), {
-    immediate: false, server: false,
+    immediate: false,
     transform: (data: ExamsFilter) => {
       return {
         universities: data.universities.map(el => ({ label: el.university, value: el.siglas })),

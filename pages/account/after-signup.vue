@@ -1,5 +1,4 @@
 <template>
-
   <UModal prevent-close v-model="isOpen">
     <UCard>
       <template #header>
@@ -52,7 +51,6 @@
     </div>
 
   </UCard>
-
 </template>
 
 <script lang="ts" setup>
@@ -88,8 +86,6 @@ const { status, execute } = useAsyncData('resend-email',
       email: signupEmail.value
     }
   }), {
-  lazy: true,
-  server: false,
   immediate: false
 })
 

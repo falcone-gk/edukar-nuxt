@@ -89,8 +89,6 @@ const { error, status, execute } = useAsyncData('signup',
     body: registerData.value
   }),
   {
-    lazy: true,
-    server: false,
     immediate: false,
   }
 )

@@ -57,14 +57,6 @@ const validate = (state: any): FormError[] => {
   return errors
 }
 
-/* const { data, status, error, execute } = await useLazyFetch<userInfo>('/api/auth/login', {
-  method: 'post',
-  body: state,
-  server: false,
-  immediate: false,
-  watch: false
-}) */
-
 const { data, status, error, execute } = await useAsyncData(
   'user',
   () => useApiFetch<userInfo>('/account/login', {
@@ -72,8 +64,6 @@ const { data, status, error, execute } = await useAsyncData(
     body: state
   }),
   {
-    server: false,
-    lazy: true,
     immediate: false
   }
 )

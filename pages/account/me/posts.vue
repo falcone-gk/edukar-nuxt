@@ -102,7 +102,7 @@ const postDeletePath = computed(() => {
   return `/forum/posts/${postSelected.value}`
 })
 
-const { execute: deletePost } = useLazyAsyncData(
+const { execute: deletePost } = useAsyncData(
   'post-delete',
   () => useApiFetch(postDeletePath.value, {
     method: 'delete'

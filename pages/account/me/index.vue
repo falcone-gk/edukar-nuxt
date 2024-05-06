@@ -8,9 +8,6 @@
     </template>
 
     <DataLoading :loading="pending" :data="data">
-      <template #loading>
-        cargando...
-      </template>
       <template #data="{ data: profile }">
         <div class="flex flex-col gap-4">
           <div class="text-center">
@@ -101,7 +98,7 @@ const state = reactive<UserProfile>({
 })
 const formData = ref(new FormData())
 
-const { data, pending, refresh } = useAsyncData(
+const { data, pending, refresh } = await useLazyAsyncData(
   'profile',
   () => useApiFetch<UserProfile>('/account/users/me/', {
     onResponse({ response }) {
@@ -114,10 +111,8 @@ const { data, pending, refresh } = useAsyncData(
         state.email = data.email
       }
     }
-  }), {
-  server: false,
-  lazy: true
-})
+  })
+)
 
 const { error, status: statusUpdate, execute: update } = useAsyncData(
   'user-update',

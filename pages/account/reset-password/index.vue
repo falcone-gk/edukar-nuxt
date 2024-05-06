@@ -40,9 +40,9 @@ type Schema = z.output<typeof schema>
 const state = reactive({
   email: ''
 })
-const { data, error, status, execute } = await useAsyncData(
+const { error, status, execute } = useAsyncData(
   'reset-password',
-  async () => await useApiFetch('account/users/reset_password/', {
+  () => useApiFetch('account/users/reset_password/', {
     method: 'post',
     body: {
       email: state.email

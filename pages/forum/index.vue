@@ -34,8 +34,7 @@
                 </ULink>
               </Typography>
             </template>
-            <div
-              class="flex items-center justify-between px-4 sm:px-6 border-b last:border-b-0 dark:border-gray-700 py-4"
+            <div class="flex items-center justify-between px-4 sm:px-6 border-b last:border-b-0 dark:border-gray-700 py-4"
               v-for="subsection in section.subsections" :key="'subsection-' + subsection.id">
               <div>
                 <ULink @click="subsectionSelected = subsection.id" :to="`/forum/${section.slug}`"
@@ -54,7 +53,7 @@
                 </div>
                 <div class="text-xs">
                   <p><span class="text-primary">{{ subsection.last_post.author }}</span>, {{ subsection.last_post.date
-                    }}
+                  }}
                   </p>
                 </div>
               </div>
@@ -94,9 +93,6 @@ const subsectionSelected = useState('subsection')
 
 const { data: sections, pending } = await useLazyAsyncData<sectionData[]>(
   'forum',
-  () => useApiFetch<sectionData[]>('/forum/home-forum'),
-  {
-    server: false
-  }
+  () => useApiFetch<sectionData[]>('/forum/home-forum')
 )
 </script>

@@ -19,7 +19,7 @@
             <UInput v-model="body.title" label="Título" />
           </UFormGroup>
           <TipTap v-model="body.body" :errors="form?.getErrors('body')" module="forum" />
-          <UButton type="submit" :loading="loading" block>Publicar Post</UButton>
+          <UButton type="submit" :loading="status === 'pending'" block>Publicar Post</UButton>
         </UForm>
       </div>
     </UCard>
@@ -43,7 +43,6 @@ definePageMeta({
   }
 })
 
-const loading = ref(false)
 const { showNotification } = useNotification()
 const form = ref<Form<any>>()
 const forumStore = useForumStore()
@@ -69,14 +68,12 @@ const body = ref<{
   body: ''
 })
 
-const { data, error, pending, status, execute } = await useAsyncData(
+const { data, error, status, execute } = useAsyncData(
   'post-create',
   () => useApiFetch('/forum/posts/', {
     method: 'post',
     body: body.value
   }), {
-  lazy: true,
-  server: false,
   immediate: false,
 })
 
@@ -88,13 +85,10 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
     return
   }
 
-  loading.value = true
   await execute()
   if (status.value === 'success') {
-    loading.value = false
     navigateTo(`/forum/${data.value.section.slug}/posts/${data.value.slug}`)
   } else {
-    loading.value = false
     if (error.value?.statusCode === 429) {
       showNotification({
         type: 'error',
@@ -104,7 +98,6 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
     showNotification({ type: 'error' })
   }
 }
-
 </script>
 
 <style></style>

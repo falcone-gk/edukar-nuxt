@@ -4,10 +4,9 @@ import type { Section, Subsection } from '~/types/forum'
 export const useForumStore = defineStore('forumStore', () => {
   const sections = ref<Section[] | null>(null)
 
-  const { data: sectionList, status: statusSection, execute: getSections } = useLazyAsyncData<Section[]>(
+  const { data: sectionList, status: statusSection, execute: getSections } = useAsyncData<Section[]>(
     'sections-list',
     () => useApiFetch<Section[]>('/forum/section-list'), {
-    server: false,
     immediate: false
   })
 

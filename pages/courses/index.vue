@@ -54,7 +54,6 @@ const { data, pending } = await useLazyAsyncData<CoursePagination>(
     }
   }),
   {
-    server: false,
     watch: [page,]
   }
 )
