@@ -9,7 +9,8 @@
 
     <div class="flex justify-between px-3 py-3.5 border-b border-gray-200 dark:border-gray-700">
       <div>
-        <USelect v-model="filters.is_read" label="Sección" :options="isReadOptions" placeholder="--Seleccionar sección--" />
+        <USelect v-model="filters.is_read" label="Sección" :options="isReadOptions"
+          placeholder="--Seleccionar sección--" />
       </div>
       <div>
         <UButton label="Limpiar filtros" variant="ghost" color="gray" @click=clearFilters />
@@ -27,8 +28,7 @@
 
       <template #actions-data="{ row }">
         <UButton v-if="row.source_path !== ''" color="gray" label="Ver" variant="ghost"
-          icon="i-heroicons-arrow-top-right-on-square-solid" size="xs" :to="row.source_path"
-          @click="onView(row.id)" />
+          icon="i-heroicons-arrow-top-right-on-square-solid" size="xs" :to="row.source_path" @click="onView(row.id)" />
       </template>
     </UTable>
 

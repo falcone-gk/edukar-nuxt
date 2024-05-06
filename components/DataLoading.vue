@@ -2,7 +2,9 @@
   <div>
     <!--Loading Components section-->
     <div v-if="props.loading">
-      <slot name="loading" />
+      <slot name="loading">
+        <DataLoadingTransition :message="props.loadingMessage" />
+      </slot>
     </div>
 
     <div v-else>
@@ -31,5 +33,6 @@ const props = defineProps<{
   data: T | null,
   list?: E[] | null,
   emptyMessage?: string
+  loadingMessage?: string
 }>()
 </script>
