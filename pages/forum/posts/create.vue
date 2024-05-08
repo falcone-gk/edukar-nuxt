@@ -18,7 +18,8 @@
           <UFormGroup id="title" label="Título:" name="title" required>
             <UInput v-model="body.title" label="Título" />
           </UFormGroup>
-          <TipTap v-model="body.body" :errors="form?.getErrors('body')" module="forum" />
+          <!-- <TipTap v-model="body.body" :errors="form?.getErrors('body')" module="forum" /> -->
+          <PostEditor v-model:text="body.body" v-model:image="body.image" :errors="form?.getErrors('body')" />
           <UButton type="submit" :loading="status === 'pending'" block>Publicar Post</UButton>
         </UForm>
       </div>
@@ -60,19 +61,22 @@ const body = ref<{
   section: number | undefined,
   subsection: number | undefined,
   title: string,
-  body: string
+  body: string,
+  image: File | undefined
 }>({
   section: undefined,
   subsection: undefined,
   title: '',
-  body: ''
+  body: '',
+  image: undefined
 })
 
+const postFormData = ref(new FormData())
 const { data, error, status, execute } = useAsyncData(
   'post-create',
   () => useApiFetch('/forum/posts/', {
     method: 'post',
-    body: body.value
+    body: postFormData.value
   }), {
   immediate: false,
 })
@@ -84,6 +88,15 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
   if (!errors || errors.length > 0) {
     return
   }
+
+  // make sure form is empty before population
+  postFormData.value = new FormData()
+
+  Object.keys(event.data).forEach(key => {
+    const value = event.data[key as keyof typeof event.data]
+    if (value !== undefined)
+      postFormData.value.append(key, value)
+  })
 
   await execute()
   if (status.value === 'success') {

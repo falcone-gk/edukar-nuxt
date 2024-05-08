@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="border border-gray-300 dark:border-gray-700 rounded-md">
+    <div class="border border-gray-300 dark:border-gray-700 rounded-b-md">
       <div v-if="editor">
         <div class="flex items-center gap-1 h-8 px-2 border-b border-b-gray-300 dark:border-gray-700">
           <UButton icon="i-heroicons-bold-solid" :variant="editor.isActive('bold') ? 'outline' : 'link'"
@@ -27,24 +27,24 @@
         </div>
       </div>
     </div>
-    <p v-if="errors && errors.length > 0" class="mt-2 text-red-500 dark:text-red-400 text-sm">
-      {{ errors[0].message }}
-    </p>
+    <!-- <p v-if="errors && errors.length > 0" class="mt-2 text-red-500 dark:text-red-400 text-sm"> -->
+    <!--   {{ errors[0].message }} -->
+    <!-- </p> -->
   </div>
 </template>
 
 <script setup lang="ts">
 import { Image as ImageTipTap } from '@tiptap/extension-image'
-import type { FormError } from '#ui/types'
+// import type { FormError } from '#ui/types'
 
 const props = defineProps({
-  errors: {
-    type: Array<FormError>
-  },
-  module: {
-    type: String,
-    required: true
-  }
+  // errors: {
+  //   type: Array<FormError>
+  // },
+  // module: {
+  //   type: String,
+  //   required: true
+  // }
 })
 //const emits = defineEmits(['update:modelValue'])
 const model = defineModel({ required: true })
@@ -92,7 +92,7 @@ function getBase64(file: File) {
 function uploadImage(file: File) {
   const formData = new FormData()
   formData.append('image', file)
-  formData.append('module', props.module)
+  // formData.append('module', props.module)
 
   return useApiFetch('account/image/upload', {
     method: 'post',
@@ -107,62 +107,62 @@ ImageTipTap.configure({
 
 const editor = useEditor({
   content: model.value as string,
-  extensions: [TiptapStarterKit, ImageTipTap],
+  extensions: [TiptapStarterKit],
   editorProps: {
     attributes: {
       class: 'outline-none rounded-b-md px-2 py-2 h-[400px] overflow-y-auto',
     },
-    handleDrop: function (view, event, slice, moved) {
-      if (!moved && event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0]) { // if dropping external files
-        let file = event.dataTransfer.files[0]; // the dropped file
-        let filesize = toFixedNumber((file.size / 1024) / 1024, 4); // get the filesize in MB
-        if ((file.type === "image/jpeg" || file.type === "image/png") && filesize < 10) { // check valid image type under 10MB
-
-          let _URL = window.URL || window.webkitURL;
-          let img = new Image(); /* global Image */
-          img.src = _URL.createObjectURL(file);
-          img.onload = function () {
-            uploadImage(file).then((response) => {
-              // place the now uploaded image in the editor where it was dropped
-              const imgSrc = useImgFullPath(response.image)
-              const { schema } = view.state;
-              const coordinates = view.posAtCoords({ left: event.clientX, top: event.clientY });
-              const node = schema.nodes.image.create({ src: imgSrc }); // creates the image element
-              const transaction = view.state.tr.insert(coordinates!.pos, node); // places it in the correct position
-              return view.dispatch(transaction);
-            }).catch((error) => {
-              if (error) {
-                window.alert(error);
-              }
-            })
-          }
-          /* getBase64(file).then((base64url) => {
-            const { schema } = view.state;
-            const coordinates = view.posAtCoords({ left: event.clientX, top: event.clientY });
-
-            const img = new Image()
-            img.src = base64url
-            img.onload = (event) => {
-              const canvas = document.createElement('canvas'); //create a canvas
-              const [newWidth, newHeight] = calculateSize(img);
-              canvas.width = newWidth;
-              canvas.height = newHeight;
-              const ctx = canvas.getContext("2d");
-              ctx?.drawImage(img, 0, 0, newWidth, newHeight);
-              const srcEncoded = canvas.toDataURL(options.contentType, options.quality)
-
-              const node = schema.nodes.image.create({ src: srcEncoded }); // creates the image element
-              const transaction = view.state.tr.insert(coordinates!.pos, node); // places it in the correct position
-              view.dispatch(transaction);
-            }
-          }) */
-        } else {
-          window.alert("Las imágenes deben ser 'jpg' o 'png'");
-        }
-        return true; // handled
-      }
-      return false; // not handled use default behaviour
-    }
+    // handleDrop: function (view, event, slice, moved) {
+    //   if (!moved && event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0]) { // if dropping external files
+    //     let file = event.dataTransfer.files[0]; // the dropped file
+    //     let filesize = toFixedNumber((file.size / 1024) / 1024, 4); // get the filesize in MB
+    //     if ((file.type === "image/jpeg" || file.type === "image/png") && filesize < 10) { // check valid image type under 10MB
+    //
+    //       let _URL = window.URL || window.webkitURL;
+    //       let img = new Image(); /* global Image */
+    //       img.src = _URL.createObjectURL(file);
+    //       img.onload = function () {
+    //         uploadImage(file).then((response) => {
+    //           // place the now uploaded image in the editor where it was dropped
+    //           const imgSrc = useImgFullPath(response.image)
+    //           const { schema } = view.state;
+    //           const coordinates = view.posAtCoords({ left: event.clientX, top: event.clientY });
+    //           const node = schema.nodes.image.create({ src: imgSrc }); // creates the image element
+    //           const transaction = view.state.tr.insert(coordinates!.pos, node); // places it in the correct position
+    //           return view.dispatch(transaction);
+    //         }).catch((error) => {
+    //           if (error) {
+    //             window.alert(error);
+    //           }
+    //         })
+    //       }
+    //       /* getBase64(file).then((base64url) => {
+    //         const { schema } = view.state;
+    //         const coordinates = view.posAtCoords({ left: event.clientX, top: event.clientY });
+    //
+    //         const img = new Image()
+    //         img.src = base64url
+    //         img.onload = (event) => {
+    //           const canvas = document.createElement('canvas'); //create a canvas
+    //           const [newWidth, newHeight] = calculateSize(img);
+    //           canvas.width = newWidth;
+    //           canvas.height = newHeight;
+    //           const ctx = canvas.getContext("2d");
+    //           ctx?.drawImage(img, 0, 0, newWidth, newHeight);
+    //           const srcEncoded = canvas.toDataURL(options.contentType, options.quality)
+    //
+    //           const node = schema.nodes.image.create({ src: srcEncoded }); // creates the image element
+    //           const transaction = view.state.tr.insert(coordinates!.pos, node); // places it in the correct position
+    //           view.dispatch(transaction);
+    //         }
+    //       }) */
+    //     } else {
+    //       window.alert("Las imágenes deben ser 'jpg' o 'png'");
+    //     }
+    //     return true; // handled
+    //   }
+    //   return false; // not handled use default behaviour
+    // }
   },
   onUpdate: (props) => {
     //emits('update:modelValue', props.editor.getHTML())
