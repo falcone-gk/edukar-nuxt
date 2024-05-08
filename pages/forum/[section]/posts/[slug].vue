@@ -34,7 +34,7 @@
               @on-update="navigateTo(`/forum/posts/${post.slug}/edit`)"
               @on-delete="deleteRequest({ key: 'post', url: '/forum/posts/', id: post.slug })" type="post"
               :title="post.title" :date="post.date" :username="post.author.username" :picture="post.author.picture"
-              :body="post.body" />
+              :body="post.body" :src-image="post.image" />
           </template>
         </DataLoading>
 
@@ -56,13 +56,13 @@
                   @on-update="openModal({ method: 'update', url: '/forum/comments/', content: comment.body, key: 'comment', id: comment.id })"
                   @on-delete="deleteRequest({ key: 'comment', url: '/forum/comments/', id: comment.id })" type="comment"
                   :date="comment.date" :username="comment.author.username" :picture="comment.author.picture"
-                  :body="comment.body">
+                  :body="comment.body" :src-image="comment.image">
                   <template v-if="comment.replies.length > 0" #replies>
                     <PostContent v-for="reply in comment.replies"
                       @on-update="openModal({ method: 'update', url: '/forum/replies/', content: reply.body, key: 'reply', id: reply.id })"
                       @on-delete="deleteRequest({ key: 'reply', url: '/forum/replies/', id: reply.id })" type="reply"
                       :date="reply.date" :username="reply.author.username" :picture="reply.author.picture"
-                      :body="reply.body" />
+                      :body="reply.body" :src-image="comment.image" />
                   </template>
                 </PostContent>
               </div>
@@ -115,7 +115,7 @@ const commentModal = reactive<CommentPost>({
 const route = useRoute()
 const postSlug = route.params.slug
 
-const { data: post, pending, refresh } = await useLazyAsyncData<PostData>(
+const { data: post, pending, refresh } = await useLazyAsyncData(
   'postData',
   () => useApiFetch<PostData>(`/forum/posts/${postSlug}`)
 )

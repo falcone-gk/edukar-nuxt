@@ -20,6 +20,7 @@ export interface PostData {
     body: string
     title: string
     slug: string
+    image: string | null
 }
 
 export interface Author {
@@ -33,6 +34,7 @@ export interface Comment {
     date: string
     replies: Reply[]
     body: string
+    image: string | null
 }
 
 export interface Reply {
@@ -40,4 +42,5 @@ export interface Reply {
     author: Author
     date: string
     body: string
+    image: string | null
 }

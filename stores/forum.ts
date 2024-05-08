@@ -31,7 +31,8 @@ export const useForumStore = defineStore('forumStore', () => {
     return section?.subsections
   }
 
-  const getSubsectionsBySectionId = (id: number): Subsection[] | undefined => {
+  const getSubsectionsBySectionId = (id: number | undefined): Subsection[] => {
+    if (id === undefined) return []
     const section = sections.value?.find(el => el.id === id)
     if (!section) {
       return []

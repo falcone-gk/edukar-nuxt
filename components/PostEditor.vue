@@ -13,7 +13,7 @@
 
       <template #image>
         <div class="border border-gray-300 dark:border-gray-700 rounded-b-md">
-          <div class="flex items-center justify-center w-full p-4">
+          <div class="flex flex-col gap-4 items-center justify-center w-full p-4">
             <div v-if="image">
               <UChip size="md" inset :ui="{ base: '-mx-2 rounded-none ring-0', background: '' }">
                 <img :src="image" alt="Uploaded Image"
@@ -41,6 +41,13 @@
               </div>
               <input id="dropzone-file" type="file" class="hidden" @change="handleFileUpload" />
             </label>
+            <p v-if="props.currentImageUrl" class="text-sm">Actualmente: <ULink :to="props.currentImageUrl"
+                class="underline" active-class="text-primary"
+                inactive-class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+                target="_blank">
+                {{ props.currentImageUrl.split('/').at(-1) }}
+              </ULink>
+            </p>
           </div>
         </div>
       </template>
@@ -59,6 +66,9 @@ const props = defineProps({
   errors: {
     type: Array<FormError>
   },
+  currentImageUrl: {
+    type: String as PropType<string | null>
+  }
 })
 
 const items = [
@@ -66,12 +76,12 @@ const items = [
   { slot: 'image', label: 'Subir Imagen' }
 ]
 
-const content = defineModel<string | null>('text', { default: '', required: true })
+const content = defineModel<string | undefined>('text', { default: '', required: true })
 const fileImage = defineModel<File | undefined>('image', { default: undefined, required: true })
-const image = ref<string | null>(null);
+const image = ref<string | undefined>();
 
 const onRemoveImage = () => {
-  image.value = null
+  image.value = undefined
   fileImage.value = undefined
 }
 

@@ -9,7 +9,8 @@
       <div>
         <UForm ref="form" :state="body" :schema="postSchema" @submit="onSubmit" class="flex flex-col gap-4">
           <UFormGroup id="section" label="Sección:" name="section" required>
-            <USelect v-model="body.section" label="Sección" :options="sections" placeholder="--Seleccionar sección--" />
+            <USelect v-model="body.section" @change="onChangeSection" label="Sección" :options="sections"
+              placeholder="--Seleccionar sección--" />
           </UFormGroup>
           <UFormGroup id="subsection" label="Subsección:" name="subsection" required>
             <USelect v-model="body.subsection" label="Sección" :options="subsections"
@@ -70,6 +71,10 @@ const body = ref<{
   body: '',
   image: undefined
 })
+
+const onChangeSection = () => {
+  body.value.subsection = undefined
+}
 
 const postFormData = ref(new FormData())
 const { data, error, status, execute } = useAsyncData(

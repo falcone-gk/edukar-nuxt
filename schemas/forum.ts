@@ -9,8 +9,8 @@ export const postSchema = z.object({
         }
         return true
     }, { message: 'Archivo no es una imagen.' }),
-    section: z.string({ invalid_type_error: 'Campo requerido' }),
-    subsection: z.string({ invalid_type_error: 'Campo requerido' }),
+    section: z.string({ required_error: 'Campo requerido' }),
+    subsection: z.string({ required_error: 'Campo requerido' }),
 }).superRefine(({ image, body }, ctx) => {
     if (image === undefined && ((body === '') || body === '<p></p>')) {
         ctx.addIssue({

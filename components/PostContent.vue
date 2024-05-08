@@ -1,14 +1,13 @@
 <template>
   <div :class="type === 'comment' ? 'border-b border-gray-200 dark:border-gray-800' : ''">
     <UCard :ui="{
-    ring: '', divide: '', shadow: '',
-    body: { padding: 'py-5' }, header: { padding: 'py-5' }, footer: { padding: 'py-5' },
-  }">
+      ring: '', divide: '', shadow: '',
+      body: { padding: 'py-5' }, header: { padding: 'py-5' }, footer: { padding: 'py-5' },
+    }">
       <template #header>
         <div class="flex gap-4">
           <div class="flex items-center">
-            <img class="rounded-full w-[48px] h-[48px] max-w-none" :src="useImgFullPath(props.picture)"
-              alt="author post">
+            <img class="rounded-full w-[48px] h-[48px] max-w-none" :src="useImgFullPath(props.picture)" alt="author post">
           </div>
           <div>
             <div>
@@ -23,6 +22,9 @@
           </div>
         </div>
       </template>
+      <div v-if="props.srcImage">
+        <img :src="props.srcImage" alt="Post Image">
+      </div>
       <div v-html="props.body"></div>
 
       <template v-if="props.type !== 'reply' || userStore.isAuthorUser(props.username)" #footer>
@@ -63,6 +65,7 @@ const props = defineProps<{
   username: string
   date: string
   body: string
+  srcImage: string | null
 }>()
 
 const emits = defineEmits([
