@@ -4,13 +4,28 @@ export const useCrudMethods = () => {
   const _idField = ref<string | number | undefined>('')
   const _urlCrud = ref('')
   const pathWithId = computed(() => `${_urlCrud.value}${_idField.value}/`)
-  const body = reactive<{ [key: string]: string | number }>({})
+  const body = ref<{ [key: string]: any }>({})
+  const form = ref(new FormData())
 
   const setup = (information: { baseKey: string, idField?: string | number, urlCrud: string }) => {
     const { baseKey, idField, urlCrud } = information
     _baseKey.value = baseKey
     _idField.value = idField
     _urlCrud.value = urlCrud
+  }
+
+  const populateForm = () => {
+    Object.keys(body.value).forEach(key => {
+      const value = body.value[key]
+      if (value !== undefined) {
+        form.value.append(key, body.value[key])
+      }
+    })
+  }
+
+  const cleanForm = () => {
+    body.value = {}
+    form.value = new FormData()
   }
 
   const { data: retrieveData, status: retrieveStatus, execute: retrieveExecute } = useAsyncData(
@@ -25,7 +40,7 @@ export const useCrudMethods = () => {
     `${_baseKey.value}-post`,
     () => useApiFetch(_urlCrud.value, {
       method: 'post',
-      body: body
+      body: form.value
     }), {
     immediate: false
   })
@@ -33,8 +48,8 @@ export const useCrudMethods = () => {
   const { data: putData, status: putStatus, execute: putExecute } = useAsyncData(
     `${_baseKey.value}-put`,
     () => useApiFetch(pathWithId.value, {
-      method: 'put',
-      body: body
+      method: 'patch',
+      body: form.value
     }), {
     immediate: false
   })
@@ -55,6 +70,7 @@ export const useCrudMethods = () => {
   }
 
   const createData = async () => {
+    populateForm()
     await postExecute()
     if (postStatus.value === 'success') {
       return postData.value
@@ -62,6 +78,7 @@ export const useCrudMethods = () => {
   }
 
   const updateData = async () => {
+    populateForm()
     await putExecute()
     if (putStatus.value === 'success') {
       return putData.value
@@ -71,6 +88,7 @@ export const useCrudMethods = () => {
   const destroyData = async () => {
     await deleteExecute()
     if (deleteStatus.value === 'success') {
+      cleanForm()
       return deleteData.value
     }
   }
@@ -79,5 +97,8 @@ export const useCrudMethods = () => {
     return { retrieveStatus, postStatus, putStatus, deleteStatus }
   }
 
-  return { setup, getData, createData, updateData, destroyData, getStatus, body }
+  return {
+    setup, getData, createData, updateData, destroyData,
+    getStatus, body, form, cleanForm
+  }
 }

@@ -54,9 +54,9 @@
 </template>
 
 <script lang="ts" setup>
-import type { PostData } from '~/types/forum';
+import type { Post } from '~/types/forum';
 
-type PostPagination = PaginationData<PostData>
+type PostPagination = PaginationData<Post>
 
 const columns = ref([
   { key: 'title', label: 'Título' },

@@ -36,7 +36,7 @@
 import { z } from 'zod'
 import { postSchema } from '~/schemas/forum';
 import type { Form, FormSubmitEvent } from '#ui/types'
-import type { PostData } from '@/types/forum';
+import type { Post } from '@/types/forum';
 
 useHead({
   title: 'Editar Publicación'
@@ -74,7 +74,7 @@ interface PostUpdate {
   title: string | undefined
   body: string | undefined
   image: File | undefined
-  currentImageUrl: string | null
+  currentImageUrl: string | undefined
 }
 
 const body = reactive<PostUpdate>({
@@ -83,15 +83,15 @@ const body = reactive<PostUpdate>({
   title: undefined,
   body: undefined,
   image: undefined as File | undefined,
-  currentImageUrl: null
+  currentImageUrl: undefined
 })
 
 const { data, pending, status } = await useLazyAsyncData(
   'post-retrieve',
-  () => useApiFetch<PostData>(`/forum/posts/${postSlug}`, {
+  () => useApiFetch<Post>(`/forum/posts/${postSlug}`, {
     onResponse({ response }) {
       if (response.status === 200) {
-        const data = response._data as PostData
+        const data = response._data as Post
         body.section = data.section.id
         body.subsection = data.subsection.id
         body.title = data.title

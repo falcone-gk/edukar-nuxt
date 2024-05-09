@@ -14,14 +14,12 @@
           </div>
         </template>
 
-        <TipTap v-model="body.body" module="forum" />
-
+        <PostEditor v-model:text="body.body" v-model:image="body.image" :current-image-url="commentModal.currentImage" />
         <template #footer>
           <UButton @click="sendRequest" :loading="postStatus === 'pending' || putStatus === 'pending'" label="Enviar" />
         </template>
       </UCard>
     </UModal>
-
     <UCard>
       <div>
         <DataLoading :loading="pending" :data="post">
@@ -32,9 +30,7 @@
             <PostContent
               @on-reply="openModal({ method: 'post', url: '/forum/comments/', key: 'comment', parentId: post.id, parentKey: 'post' })"
               @on-update="navigateTo(`/forum/posts/${post.slug}/edit`)"
-              @on-delete="deleteRequest({ key: 'post', url: '/forum/posts/', id: post.slug })" type="post"
-              :title="post.title" :date="post.date" :username="post.author.username" :picture="post.author.picture"
-              :body="post.body" :src-image="post.image" />
+              @on-delete="deleteRequest({ key: 'post', url: '/forum/posts/', id: post.slug })" type="post" :data="post" />
           </template>
         </DataLoading>
 
@@ -53,16 +49,14 @@
               <div>
                 <PostContent v-for="comment in post.comments"
                   @on-reply="openModal({ method: 'post', url: '/forum/replies/', key: 'reply', parentId: comment.id, parentKey: 'comment' })"
-                  @on-update="openModal({ method: 'update', url: '/forum/comments/', content: comment.body, key: 'comment', id: comment.id })"
+                  @on-update="openModal({ method: 'update', url: '/forum/comments/', content: comment.body, key: 'comment', id: comment.id, currentImage: comment.image })"
                   @on-delete="deleteRequest({ key: 'comment', url: '/forum/comments/', id: comment.id })" type="comment"
-                  :date="comment.date" :username="comment.author.username" :picture="comment.author.picture"
-                  :body="comment.body" :src-image="comment.image">
+                  :data="comment">
                   <template v-if="comment.replies.length > 0" #replies>
                     <PostContent v-for="reply in comment.replies"
-                      @on-update="openModal({ method: 'update', url: '/forum/replies/', content: reply.body, key: 'reply', id: reply.id })"
+                      @on-update="openModal({ method: 'update', url: '/forum/replies/', content: reply.body, key: 'reply', id: reply.id, currentImage: reply.image })"
                       @on-delete="deleteRequest({ key: 'reply', url: '/forum/replies/', id: reply.id })" type="reply"
-                      :date="reply.date" :username="reply.author.username" :picture="reply.author.picture"
-                      :body="reply.body" :src-image="comment.image" />
+                      :data="reply" />
                   </template>
                 </PostContent>
               </div>
@@ -75,7 +69,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { Comment, PostData, Reply } from '~/types/forum';
+import type { Post } from '~/types/forum';
 
 useHead({
   title: 'Publicación'
@@ -93,22 +87,25 @@ const isOpen = ref(false)
 const crudMethods = useCrudMethods()
 const { postStatus, putStatus } = crudMethods.getStatus()
 const body = crudMethods.body
+const cleanForm = crudMethods.cleanForm
 
 interface CommentPost {
   title: string,
-  body: string,
+  method: 'post' | 'update' | undefined
   type: 'comment' | 'reply' | null,
   id: number | null,
   parentId: number | null,
+  currentImage: string | undefined,
   send: (body?: any) => Promise<any>
 }
 
 const commentModal = reactive<CommentPost>({
   title: '',
-  body: '',
+  method: undefined,
   type: null,
   id: null,
   parentId: null,
+  currentImage: '',
   send: async () => { },
 })
 
@@ -117,43 +114,71 @@ const postSlug = route.params.slug
 
 const { data: post, pending, refresh } = await useLazyAsyncData(
   'postData',
-  () => useApiFetch<PostData>(`/forum/posts/${postSlug}`)
+  () => useApiFetch<Post>(`/forum/posts/${postSlug}`)
 )
 
-interface ModalOptions {
-  method: 'post' | 'update'
-  url: string
-  key: string
-  id?: number
-  content?: string
-  parentId?: number
-  parentKey?: string
+interface PostModalOptions {
+  method: 'post'
+  parentId: number
+  parentKey: string
 }
 
+interface UpdateModalOptions {
+  method: 'update'
+  content: string
+}
+
+type ModalOptions = {
+  url: string
+  key: string
+  id?: number | string
+  currentImage?: string | undefined
+} & (PostModalOptions | UpdateModalOptions)
+
 const openModal = (info: ModalOptions) => {
-  const { method, url, key, id, content, parentId, parentKey } = info
+  const { method, url, key, id, currentImage } = info
+  // Make sure body and form are empty before population
+  cleanForm()
   crudMethods.setup({ baseKey: key, idField: id, urlCrud: url })
-  body.body = content || ''
+  body.value.image = undefined
 
   if (method === 'post') {
     commentModal.title = 'Nuevo comentario'
     commentModal.send = crudMethods.createData
-    body[key] = content as string
-    body[parentKey as string] = parentId as number
+    body.value[key] = ''
+    body.value[info.parentKey] = info.parentId
+    commentModal.currentImage = undefined
   } else {
     commentModal.title = 'Actualizar comentario'
     commentModal.send = crudMethods.updateData
+    commentModal.currentImage = currentImage
+    body.value.body = info.content
   }
+  commentModal.method = method
   isOpen.value = true
 }
 
 const closeModal = () => {
   isOpen.value = false
-  commentModal.body = ''
 }
 
+const { showNotification } = useNotification()
 const sendRequest = async () => {
   await commentModal.send()
+  // We don't continue with refresh or close modal unless the
+  // request is success.
+  if (commentModal.method === 'post') {
+    if (postStatus.value !== 'success') {
+      showNotification({ type: 'error' })
+      return
+    }
+  } else {
+    if (putStatus.value !== 'success') {
+      showNotification({ type: 'error' })
+      return
+    }
+  }
+
   await refresh()
   closeModal()
 }

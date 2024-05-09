@@ -10,37 +10,30 @@ export interface Subsection {
     name: string
 }
 
-export interface PostData {
-    id: number,
-    section: Section
-    subsection: Subsection
-    author: Author
-    date: string
-    comments: Comment[]
-    body: string
-    title: string
-    slug: string
-    image: string | null
-}
-
 export interface Author {
     username: string
     picture: string
 }
 
-export interface Comment {
+export interface BasePost {
     id: number
     author: Author
     date: string
-    replies: Reply[]
     body: string
-    image: string | null
+    image: string | undefined
 }
 
-export interface Reply {
-    id: number
-    author: Author
-    date: string
-    body: string
-    image: string | null
+export interface Post extends BasePost {
+    section: Section
+    subsection: Subsection
+    comments: Comment[]
+    title: string
+    slug: string
+}
+
+export interface Comment extends BasePost {
+    replies: Reply[]
+}
+
+export interface Reply extends BasePost {
 }
