@@ -14,9 +14,11 @@
       </div>
     </div>
     <div class="space-x-4">
-      <UButton to="https://bit.ly/2Wv9hHP" target="_blank" icon="i-ri-whatsapp-fill" size="xl">
-        Más información
-      </UButton>
+      <!-- <UButton to="https://bit.ly/2Wv9hHP" target="_blank" icon="i-ri-whatsapp-fill" size="xl"> -->
+      <!--   Más información -->
+      <!-- </UButton> -->
+      <CustomButtonGradient to="https://bit.ly/2Wv9hHP" target="_blank" icon="i-ri-whatsapp-fill" size="xl"
+        label="Más información" />
       <UButton
         to="https://www.google.com/maps/dir/-16.4040524,-71.5390114/-16.3890574,-71.5644157/@-16.3925951,-71.5598581,15.35z/data=!4m4!4m3!1m1!4e1!1m0?entry=ttu"
         target="_blank" icon="i-ri-map-pin-2-fill" size="xl" color="gray">

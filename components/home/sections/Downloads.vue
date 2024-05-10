@@ -8,7 +8,7 @@
       <CardResume :image="item.cover" :title="item.title" class="w-full"
         @callback="onClick(item.year, item.root.siglas)" />
     </UCarousel>
-    <UButton to="/downloads" size="xl">Ir a descargar</UButton>
+    <CustomButtonGradient to="/downloads" size="xl" label="Ver exámenes" icon="i-heroicons-book-open-solid" />
   </div>
 </template>
 
