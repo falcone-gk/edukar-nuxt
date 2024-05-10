@@ -4,7 +4,7 @@
       consultar con nuestra comunidad los ejercicios en los que
       tengas complicaciones para resolver.
     </p>
-    <UButton to="/forum">Ir al foro</UButton>
+    <UButton to="/forum" size="xl">Ir al foro</UButton>
     <img
       class="flex max-w-[800px] w-full border-[15px] md:border-[30px] rounded-lg border-white shadow-[5px_5px_10px_3px_rgba(0,0,0,0.4)]"
       src="/images/student.jpg" alt="student">

@@ -1,7 +1,7 @@
 <template>
   <section ref="mySection" class="flex flex-col mx-2 md:mx-0 text-center gap-12 h-full"
     :class="{ ['demo']: props.transition }" :id="props.id">
-    <Typography tag="h1" variant="bigger" color="primary" class="font-extrabold leading-[1.25]">
+    <Typography :tag="props.tag" variant="bigger" color="primary" class="font-extrabold leading-[1.25]">
       {{ props.title }}
     </Typography>
     <slot />
@@ -12,6 +12,10 @@
 const props = defineProps({
   id: String,
   title: String,
+  tag: {
+    type: String,
+    default: 'h1'
+  },
   transition: {
     type: Boolean,
     default: true

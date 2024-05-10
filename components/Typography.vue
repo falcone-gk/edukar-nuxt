@@ -24,7 +24,7 @@ const props = defineProps({
     type: String,
     default: 'primary',
     validator: (value: string) => {
-      return ['primary', 'danger', 'base', 'gray'].includes(value)
+      return ['primary', 'white', 'danger', 'gray'].includes(value)
     }
   }
 })
@@ -54,8 +54,8 @@ const colorClasses = computed(() => {
   const classLookup = {
     primary: 'text-primary-500 dark:text-primary-400',
     danger: 'text-red-500 dark:text-red-400',
-    base: 'text-base',
-    gray: 'text-gray-500 dark:text-gray-400'
+    gray: 'text-gray-500 dark:text-gray-400',
+    white: 'text-white'
   }
   return classLookup[props.color as keyof typeof classLookup]
 })

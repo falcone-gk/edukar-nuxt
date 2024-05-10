@@ -19,7 +19,7 @@
     }">
       <LogoEdukarIcon />
     </UDivider>
-    <HomeSection id="forum" title="Foro Edukar">
+    <HomeSection id="forum" title="Foro Edukar" tag="h2">
       <HomeSectionsForum />
     </HomeSection>
 
@@ -30,7 +30,7 @@
     }">
       <LogoEdukarIcon />
     </UDivider>
-    <HomeSection id="downloads" title="Descargar Exámenes de Admisión">
+    <HomeSection id="downloads" title="Descargar Exámenes de Admisión" tag="h2">
       <HomeSectionsDownloads />
     </HomeSection>
   </div>
