@@ -99,7 +99,7 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
 
   Object.keys(event.data).forEach(key => {
     const value = event.data[key as keyof typeof event.data]
-    if (value !== undefined)
+    if (value !== undefined && value !== null)
       postFormData.value.append(key, value)
   })
 
