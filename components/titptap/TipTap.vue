@@ -3,51 +3,58 @@
     <div class="border border-gray-300 dark:border-gray-700 rounded-b-md">
       <div v-if="editor">
         <div class="flex items-center gap-1 h-8 px-2 border-b border-b-gray-300 dark:border-gray-700">
-          <UButton icon="i-heroicons-bold-solid" :variant="editor.isActive('bold') ? 'outline' : 'link'"
-            :color="editor.isActive('bold') ? 'primary' : 'gray'" size="2xs" :padding="false"
-            @click="editor.chain().focus().toggleBold().run()" />
+          <TipTapButton @click="editor.chain().focus().toggleBold().run()" icon="i-heroicons-bold-solid"
+            :is-active="editor.isActive('bold')" />
+          <TipTapButton @click="editor.chain().focus().toggleItalic().run()" icon="i-heroicons-italic-solid"
+            :is-active="editor.isActive('italic')" />
+          <TipTapButton @click="editor.chain().focus().toggleStrike().run()" icon="i-ri-strikethrough"
+            :is-active="editor.isActive('strike')" />
 
-          <UButton icon="i-heroicons-italic-solid" :variant="editor.isActive('italic') ? 'outline' : 'link'"
-            :color="editor.isActive('italic') ? 'primary' : 'gray'" size="2xs" :padding="false"
-            @click="editor.chain().focus().toggleItalic().run()" />
+          <UDivider class="w-1 h-full" orientation="vertical" />
 
-          <UPopover :popper="{ arrow: true, placement: 'top' }">
-            <UButton variant="link" color="gray" icon="i-heroicons-photo-solid" size="2xs" :padding="false" />
-            <template #panel>
-              <div class="p-2">
-                <UFormGroup label="Subir URL de imagen">
-                  <UInput />
-                </UFormGroup>
-              </div>
-            </template>
-          </UPopover>
+          <TipTapButton @click="editor.chain().focus().toggleBulletList().run()" icon="i-heroicons-list-bullet-solid"
+            :is-active="editor.isActive('bulletList')" />
+          <TipTapButton @click="editor.chain().focus().toggleOrderedList().run()" icon="i-ri-list-ordered"
+            :is-active="editor.isActive('orderedList')" />
+
+          <UDivider class="w-1 h-full" orientation="vertical" />
+
+          <TipTapButton @click="editor.chain().focus().undo().run()" icon="i-ri-arrow-go-back-fill"
+            :disabled="!editor.can().chain().focus().undo().run()" />
+          <TipTapButton @click="editor.chain().focus().redo().run()" icon="i-ri-arrow-go-forward-line"
+            :disabled="!editor.can().chain().focus().redo().run()" />
+
         </div>
         <div>
           <TiptapEditorContent :editor="editor" />
         </div>
       </div>
     </div>
-    <!-- <p v-if="errors && errors.length > 0" class="mt-2 text-red-500 dark:text-red-400 text-sm"> -->
-    <!--   {{ errors[0].message }} -->
-    <!-- </p> -->
   </div>
 </template>
 
 <script setup lang="ts">
 import { Image as ImageTipTap } from '@tiptap/extension-image'
-// import type { FormError } from '#ui/types'
 
-const props = defineProps({
-  // errors: {
-  //   type: Array<FormError>
-  // },
-  // module: {
-  //   type: String,
-  //   required: true
-  // }
-})
-//const emits = defineEmits(['update:modelValue'])
 const model = defineModel({ required: true })
+
+// const EditorButton = defineComponent(
+//   (props) => {
+//     return () => {
+//       return h(UButton, {
+//         color: props.isActive ? 'primary' : 'gray',
+//         variant: props.isActive ? 'outline' : 'ghost',
+//         padding: false, size: '2xs', icon: props.icon,
+//       })
+//     }
+//   },
+//   {
+//     props: {
+//       isActive: { type: Boolean, required: false },
+//       icon: String
+//     }
+//   }
+// )
 
 function toFixedNumber(num: number, digits: number, base: number = 10) {
   const pow = Math.pow(base, digits);
@@ -110,7 +117,7 @@ const editor = useEditor({
   extensions: [TiptapStarterKit],
   editorProps: {
     attributes: {
-      class: 'outline-none rounded-b-md px-2 py-2 h-[400px] overflow-y-auto',
+      class: 'revert-tailwind outline-none rounded-b-md px-2 py-2 h-[400px] overflow-y-auto',
     },
     // handleDrop: function (view, event, slice, moved) {
     //   if (!moved && event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0]) { // if dropping external files

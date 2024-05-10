@@ -24,9 +24,13 @@ export default defineNuxtConfig({
   pinia: {
     storesDirs: ['./stores/**']
   },
-  nitro: {
-    devProxy: {
-      host: 'localhost',
-    }
-  }
+  // nitro: {
+  //   devProxy: {
+  //     host: 'localhost',
+  //   }
+  // }
+  components: [
+    { path: '~/components/titptap', pathPrefix: false },
+    '~/components'
+  ]
 })

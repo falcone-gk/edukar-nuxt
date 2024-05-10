@@ -26,7 +26,7 @@
       <div v-if="props.data.image">
         <img :src="props.data.image" alt="Post Image">
       </div>
-      <div v-html="props.data.body"></div>
+      <div class="revert-tailwind" v-html="props.data.body"></div>
 
       <template v-if="!isReply || userStore.isAuthorUser(props.data.author.username)" #footer>
         <div class="space-x-2">
