@@ -5,7 +5,7 @@ const { iconsPlugin, getIconCollections } = require("@egoist/tailwindcss-icons")
 export default <Partial<Config>>{
   plugins: [
     iconsPlugin({
-      collections: getIconCollections(["bxl"])
+      collections: getIconCollections(["ri"])
     })
   ],
   darkMode: 'class',

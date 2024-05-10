@@ -36,8 +36,8 @@
               </p>
             </div>
             <div class="flex flex-wrap justify-start gap-2">
-              <UButton color="black" label="Descargar" size="xs" rounded :to="examSelectData?.source_exam"
-                target="_blank" :ui="customUIBtn" />
+              <UButton color="black" label="Descargar" size="xs" rounded :to="examSelectData?.source_exam" target="_blank"
+                :ui="customUIBtn" />
 
               <UButton color="black" v-if="examSelectData?.source_video_solution" label="Video solucionario" size="xs"
                 rounded :to="examSelectData?.source_exam" target="_blank" :ui="customUIBtn">
@@ -50,7 +50,7 @@
                 size="xs" rounded :to="examSelectData?.source_exam" target="_blank" :ui="customUIBtn">
                 <template #trailing>
                   <span class="flex gap-1 text-black px-1.5 py-0.5 rounded bg-yellow-400">
-                    <img class="w-4 h-auto" src="/icons/crown.svg" alt="crown">
+                    <UIcon class="w-4 h-auto" name="i-ri-vip-crown-2-fill" />
                     Premium
                   </span>
                 </template>

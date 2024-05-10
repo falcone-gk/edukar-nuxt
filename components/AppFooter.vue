@@ -1,11 +1,11 @@
 <script setup lang="ts">
 const socials = [
-  { icon: 'i-bxl-facebook', link: '' },
-  { icon: 'i-bxl-twitter', link: '' },
-  { icon: 'i-bxl-youtube', link: '' },
-  { icon: 'i-bxl-instagram', link: '' },
-  { icon: 'i-bxl-tiktok', link: '' },
-  { icon: 'i-bxl-linkedin', link: '' },
+  { icon: 'i-ri-facebook-fill', link: '' },
+  { icon: 'i-ri-twitter-fill', link: '' },
+  { icon: 'i-ri-youtube-fill', link: '' },
+  { icon: 'i-ri-instagram-fill', link: '' },
+  { icon: 'i-ri-tiktok-fill', link: '' },
+  { icon: 'i-ri-linkedin-box-fill', link: '' },
 ]
 </script>
 
