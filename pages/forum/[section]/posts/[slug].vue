@@ -14,7 +14,10 @@
           </div>
         </template>
 
-        <PostEditor v-model:text="body.body" v-model:image="body.image" :current-image-url="commentModal.currentImage" />
+        <PostEditor v-model:text="body.body" v-model:image="body.image" :current-image-url="body.currentImage" />
+        <p v-if="error" class="mt-2 text-red-500 dark:text-red-400 text-sm">
+          {{ error }}
+        </p>
         <template #footer>
           <UButton @click="sendRequest" :loading="postStatus === 'pending' || putStatus === 'pending'" label="Enviar" />
         </template>
@@ -70,6 +73,7 @@
 
 <script lang="ts" setup>
 import type { Post } from '~/types/forum';
+import { commentSchema } from '~/schemas/forum';
 
 useHead({
   title: 'Publicación'
@@ -95,7 +99,6 @@ interface CommentPost {
   type: 'comment' | 'reply' | null,
   id: number | null,
   parentId: number | null,
-  currentImage: string | undefined,
   send: (body?: any) => Promise<any>
 }
 
@@ -105,7 +108,6 @@ const commentModal = reactive<CommentPost>({
   type: null,
   id: null,
   parentId: null,
-  currentImage: '',
   send: async () => { },
 })
 
@@ -138,6 +140,7 @@ type ModalOptions = {
 const openModal = (info: ModalOptions) => {
   const { method, url, key, id, currentImage } = info
   // Make sure body and form are empty before population
+  error.value = undefined
   cleanForm()
   crudMethods.setup({ baseKey: key, idField: id, urlCrud: url })
   body.value.image = undefined
@@ -145,13 +148,13 @@ const openModal = (info: ModalOptions) => {
   if (method === 'post') {
     commentModal.title = 'Nuevo comentario'
     commentModal.send = crudMethods.createData
-    body.value[key] = ''
+    body.value.body = ''
     body.value[info.parentKey] = info.parentId
-    commentModal.currentImage = undefined
+    body.value.currentImage = undefined
   } else {
     commentModal.title = 'Actualizar comentario'
     commentModal.send = crudMethods.updateData
-    commentModal.currentImage = currentImage
+    body.value.currentImage = currentImage || undefined
     body.value.body = info.content
   }
   commentModal.method = method
@@ -162,8 +165,16 @@ const closeModal = () => {
   isOpen.value = false
 }
 
+const error = ref()
 const { showNotification } = useNotification()
 const sendRequest = async () => {
+  // Zod schema validation
+  const result = await commentSchema.safeParseAsync(toValue(body.value))
+  if (!result.success) {
+    error.value = 'Debes escribir un texto o subir una imagen'
+    return
+  }
+
   await commentModal.send()
   // We don't continue with refresh or close modal unless the
   // request is success.
