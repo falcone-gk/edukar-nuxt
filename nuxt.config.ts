@@ -30,7 +30,7 @@ export default defineNuxtConfig({
   //   }
   // }
   components: [
-    { path: '~/components/titptap', pathPrefix: false },
+    { path: '~/components/tiptap', pathPrefix: false },
     '~/components'
   ]
 })
