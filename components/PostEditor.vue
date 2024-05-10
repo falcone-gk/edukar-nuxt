@@ -8,7 +8,7 @@
       },
     }">
       <template #text>
-        <TipTap v-model="content" module="forum" />
+        <TipTap v-model="content" />
       </template>
 
       <template #image>
