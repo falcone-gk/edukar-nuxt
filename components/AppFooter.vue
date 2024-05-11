@@ -34,13 +34,13 @@ const socials = [
         <Typography tag="h3" color="white">COMPAÑÍA</Typography>
         <ul>
           <li>
-            <ULink class="hover:underline">Sobre nosotros</ULink>
+            <ULink class="hover:underline" to="/company/about-us">Sobre nosotros</ULink>
           </li>
           <li>
-            <ULink class="hover:underline">Términos y condiciones</ULink>
+            <ULink class="hover:underline" to="/company/terms-and-conditions">Términos y condiciones</ULink>
           </li>
           <li>
-            <ULink class="hover:underline">Políticas de privacidad</ULink>
+            <ULink class="hover:underline" to="/company/privacy-policy">Políticas de privacidad</ULink>
           </li>
         </ul>
       </div>
