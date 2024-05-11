@@ -6,7 +6,8 @@ export default <Partial<Config>>{
   plugins: [
     iconsPlugin({
       collections: getIconCollections(["ri"])
-    })
+    }),
+    require('@tailwindcss/typography')
   ],
   darkMode: 'class',
   theme: {

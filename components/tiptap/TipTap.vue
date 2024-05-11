@@ -3,26 +3,38 @@
     <div class="border border-gray-300 dark:border-gray-700 rounded-b-md">
       <div v-if="editor">
         <div class="flex items-center gap-1 h-8 px-2 border-b border-b-gray-300 dark:border-gray-700">
-          <TipTapButton @click="editor.chain().focus().toggleBold().run()" icon="i-heroicons-bold-solid"
+
+          <USelectMenu v-model="labels" :options="headingOptions" value-attribute="id" option-attribute="label" :ui-menu="{
+            width: 'w-48'
+          }">
+            <TipTapButton title="Cabeceras" :icon="headingOptions[headingSelected].icon" />
+            <template #option="{ option: heading }">
+              <span>{{ heading.label }}</span>
+              <span>{{ heading.name }}</span>
+            </template>
+          </USelectMenu>
+
+          <TipTapButton title="Bold" @click="editor.chain().focus().toggleBold().run()" icon="i-heroicons-bold-solid"
             :is-active="editor.isActive('bold')" />
-          <TipTapButton @click="editor.chain().focus().toggleItalic().run()" icon="i-heroicons-italic-solid"
-            :is-active="editor.isActive('italic')" />
-          <TipTapButton @click="editor.chain().focus().toggleStrike().run()" icon="i-ri-strikethrough"
+          <TipTapButton title="Italic" @click="editor.chain().focus().toggleItalic().run()"
+            icon="i-heroicons-italic-solid" :is-active="editor.isActive('italic')" />
+          <TipTapButton title="Strike" @click="editor.chain().focus().toggleStrike().run()" icon="i-ri-strikethrough"
             :is-active="editor.isActive('strike')" />
 
           <UDivider class="w-1 h-full" orientation="vertical" />
 
-          <TipTapButton @click="editor.chain().focus().toggleBulletList().run()" icon="i-heroicons-list-bullet-solid"
-            :is-active="editor.isActive('bulletList')" />
-          <TipTapButton @click="editor.chain().focus().toggleOrderedList().run()" icon="i-ri-list-ordered"
-            :is-active="editor.isActive('orderedList')" />
+          <TipTapButton title="Unordered list" @click="editor.chain().focus().toggleBulletList().run()"
+            icon="i-heroicons-list-bullet-solid" :is-active="editor.isActive('bulletList')" />
+          <TipTapButton title="Ordered list" @click="editor.chain().focus().toggleOrderedList().run()"
+            icon="i-ri-list-ordered" :is-active="editor.isActive('orderedList')" />
 
           <UDivider class="w-1 h-full" orientation="vertical" />
 
-          <TipTapButton @click="editor.chain().focus().undo().run()" icon="i-ri-arrow-go-back-fill"
+          <TipTapButton title="Undo" @click="editor.chain().focus().undo().run()" icon="i-ri-arrow-go-back-fill"
             :disabled="!editor.can().chain().focus().undo().run()" />
-          <TipTapButton @click="editor.chain().focus().redo().run()" icon="i-ri-arrow-go-forward-line"
+          <TipTapButton title="Redo" @click="editor.chain().focus().redo().run()" icon="i-ri-arrow-go-forward-line"
             :disabled="!editor.can().chain().focus().redo().run()" />
+
 
         </div>
         <div>
@@ -34,7 +46,7 @@
 </template>
 
 <script setup lang="ts">
-import { Image as ImageTipTap } from '@tiptap/extension-image'
+// import { Image as ImageTipTap } from '@tiptap/extension-image'
 
 const model = defineModel({ required: true })
 
@@ -55,6 +67,7 @@ const model = defineModel({ required: true })
 //     }
 //   }
 // )
+
 
 function toFixedNumber(num: number, digits: number, base: number = 10) {
   const pow = Math.pow(base, digits);
@@ -107,17 +120,17 @@ function uploadImage(file: File) {
   })
 }
 
-ImageTipTap.configure({
-  allowBase64: true,
-  inline: true
-})
+// ImageTipTap.configure({
+//   allowBase64: true,
+//   inline: true
+// })
 
 const editor = useEditor({
   content: model.value as string,
   extensions: [TiptapStarterKit],
   editorProps: {
     attributes: {
-      class: 'revert-tailwind outline-none rounded-b-md px-2 py-2 h-[400px] overflow-y-auto',
+      class: 'prose dark:prose-invert outline-none rounded-b-md px-2 py-2 h-[400px] overflow-y-auto',
     },
     // handleDrop: function (view, event, slice, moved) {
     //   if (!moved && event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0]) { // if dropping external files
@@ -174,8 +187,46 @@ const editor = useEditor({
   onUpdate: (props) => {
     //emits('update:modelValue', props.editor.getHTML())
     model.value = props.editor.getHTML()
+  },
+  onSelectionUpdate: ({ editor }) => {
+    if (editor.isActive('heading', { level: 1 })) {
+      headingSelected.value = 1
+    } else if (editor.isActive('heading', { level: 2 })) {
+      headingSelected.value = 2
+    } else if (editor.isActive('heading', { level: 3 })) {
+      headingSelected.value = 3
+    } else {
+      headingSelected.value = 0
+    }
   }
 });
+
+const headingSelected = ref(0)
+const headingOptions = [
+  { id: 0, name: 'párrafo', label: 'p', icon: 'i-ri-paragraph' },
+  { id: 1, name: 'Cabecera 1', label: 'H1', icon: 'i-ri-h-1' },
+  { id: 2, name: 'Cabecera 1', label: 'H2', icon: 'i-ri-h-2' },
+  { id: 3, name: 'Cabecera 1', label: 'H3', icon: 'i-ri-h-3' },
+  // { id: 4, name: 'Cabecera 1', label: 'H4' },
+  // { id: 5, name: 'Cabecera 1', label: 'H5' },
+  // { id: 6, name: 'Cabecera 1', label: 'H6' },
+]
+const labels = computed({
+  get: () => headingSelected.value,
+  set: (id) => {
+    if (id === 0) {
+      editor.value!.commands.toggleHeading({ level: headingSelected.value as any })
+      headingSelected.value = 0
+    }
+    else if (headingSelected.value === id) {
+      editor.value!.commands.toggleHeading({ level: id as any })
+      headingSelected.value = 0
+    } else {
+      editor.value!.commands.setHeading({ level: id as any })
+      headingSelected.value = id
+    }
+  }
+})
 
 onBeforeUnmount(() => {
   unref(editor)?.destroy()
