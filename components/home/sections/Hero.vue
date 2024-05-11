@@ -14,9 +14,6 @@
       </div>
     </div>
     <div class="space-x-4">
-      <!-- <UButton to="https://bit.ly/2Wv9hHP" target="_blank" icon="i-ri-whatsapp-fill" size="xl"> -->
-      <!--   Más información -->
-      <!-- </UButton> -->
       <CustomButtonGradient to="https://bit.ly/2Wv9hHP" target="_blank" icon="i-ri-whatsapp-fill" size="xl"
         label="Más información" />
       <UButton
