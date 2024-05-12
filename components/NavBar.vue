@@ -51,10 +51,10 @@ const menuItems = [
         <ul class="h-full">
           <li
             class="inline-flex w-full h-12 justify-center items-center md:h-full md:w-24 [&>a]:w-full [&>a]:h-full [&>a]:grid [&>a]:place-items-center"" v-for="
-            link in links" :key="link.id">
+          link in links" :key="link.id">
             <ULink :to="link.path" active-class="h-full w-full border-b-2 border-b-primary"
               inactive-class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">{{
-              link.text }}
+                link.text }}
             </ULink>
           </li>
         </ul>
@@ -76,7 +76,7 @@ const menuItems = [
                 <UToggle v-model="selected" @click="toggleColorMode" />
               </div>
             </template>
-            <UAvatar :src="userStore.getPicturePath()" />
+            <UAvatar :src="userStore.getPicturePath()" alt="user picture" />
           </UDropdown>
         </div>
       </div>

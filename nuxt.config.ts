@@ -12,9 +12,14 @@ export default defineNuxtConfig({
       apiURL: process.env.API_BASE
     },
   },
-  //app: {
-  //  pageTransition: { name: 'page', mode: 'out-in' }
-  //},
+  app: {
+    head: {
+      htmlAttrs: {
+        lang: 'es'
+      }
+    }
+    // pageTransition: { name: 'page', mode: 'out-in' }
+  },
   css: ['~/assets/css/main.css',],
   colorMode: {
     classSuffix: '',

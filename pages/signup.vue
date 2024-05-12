@@ -59,8 +59,9 @@ import type { Form, FormSubmitEvent } from '#ui/types'
 import { userRegisterSchema } from '~/schemas/auth';
 import { z } from 'zod'
 
-useHead({
-  title: 'Regristrar'
+useSeoMeta({
+  title: 'Regristrar',
+  description: 'Regístrate y sé parte de nuestra comunidad de estudiantes.'
 })
 
 definePageMeta({

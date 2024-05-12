@@ -8,6 +8,11 @@
 </template>
 
 <script setup lang="ts">
+useSeoMeta({
+  title: 'Foro Educacional Edukar',
+  description: 'Participa en nuestro foro educacional donde podrás consultar con nuestra comunidad los ejercicios en los que tengas complicaciones para resolver.'
+})
+
 definePageMeta({
   breadCrumb: {
     label: 'Foro',

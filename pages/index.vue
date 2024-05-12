@@ -37,7 +37,11 @@
 </template>
 
 <script setup lang="ts">
-useHead({
-  title: 'Inicio'
+useSeoMeta({
+  title: 'Edukar - Sé todo un experto en la materia que quieras.',
+  ogTitle: 'Edukar - Sé todo un experto en la materia que quieras.',
+  description: 'Somos una empresa que brinda servicios de clases de reforzamiento y talleres psicológicos en zonas de influencia directa o indirecta para empresas mineras, municipalidades y también particulares.',
+  ogDescription: 'Somos una empresa que brinda servicios de clases de reforzamiento y talleres psicológicos en zonas de influencia directa o indirecta para empresas mineras, municipalidades y también particulares.'
 })
+
 </script>

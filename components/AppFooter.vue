@@ -10,7 +10,8 @@ const socials = [
 </script>
 
 <template>
-  <footer class="text-sm text-white bg-primary-600 dark:bg-primary-500 p-4">
+  <footer class="text-sm text-white bg-primary-600 dark:bg-primary-500 p-4" aria-labelledby="footer-heading">
+    <h2 id="footer-heading" class="sr-only">Footer</h2>
     <div class="grid text-center grid-cols-1 sm:text-left sm:grid-cols-2 md:grid-cols-4 gap-4">
       <div>
         <Typography tag="h3" color="white">SOBRE NOSOTROS</Typography>

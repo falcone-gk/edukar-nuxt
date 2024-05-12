@@ -15,7 +15,8 @@
       </div>
     </UCard>
     <div>
-      <UButton label="Crear nuevo post" icon="i-heroicons-plus-circle-solid" to="/forum/posts/create" />
+      <!-- <UButton label="Crear nuevo post" icon="i-heroicons-plus-circle-solid" to="/forum/posts/create" /> -->
+      <CustomButtonGradient label="Crear nuevo post" icon="i-heroicons-plus-circle-solid" to="/forum/posts/create" />
     </div>
 
     <DataLoading :loading="pending" :data="sections">
@@ -67,10 +68,6 @@
 
 <script lang="ts" setup>
 import { truncateText } from '~/utils/text';
-
-useHead({
-  title: 'Foro'
-})
 
 interface sectionData {
   id: number,

@@ -34,8 +34,9 @@ import type { userInfo } from '~/types'
 import { userLoginSchema } from '~/schemas/auth';
 import { z } from 'zod'
 
-useHead({
-  title: 'Iniciar Sesión'
+useSeoMeta({
+  title: 'Iniciar Sesión',
+  description: 'Inicia sesión para acceder a los distintos recursos disponibles en nuestra página web.'
 })
 
 definePageMeta({

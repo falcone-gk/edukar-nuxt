@@ -118,8 +118,9 @@
 <script lang="ts" setup>
 import type { Exams } from '~/types/resultApiTypes';
 
-useHead({
-  title: 'Descargas'
+useSeoMeta({
+  title: 'Lista de Exámenes de Admisión',
+  description: 'Lista de exámenes de admisión de distintas universidades del Perú y solucionarios descargables.'
 })
 
 const customUIBtn = { rounded: 'rounded-full' }

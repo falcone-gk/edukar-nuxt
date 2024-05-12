@@ -36,8 +36,9 @@
 <script lang="ts" setup>
 import type { Courses } from '~/types/resultApiTypes';
 
-useHead({
-  title: 'Cursos'
+useSeoMeta({
+  title: 'Cursos de Edukar',
+  description: 'Lista de cursos disponibles de la academia Edukar para tu desarrollo como estudiante.'
 })
 
 type CoursePagination = PaginationData<Courses>
