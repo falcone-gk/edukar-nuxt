@@ -13,7 +13,7 @@ export const postSchema = z.object({
     subsection: z.coerce.string({ required_error: 'Campo requerido' }),
     currentImageUrl: z.string().nullish()
 }).superRefine(({ image, body, currentImageUrl }, ctx) => {
-    if (currentImageUrl !== null) return
+    if (currentImageUrl) return
     if (image === undefined && ((body === '') || body === '<p></p>')) {
         ctx.addIssue({
             code: 'custom',

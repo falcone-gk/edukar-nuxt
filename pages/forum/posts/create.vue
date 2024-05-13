@@ -19,7 +19,6 @@
           <UFormGroup id="title" label="Título:" name="title" required>
             <UInput v-model="body.title" label="Título" />
           </UFormGroup>
-          <!-- <TipTap v-model="body.body" :errors="form?.getErrors('body')" module="forum" /> -->
           <PostEditor v-model:text="body.body" v-model:image="body.image" :errors="form?.getErrors('body')" />
           <UButton type="submit" :loading="status === 'pending'" block>Publicar Post</UButton>
         </UForm>
@@ -99,8 +98,9 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
 
   Object.keys(event.data).forEach(key => {
     const value = event.data[key as keyof typeof event.data]
-    if (value !== undefined && value !== null)
+    if (value) {
       postFormData.value.append(key, value)
+    }
   })
 
   await execute()

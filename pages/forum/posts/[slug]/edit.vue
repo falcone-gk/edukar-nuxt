@@ -23,7 +23,7 @@
               </UFormGroup>
               <PostEditor v-model:text="body.body" v-model:image="body.image" :current-image-url="body.currentImageUrl"
                 :errors="form?.getErrors('body')" />
-              <UButton type="submit" :loading="status === 'pending'" block>Publicar Post</UButton>
+              <UButton type="submit" :loading="statusUpdate === 'pending'" block>Publicar Post</UButton>
             </UForm>
           </div>
         </template>
@@ -125,8 +125,9 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
 
   Object.keys(body).forEach(key => {
     const value = event.data[key as keyof typeof event.data]
-    if (value !== undefined && value !== null)
+    if (value) {
       postFormData.value.append(key, value)
+    }
   })
 
   postFormData.value.delete('currentImageUrl')
