@@ -13,8 +13,8 @@ WORKDIR $APP_HOME
 COPY package*.json ./
 
 # install project dependencies
-RUN npm install
+RUN npm ci
 
 COPY . $APP_HOME
 
-RUN npm build
+RUN npm run build
