@@ -76,7 +76,7 @@ const menuItems = [
                 <UToggle v-model="selected" @click="toggleColorMode" />
               </div>
             </template>
-            <UAvatar :src="userStore.getPicturePath()" alt="user picture" />
+            <UAvatar img-class="object-cover" :src="userStore.getPicturePath()" alt="user picture" />
           </UDropdown>
         </div>
       </div>

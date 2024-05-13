@@ -31,7 +31,8 @@ const { pending, error } = await useLazyAsyncData('account-activation',
       uid: route.params.uid,
       token: route.params.token
     }
-  })
+  }),
+  { server: false }
 )
 
 const title = computed(() => {

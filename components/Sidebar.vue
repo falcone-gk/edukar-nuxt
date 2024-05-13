@@ -11,16 +11,16 @@
     </div>
   </header>
   <USlideover class="md:hidden" v-model="isOpen" side="left" :ui="{
-        width: 'relative w-5/6 max-w-md',
-        base: ''
-      }">
+    width: 'relative w-5/6 max-w-md',
+    base: ''
+  }">
     <UCard class="h-screen" :ui="{ base: 'flex flex-col', footer: { base: 'mt-auto' } }">
       <template v-if="userStore.user" #header>
         <ul>
           <li>
             <div class="flex justify-between px-2.5 py-1.5">
               <div class="flex items-center gap-1.5">
-                <UAvatar :src="userStore.getPicturePath()" />
+                <UAvatar img-class="object-cover" :src="userStore.getPicturePath()" />
                 <span>{{ userStore.user.username }}</span>
               </div>
             </div>

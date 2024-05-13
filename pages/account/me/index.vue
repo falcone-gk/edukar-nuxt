@@ -11,7 +11,7 @@
       <template #data="{ data: profile }">
         <div class="flex flex-col gap-4">
           <div class="text-center">
-            <UAvatar :src="profile.picture" size="3xl" alt="picture" />
+            <UAvatar img-class="object-cover" :src="profile.picture" size="3xl" alt="picture" />
           </div>
 
           <!-- User profile data -->
