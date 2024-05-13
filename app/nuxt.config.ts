@@ -3,6 +3,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: [
     '@nuxt/ui', '@pinia/nuxt', 'nuxt-tiptap-editor',
+    'nuxt-gtag'
   ],
   tiptap: {
     prefix: "Tiptap"
@@ -37,5 +38,8 @@ export default defineNuxtConfig({
   components: [
     { path: '~/components/tiptap', pathPrefix: false },
     '~/components'
-  ]
+  ],
+  gtag: {
+    id: 'G-SY6C8KYYDR'
+  }
 })

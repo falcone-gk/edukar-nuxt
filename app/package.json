@@ -22,6 +22,7 @@
   "devDependencies": {
     "@iconify-json/ri": "^1.1.20",
     "@tailwindcss/typography": "^0.5.13",
+    "nuxt-gtag": "^2.0.5",
     "nuxt-tiptap-editor": "^1.1.0"
   }
 }
