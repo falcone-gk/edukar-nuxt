@@ -40,14 +40,14 @@
                 :ui="customUIBtn" />
 
               <UButton color="black" v-if="examSelectData?.source_video_solution" label="Video solucionario" size="xs"
-                rounded :to="examSelectData?.source_exam" target="_blank" :ui="customUIBtn">
+                rounded :to="examSelectData?.source_video_solution" target="_blank" :ui="customUIBtn">
                 <template #trailing>
                   <span class="text-black px-1.5 py-0.5 rounded bg-gray-300">Free</span>
                 </template>
               </UButton>
 
               <UButton color="black" v-if="examSelectData?.source_video_solution_premium" label="Video solucionario"
-                size="xs" rounded :to="examSelectData?.source_exam" target="_blank" :ui="customUIBtn">
+                size="xs" rounded :to="examSelectData?.source_video_solution_premium" target="_blank" :ui="customUIBtn">
                 <template #trailing>
                   <span class="flex gap-1 text-black px-1.5 py-0.5 rounded bg-yellow-400">
                     <UIcon class="w-4 h-auto" name="i-ri-vip-crown-2-fill" />
