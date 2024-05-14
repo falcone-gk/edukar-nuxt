@@ -12,7 +12,9 @@
   "dependencies": {
     "@nuxt/ui": "^2.14.1",
     "@pinia/nuxt": "^0.5.1",
+    "@tiptap-pro/extension-mathematics": "^2.8.6",
     "@tiptap/extension-image": "^2.2.4",
+    "katex": "^0.16.10",
     "nuxt": "^3.10.3",
     "pinia": "^2.1.7",
     "vue": "^3.4.19",
