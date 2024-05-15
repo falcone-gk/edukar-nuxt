@@ -123,7 +123,7 @@ const renderLatex = (html: string) => {
 
 const renderEquation = (text: string) => {
   // Regular expression to find LaTeX expressions within $
-  const regex = /\$(.*?)\$/g;
+  const regex = /\$\$(.*?)\$\$/g;
   return text.replace(regex, (match, equation) => {
     try {
       return katex.renderToString(equation, { throwOnError: false });

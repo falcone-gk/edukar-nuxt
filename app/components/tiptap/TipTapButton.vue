@@ -1,5 +1,8 @@
 <template>
-  <UButton v-bind="$attrs" color="gray" :variant="props.isActive ? 'outline' : 'ghost'" size="2xs" :padding="false" />
+  <UTooltip :text="props.title" :popper="{ arrow: true }">
+    <UButton @click="emits('onCustomClick')" v-bind="$attrs" color="gray" :variant="props.isActive ? 'outline' : 'ghost'"
+      size="2xs" :padding="false" />
+  </UTooltip>
 </template>
 
 <script setup lang="ts">
@@ -13,4 +16,6 @@ const props = defineProps({
     required: true
   }
 })
+
+const emits = defineEmits(['onCustomClick'])
 </script>
