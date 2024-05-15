@@ -24,11 +24,7 @@ const props = defineProps({
     type: String,
     default: 'primary',
     validator: (value: string) => {
-<<<<<<< HEAD
-      return ['primary', 'white', 'info', 'danger', 'gray'].includes(value)
-=======
-      return ['primary', 'white', 'danger', 'gray', 'black'].includes(value)
->>>>>>> feature/tiptap-math
+      return ['primary', 'white', 'info', 'danger', 'gray', 'black'].includes(value)
     }
   }
 })

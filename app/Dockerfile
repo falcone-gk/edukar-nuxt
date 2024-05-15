@@ -11,6 +11,7 @@ WORKDIR $APP_HOME
 
 # copy both 'package.json' and 'package-lock.json' (if available)
 COPY package*.json ./
+COPY .npmrc ./
 
 # install project dependencies
 RUN npm ci
