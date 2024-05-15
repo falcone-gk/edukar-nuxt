@@ -8,7 +8,7 @@
 
     <div class="text-left flex flex-col md:flex-row gap-20 w-full">
       <div class="flex-1">
-        <Typography color="white" tag="h3" variant="h1" class="mb-12">
+        <Typography color="black" tag="h3" variant="h1" class="mb-12">
           Utiliza nuestro editor de texto <br> con código <span aria-label="LaTeX" class="text-primary"
             v-html="latexCode"></span>
         </Typography>
