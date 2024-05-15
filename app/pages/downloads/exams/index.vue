@@ -1,6 +1,27 @@
 <template>
   <section id="downloads" class="flex justify-center px-2">
+    <UModal prevent-close v-model="isOpenAuthModal">
+      <UCard>
+        <template #header>
+          <div class="flex items-center justify-between">
+            <Typography tag="h1" color="danger" variant="big">
+              No autorizado!
+            </Typography>
+            <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="-my-1"
+              @click="isOpenAuthModal = false" />
+          </div>
+        </template>
 
+        <p>Para poder acceder a nuestros exámenes debes iniciar sesión o registrarte!</p>
+
+        <template #footer>
+          <div class="flex justify-end gap-2">
+            <UButton label="Ir a iniciar sesión" to="/login" />
+          </div>
+        </template>
+
+      </UCard>
+    </UModal>
     <!-- Modal to show downloads description -->
     <LazyUModal v-model="isOpen" prevent-close :ui="{
       width: 'w-11/12 sm:w-3/4 md:w-2/3 lg:w-3/5 xl:w-2/5'
@@ -11,7 +32,7 @@
             <h3 class="text-base font-semibold leading-6 text-primary">
               {{ examSelectData?.title }}
             </h3>
-            <UButton variant="ghost" icon="i-heroicons-x-mark-solid" class="-my-1" @click="isOpen = false" />
+            <UButton variant="ghost" color="gray" icon="i-heroicons-x-mark-solid" class="-my-1" @click="isOpen = false" />
           </div>
         </template>
 
@@ -140,10 +161,19 @@ const { data, pending, page, clearFilters } = usePaginationFilter<ExamPagination
 
 
 const isOpen = ref(false)
+const isOpenAuthModal = ref(false)
+
+const userStore = useUserStore()
+
 const examSelectData = ref<Exams | undefined>(undefined)
 const showSelectedExam = (examData: Exams) => {
-  examSelectData.value = examData
-  isOpen.value = true
+  if (userStore.isLogged) {
+    examSelectData.value = examData
+    isOpen.value = true
+  } else {
+    isOpenAuthModal.value = true
+  }
 }
+
 
 </script>
