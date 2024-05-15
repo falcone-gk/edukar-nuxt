@@ -2,7 +2,7 @@
   <div>
     <div class="border border-gray-300 dark:border-gray-700 rounded-b-md">
       <div v-if="editor">
-        <div class="flex items-center gap-1 h-8 px-2 border-b border-b-gray-300 dark:border-gray-700">
+        <div class="flex overflow-y-auto items-center gap-1 h-8 px-2 border-b border-b-gray-300 dark:border-gray-700">
 
           <USelectMenu v-model="labels" :options="headingOptions" value-attribute="id" option-attribute="label" :ui-menu="{
             width: 'w-48'
@@ -267,9 +267,6 @@ onBeforeUnmount(() => {
   unref(editor)?.destroy()
 })
 
-const colorMode = useColorMode()
-const equationColor = colorMode.preference === 'dark' ? "rgb(var(--dark-accent-color))" : "rgb(var(--accent-color))"
-
 </script>
 
 <style>
@@ -288,7 +285,8 @@ const equationColor = colorMode.preference === 'dark' ? "rgb(var(--dark-accent-c
 }
 
 .ProseMirror .Tiptap-mathematics-render:hover {
-  background: v-bind(equationColor);
+  background: rgb(var(--dark-accent-color));
+  color: #fff;
 }
 
 .ProseMirror .Tiptap-mathematics-editor,

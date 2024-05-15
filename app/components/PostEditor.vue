@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="bg-white dark:bg-gray-900 rounded-lg">
     <UTabs :items="items" :ui="{
       wrapper: 'space-y-0',
       list: {
@@ -17,7 +17,7 @@
             <div v-if="image">
               <UChip size="md" inset :ui="{ base: '-mx-2 rounded-none ring-0', background: '' }">
                 <img :src="image" alt="Uploaded Image"
-                  class="border-2 border-transparent border-primary-600 dark:border-primary-500 max-h-[400px] w-full" />
+                  class="border-2 border-primary-600 dark:border-primary-500 max-h-[400px] w-full" />
 
                 <template #content>
                   <UButton icon="i-heroicons-x-mark-20-solid" size="xl" :padded="false" :ui="{ rounded: 'rounded-full' }"
@@ -76,8 +76,8 @@ const items = [
   { slot: 'image', label: 'Subir Imagen' }
 ]
 
-const content = defineModel<string | undefined>('text', { default: '', required: true })
-const fileImage = defineModel<File | undefined>('image', { default: undefined, required: true })
+const content = defineModel<string | undefined>('text', { default: '', required: false })
+const fileImage = defineModel<File | undefined>('image', { default: undefined, required: false })
 const image = ref<string | undefined>();
 
 const onRemoveImage = () => {
