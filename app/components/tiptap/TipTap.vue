@@ -46,6 +46,8 @@
 </template>
 
 <script setup lang="ts">
+import Mathematics from '@tiptap-pro/extension-mathematics'
+import 'katex/dist/katex.min.css'
 // import { Image as ImageTipTap } from '@tiptap/extension-image'
 
 const model = defineModel({ required: true })
@@ -127,7 +129,10 @@ function uploadImage(file: File) {
 
 const editor = useEditor({
   content: model.value as string,
-  extensions: [TiptapStarterKit],
+  extensions: [
+    TiptapStarterKit,
+    Mathematics
+  ],
   editorProps: {
     attributes: {
       class: 'prose dark:prose-invert outline-none rounded-b-md px-2 py-2 h-[400px] overflow-y-auto',
@@ -233,3 +238,29 @@ onBeforeUnmount(() => {
 })
 
 </script>
+
+<style>
+/* Basic editor styles */
+.ProseMirror .Tiptap-mathematics-editor {
+  background: #202020;
+  color: #fff;
+  font-family: monospace;
+  padding: 0.2rem 0.5rem;
+}
+
+.ProseMirror .Tiptap-mathematics-render {
+  cursor: pointer;
+  padding: 0 0.25rem;
+  transition: background 0.2s;
+}
+
+.ProseMirror .Tiptap-mathematics-render:hover {
+  background: #eee;
+}
+
+.ProseMirror .Tiptap-mathematics-editor,
+.ProseMirror .Tiptap-mathematics-render {
+  border-radius: 0.25rem;
+  display: inline-block;
+}
+</style>
