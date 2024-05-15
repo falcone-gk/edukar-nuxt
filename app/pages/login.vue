@@ -1,4 +1,28 @@
 <template>
+  <UModal prevent-close v-model="isOpen">
+    <UCard>
+      <template #header>
+        <div class="flex items-center justify-between">
+          <Typography tag="h1" color="info" variant="big">
+            Invitación
+          </Typography>
+          <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="-my-1"
+            @click="isOpen = false" />
+        </div>
+      </template>
+
+      <p>Por diversos motivos tuvimos que reniciar nuestros datos. Por ello, <span
+          class="text-yellow-500 dark:text-yellow-400">te invitamos a
+          registrarte nuevamente</span> a nuestra comunidad de estudiantes.</p>
+
+      <template #footer>
+        <div class="flex justify-end gap-2">
+          <CustomButtonGradient label="Ir a registrarse" color="gray" to="/signup" />
+        </div>
+      </template>
+
+    </UCard>
+  </UModal>
   <section id="login" class="translate-y-32">
     <UCard :ui="{
       base: 'mx-auto max-w-[400px]'
@@ -77,7 +101,11 @@ const submitLogin = async (event: FormSubmitEvent<UserLogin>) => {
   } else {
     if (error.value?.statusCode === 400) {
       form.value?.setErrors([{ message: 'El nombre de usuario o contraseña son incorrectos.', path: 'password' }])
+      isOpen.value = true
     }
   }
 }
+
+const isOpen = ref(false)
+
 </script>
