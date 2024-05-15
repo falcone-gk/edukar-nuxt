@@ -1,11 +1,11 @@
 <template>
-  <section ref="mySection" class="flex flex-col mx-2 md:mx-0 text-center gap-12 h-full"
+  <div ref="mySection" class="flex flex-col mx-2 md:mx-0 text-center gap-12 h-full"
     :class="{ ['demo']: props.transition }" :id="props.id">
     <Typography :tag="props.tag" variant="bigger" color="primary" class="font-extrabold leading-[1.25]">
       {{ props.title }}
     </Typography>
     <slot />
-  </section>
+  </div>
 </template>
 
 <script lang="ts" setup>
