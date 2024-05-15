@@ -24,7 +24,11 @@ const props = defineProps({
     type: String,
     default: 'primary',
     validator: (value: string) => {
+<<<<<<< HEAD
       return ['primary', 'white', 'info', 'danger', 'gray'].includes(value)
+=======
+      return ['primary', 'white', 'danger', 'gray', 'black'].includes(value)
+>>>>>>> feature/tiptap-math
     }
   }
 })
@@ -38,9 +42,9 @@ const computedTag = computed(() => {
 
 const variantClasses = computed(() => {
   const classLookup = {
-    h1: 'text-4xl',
+    h1: 'text-2xl sm:text-3xl md:text-4xl',
     h2: 'text-3xl',
-    h3: 'text-2xl',
+    h3: 'text-lg sm:text-xl md:text-2xl',
     big: 'text-xl',
     bigger: 'text-[2.50rem] md:text-[3.25rem]',
     body: 'text-base',
@@ -55,8 +59,9 @@ const colorClasses = computed(() => {
     primary: 'text-primary-500 dark:text-primary-400',
     danger: 'text-red-500 dark:text-red-400',
     gray: 'text-gray-500 dark:text-gray-400',
-    white: 'text-white',
-    info: 'text-cyan-500 dark:text-cyan-400'
+    info: 'text-cyan-500 dark:text-cyan-400',
+    white: 'text-white dark:text-black',
+    black: 'text-black dark:text-white'
   }
   return classLookup[props.color as keyof typeof classLookup]
 })

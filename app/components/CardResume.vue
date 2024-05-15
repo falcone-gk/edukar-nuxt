@@ -1,6 +1,6 @@
 <template>
   <UCard>
-    <figure @click="emit('callback')" class="relative max-w-fit mx-auto bg-white">
+    <figure @click="emit('callback')" class="relative max-w-fit mx-auto">
       <img :src="useImgFullPath(props.image)" alt="imagen de carta" class="cursor-pointer h-64 object-cover border-2">
       <div
         class="absolute top-0 right-0 cursor-pointer flex items-center justify-center w-full h-full shadow-2xl bg-gray-800 transition-opacity duration-500 ease-in-out opacity-0 hover:opacity-100">

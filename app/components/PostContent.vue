@@ -26,7 +26,9 @@
       <div v-if="props.data.image">
         <img :src="useImgFullPath(props.data.image)" alt="Post Image">
       </div>
-      <article class="prose prose-sm md:prose-base dark:prose-invert" v-html="props.data.body"></article>
+      <ClientOnly>
+        <article class="prose prose-sm md:prose-base dark:prose-invert" v-html="renderLatex(props.data.body)"></article>
+      </ClientOnly>
 
       <template v-if="!isReply || userStore.isAuthorUser(props.data.author.username)" #footer>
         <div class="space-x-2">
@@ -50,6 +52,7 @@
 </template>
 
 <script lang="ts" setup>
+import katex from 'katex';
 import type { Comment, Post, Reply } from '~/types/forum';
 import { translateDateMonth } from '~/utils/text';
 
@@ -98,4 +101,37 @@ const deleteCallback = async () => {
     accept: () => emits('onDelete'),
   })
 }
+
+//Katex to render equations
+const renderLatex = (html: string) => {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+  const nodes = doc.body.childNodes;
+
+  nodes.forEach(node => {
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      const newNode = node.cloneNode(true);
+      // @ts-ignore
+      newNode.innerHTML = renderEquation(node.innerHTML);
+      // @ts-ignore
+      node.parentNode.replaceChild(newNode, node);
+    }
+  });
+
+  return doc.body.innerHTML;
+}
+
+const renderEquation = (text: string) => {
+  // Regular expression to find LaTeX expressions within $
+  const regex = /\$\$(.*?)\$\$/g;
+  return text.replace(regex, (match, equation) => {
+    try {
+      return katex.renderToString(equation, { throwOnError: false });
+    } catch (e) {
+      // Return the original text if there's an error in rendering LaTeX
+      return match;
+    }
+  });
+}
+
 </script>

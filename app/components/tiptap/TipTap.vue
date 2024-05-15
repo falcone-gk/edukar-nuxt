@@ -2,7 +2,7 @@
   <div>
     <div class="border border-gray-300 dark:border-gray-700 rounded-b-md">
       <div v-if="editor">
-        <div class="flex items-center gap-1 h-8 px-2 border-b border-b-gray-300 dark:border-gray-700">
+        <div class="flex overflow-y-auto items-center gap-1 h-8 px-2 border-b border-b-gray-300 dark:border-gray-700">
 
           <USelectMenu v-model="labels" :options="headingOptions" value-attribute="id" option-attribute="label" :ui-menu="{
             width: 'w-48'
@@ -14,27 +14,34 @@
             </template>
           </USelectMenu>
 
-          <TipTapButton title="Bold" @click="editor.chain().focus().toggleBold().run()" icon="i-heroicons-bold-solid"
-            :is-active="editor.isActive('bold')" />
-          <TipTapButton title="Italic" @click="editor.chain().focus().toggleItalic().run()"
+          <TipTapButton title="Negrita" @on-custom-click="editor.chain().focus().toggleBold().run()"
+            icon="i-heroicons-bold-solid" :is-active="editor.isActive('bold')" />
+          <TipTapButton title="Cursiva" @on-custom-click="editor.chain().focus().toggleItalic().run()"
             icon="i-heroicons-italic-solid" :is-active="editor.isActive('italic')" />
-          <TipTapButton title="Strike" @click="editor.chain().focus().toggleStrike().run()" icon="i-ri-strikethrough"
-            :is-active="editor.isActive('strike')" />
+          <TipTapButton title="Strike" @on-custom-click="editor.chain().focus().toggleStrike().run()"
+            icon="i-ri-strikethrough" :is-active="editor.isActive('strike')" />
 
           <UDivider class="w-1 h-full" orientation="vertical" />
 
-          <TipTapButton title="Unordered list" @click="editor.chain().focus().toggleBulletList().run()"
+          <TipTapButton title="Lista" @on-custom-click="editor.chain().focus().toggleBulletList().run()"
             icon="i-heroicons-list-bullet-solid" :is-active="editor.isActive('bulletList')" />
-          <TipTapButton title="Ordered list" @click="editor.chain().focus().toggleOrderedList().run()"
+          <TipTapButton title="Lista enumerada" @on-custom-click="editor.chain().focus().toggleOrderedList().run()"
             icon="i-ri-list-ordered" :is-active="editor.isActive('orderedList')" />
 
           <UDivider class="w-1 h-full" orientation="vertical" />
 
-          <TipTapButton title="Undo" @click="editor.chain().focus().undo().run()" icon="i-ri-arrow-go-back-fill"
-            :disabled="!editor.can().chain().focus().undo().run()" />
-          <TipTapButton title="Redo" @click="editor.chain().focus().redo().run()" icon="i-ri-arrow-go-forward-line"
-            :disabled="!editor.can().chain().focus().redo().run()" />
+          <TipTapButton title="Deshacer" @on-custom-click="editor.chain().focus().undo().run()"
+            icon="i-ri-arrow-go-back-fill" :disabled="!editor.can().chain().focus().undo().run()" />
+          <TipTapButton title="Rehacer" @on-custom-click="editor.chain().focus().redo().run()"
+            icon="i-ri-arrow-go-forward-line" :disabled="!editor.can().chain().focus().redo().run()" />
 
+          <UDivider class="w-1 h-full" orientation="vertical" />
+          <TipTapButton title="Agregar ecuación" @on-custom-click="insertEquation" icon="i-mdi-function" />
+
+          <TipTapButton title="Raíz cuadrada" @on-custom-click="insertSquareRoot" icon="i-ri-square-root" />
+          <TipTapButton title="Superscript" @on-custom-click="insertSuperscript" icon="i-mdi-format-superscript" />
+          <TipTapButton title="Subscript" @on-custom-click="insertSubscript" icon="i-mdi-format-subscript" />
+          <TipTapButton title="Fracción" @on-custom-click="insertFraction" icon="i-mdi-slash-forward" />
 
         </div>
         <div>
@@ -46,6 +53,8 @@
 </template>
 
 <script setup lang="ts">
+import Mathematics from '@tiptap-pro/extension-mathematics'
+import 'katex/dist/katex.min.css'
 // import { Image as ImageTipTap } from '@tiptap/extension-image'
 
 const model = defineModel({ required: true })
@@ -127,7 +136,12 @@ function uploadImage(file: File) {
 
 const editor = useEditor({
   content: model.value as string,
-  extensions: [TiptapStarterKit],
+  extensions: [
+    TiptapStarterKit,
+    Mathematics.configure({
+      regex: /\$\$([^\$]*)\$\$/gi
+    })
+  ],
   editorProps: {
     attributes: {
       class: 'prose dark:prose-invert outline-none rounded-b-md px-2 py-2 h-[400px] overflow-y-auto',
@@ -228,8 +242,56 @@ const labels = computed({
   }
 })
 
+// Functions to insert Latex special codes
+const insertEquation = () => {
+  editor.value?.commands.insertContent('$$ f(x) = x $$ ')
+}
+
+const insertSquareRoot = () => {
+  editor.value?.commands.insertContent('\\sqrt{x}')
+}
+
+const insertSuperscript = () => {
+  editor.value?.commands.insertContent('^{x}')
+}
+
+const insertSubscript = () => {
+  editor.value?.commands.insertContent('_{x}')
+}
+
+const insertFraction = () => {
+  editor.value?.commands.insertContent('\\frac{a}{b}')
+}
+
 onBeforeUnmount(() => {
   unref(editor)?.destroy()
 })
 
 </script>
+
+<style>
+/* Basic editor styles */
+.ProseMirror .Tiptap-mathematics-editor {
+  background: rgb(var(--dark-accent-color));
+  color: #fff;
+  font-family: monospace;
+  padding: 0.2rem 0.5rem;
+}
+
+.ProseMirror .Tiptap-mathematics-render {
+  cursor: pointer;
+  padding: 0 0.25rem;
+  transition: background 0.2s;
+}
+
+.ProseMirror .Tiptap-mathematics-render:hover {
+  background: rgb(var(--dark-accent-color));
+  color: #fff;
+}
+
+.ProseMirror .Tiptap-mathematics-editor,
+.ProseMirror .Tiptap-mathematics-render {
+  border-radius: 0.25rem;
+  display: inline-block;
+}
+</style>

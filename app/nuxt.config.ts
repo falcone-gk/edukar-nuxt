@@ -28,6 +28,9 @@ export default defineNuxtConfig({
     preference: 'light',
     fallback: 'light'
   },
+  ui: {
+    icons: ["ri", "mdi"]
+  },
   pinia: {
     storesDirs: ['./stores/**']
   },
