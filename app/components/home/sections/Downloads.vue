@@ -8,7 +8,7 @@
       <CardResume :image="item.cover" :title="item.title" class="w-full"
         @callback="onClick(item.year, item.root.siglas)" />
     </UCarousel>
-    <CustomButtonGradient to="/downloads" size="xl" label="Ver exámenes" icon="i-heroicons-book-open-solid" />
+    <CustomButtonGradient to="/downloads/exams" size="xl" label="Ver exámenes" icon="i-heroicons-book-open-solid" />
   </div>
 </template>
 
@@ -30,6 +30,6 @@ const { data: exams } = await useLazyAsyncData(
 })
 
 const onClick = (year: number, siglas: string) => {
-  navigateTo(`/downloads?year=${year}&university=${siglas}`)
+  navigateTo(`/downloads/exams?year=${year}&university=${siglas}`)
 }
 </script>

@@ -22,7 +22,7 @@ const socials = [
         <Typography tag="h3" color="white">PRODUCTOS</Typography>
         <ul>
           <li>
-            <ULink class="hover:underline" to="/downloads">Exámenes</ULink>
+            <ULink class="hover:underline" to="/downloads/exams">Exámenes</ULink>
           </li>
           <li>
             <ULink class="text-left hover:underline" to="https://bit.ly/2Wv9hHP" target="_blank">

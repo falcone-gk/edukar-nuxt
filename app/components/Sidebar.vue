@@ -85,7 +85,7 @@ const navLinks = [
   { label: 'Inicio', to: '/', icon: 'i-heroicons-home' },
   { label: 'Cursos', to: '/courses', icon: 'i-heroicons-book-open-20-solid' },
   { label: 'Foro', to: '/forum', icon: 'i-heroicons-chat-bubble-left-right-20-solid' },
-  { label: 'Descargas', to: '/downloads', icon: 'i-heroicons-arrow-down-circle-20-solid' },
+  { label: 'Descargas', to: '/downloads/exams', icon: 'i-heroicons-arrow-down-circle-20-solid' },
 ]
 
 const darkMode = [

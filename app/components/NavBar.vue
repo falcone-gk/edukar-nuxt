@@ -20,7 +20,7 @@ const links = [
   { text: 'Inicio', path: '/', name: 'home', id: 1 },
   { text: 'Cursos', path: '/courses', name: 'course', id: 2 },
   { text: 'Foro', path: '/forum', name: 'forum', id: 3 },
-  { text: 'Descargas', path: '/downloads', name: 'download', id: 4 },
+  { text: 'Descargas', path: '/downloads/exams', name: 'download', id: 4 },
 ]
 
 /* const darkModeItem = [
