@@ -237,12 +237,15 @@ onBeforeUnmount(() => {
   unref(editor)?.destroy()
 })
 
+const colorMode = useColorMode()
+const equationColor = colorMode.preference === 'dark' ? "rgb(var(--dark-accent-color))" : "rgb(var(--accent-color))"
+
 </script>
 
 <style>
 /* Basic editor styles */
 .ProseMirror .Tiptap-mathematics-editor {
-  background: #202020;
+  background: rgb(var(--dark-accent-color));
   color: #fff;
   font-family: monospace;
   padding: 0.2rem 0.5rem;
@@ -255,7 +258,7 @@ onBeforeUnmount(() => {
 }
 
 .ProseMirror .Tiptap-mathematics-render:hover {
-  background: #eee;
+  background: v-bind(equationColor);
 }
 
 .ProseMirror .Tiptap-mathematics-editor,
