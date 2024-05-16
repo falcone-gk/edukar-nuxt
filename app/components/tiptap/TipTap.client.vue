@@ -2,7 +2,7 @@
   <div>
     <div class="border border-gray-300 dark:border-gray-700 rounded-b-md">
       <div v-if="editor">
-        <div class="flex overflow-y-auto items-center gap-1 h-8 px-2 border-b border-b-gray-300 dark:border-gray-700">
+        <div class="flex flex-wrap items-center gap-1 min-h-8 px-2 border-b border-b-gray-300 dark:border-gray-700">
 
           <USelectMenu v-model="labels" :options="headingOptions" value-attribute="id" option-attribute="label" :ui-menu="{
             width: 'w-48'
@@ -21,21 +21,21 @@
           <TipTapButton title="Strike" @on-custom-click="editor.chain().focus().toggleStrike().run()"
             icon="i-ri-strikethrough" :is-active="editor.isActive('strike')" />
 
-          <UDivider class="w-1 h-full" orientation="vertical" />
+          <UDivider class="w-1 h-8" orientation="vertical" />
 
           <TipTapButton title="Lista" @on-custom-click="editor.chain().focus().toggleBulletList().run()"
             icon="i-heroicons-list-bullet-solid" :is-active="editor.isActive('bulletList')" />
           <TipTapButton title="Lista enumerada" @on-custom-click="editor.chain().focus().toggleOrderedList().run()"
             icon="i-ri-list-ordered" :is-active="editor.isActive('orderedList')" />
 
-          <UDivider class="w-1 h-full" orientation="vertical" />
+          <UDivider class="w-1 h-8" orientation="vertical" />
 
           <TipTapButton title="Deshacer" @on-custom-click="editor.chain().focus().undo().run()"
             icon="i-ri-arrow-go-back-fill" :disabled="!editor.can().chain().focus().undo().run()" />
           <TipTapButton title="Rehacer" @on-custom-click="editor.chain().focus().redo().run()"
             icon="i-ri-arrow-go-forward-line" :disabled="!editor.can().chain().focus().redo().run()" />
 
-          <UDivider class="w-1 h-full" orientation="vertical" />
+          <UDivider class="w-1 h-8" orientation="vertical" />
           <TipTapButton title="Agregar ecuación" @on-custom-click="insertEquation" icon="i-mdi-function" />
 
           <TipTapButton title="Raíz cuadrada" @on-custom-click="insertSquareRoot" icon="i-ri-square-root" />
