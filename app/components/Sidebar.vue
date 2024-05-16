@@ -14,7 +14,7 @@
     width: 'relative w-5/6 max-w-md',
     base: ''
   }">
-    <UCard class="h-screen" :ui="{ base: 'flex flex-col', footer: { base: 'mt-auto' } }">
+    <UCard class="h-full" :ui="{ base: 'flex flex-col', footer: { base: 'mt-auto' } }">
       <template v-if="userStore.user" #header>
         <ul>
           <li>
