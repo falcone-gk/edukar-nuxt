@@ -60,32 +60,35 @@ const toggleColorMode = () => {
 const isOpen = ref(false)
 
 const userLinks = [
-  { label: 'Iniciar sesión', to: '/login', icon: 'i-heroicons-user-solid' },
-  { label: 'Registrarse', to: '/signup', icon: 'i-heroicons-user-plus-solid' }
+  { label: 'Iniciar sesión', to: '/login', icon: 'i-heroicons-user-solid', click: () => isOpen.value = false },
+  { label: 'Registrarse', to: '/signup', icon: 'i-heroicons-user-plus-solid', click: () => isOpen.value = false }
 ]
 
 const userLoggedLinks = [{
   label: 'Perfil',
   icon: 'i-heroicons-user-solid',
   to: '/account/me',
-  exact: true
+  exact: true,
+  click: () => isOpen.value = false
 }, {
   label: 'Mis Publicaciones',
   icon: 'i-heroicons-chat-bubble-left-right-solid',
   to: '/account/me/posts',
-  exact: true
+  exact: true,
+  click: () => isOpen.value = false
 }, {
   label: 'Notificaciones',
   icon: 'i-heroicons-envelope-solid',
   to: '/account/me/notifications',
-  exact: true
+  exact: true,
+  click: () => isOpen.value = false
 }]
 
 const navLinks = [
-  { label: 'Inicio', to: '/', icon: 'i-heroicons-home' },
-  { label: 'Cursos', to: '/courses', icon: 'i-heroicons-book-open-20-solid' },
-  { label: 'Foro', to: '/forum', icon: 'i-heroicons-chat-bubble-left-right-20-solid' },
-  { label: 'Descargas', to: '/downloads/exams', icon: 'i-heroicons-arrow-down-circle-20-solid' },
+  { label: 'Inicio', to: '/', icon: 'i-heroicons-home', click: () => isOpen.value = false },
+  { label: 'Cursos', to: '/courses', icon: 'i-heroicons-book-open-20-solid', click: () => isOpen.value = false },
+  { label: 'Foro', to: '/forum', icon: 'i-heroicons-chat-bubble-left-right-20-solid', click: () => isOpen.value = false },
+  { label: 'Descargas', to: '/downloads/exams', icon: 'i-heroicons-arrow-down-circle-20-solid', click: () => isOpen.value = false },
 ]
 
 const darkMode = [
