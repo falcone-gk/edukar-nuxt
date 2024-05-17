@@ -13,7 +13,5 @@ services:
     build: ./nginx
     ports:
       - 3000:80
-    volumes:
-      - ./nginx:/etc/nginx/conf.d
     depends_on:
       - nuxt
