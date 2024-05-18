@@ -27,19 +27,15 @@
             </div>
             <label v-else for="dropzone-file"
               class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
-              @dragover.prevent @dragenter.prevent @drop="handleDrop">
+              @dragover.prevent @dragenter.prevent @drop="handleFileUploadOrDrop">
               <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
-                </svg>
+                <UIcon class="h-8 w-8 mb-4 text-gray-500 dark:text-gray-400" name="i-heroicons-cloud-arrow-up" />
                 <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
                   Sube o arrastra una imagen
                 </p>
                 <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
               </div>
-              <input id="dropzone-file" type="file" class="hidden" @change="handleFileUpload" />
+              <input id="dropzone-file" type="file" class="hidden" @change="handleFileUploadOrDrop" />
             </label>
             <p v-if="props.currentImageUrl" class="text-sm">Actualmente: <ULink :to="props.currentImageUrl"
                 class="underline" active-class="text-primary"
@@ -85,26 +81,44 @@ const onRemoveImage = () => {
   fileImage.value = undefined
 }
 
+// Image drop/upload valiations
+
 const { showNotification } = useNotification()
-const isValidFileImage = (file: File) => {
-  const typeFile = file.type.split('/')[0]
-  if (typeFile !== 'image') {
-    showNotification({ message: 'Debes subir una imagen', type: 'error' })
-    return false
-  }
-  return true
-}
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 Megabytes in bytes
 
-const handleFileUpload = (event: Event) => {
-  const target = event.target as HTMLInputElement;
-  if (target.files && target.files.length > 0) {
-    const file = target.files[0];
+const handleFileUploadOrDrop = (event: Event | DragEvent) => {
+  // Ensure event has `dataTransfer?.files[0]` for drag events
+  // const file = (event instanceof DragEvent ? event.dataTransfer?.files[0] : (event.target as HTMLInputElement).files?.[0]) as File;
+  let file: File | undefined;
 
-    if (isValidFileImage(file)) {
-      fileImage.value = file
-      previewImage(file);
-    }
+  if (event instanceof DragEvent) {
+    file = event.dataTransfer?.files[0];
+  } else {
+    const target = event.target as HTMLInputElement;
+    file = target.files?.[0];
   }
+
+  if (!file) {
+    return; // No file selected
+  }
+
+  // Validate file size
+  if (file.size > MAX_FILE_SIZE) {
+    showNotification({ message: "Tamaño de imagen excede el límite máximo de 5MB", type: 'error' });
+    return;
+  }
+
+  // Common logic for valid files
+  if (isValidFileType(file)) {
+    fileImage.value = file;
+    previewImage(file);
+  } else {
+    showNotification({ message: 'Debes subir una imagen', type: 'error' });
+  }
+};
+
+const isValidFileType = (file: File) => {
+  return file.type.split('/')[0] === 'image';
 };
 
 const previewImage = (file: File) => {
@@ -113,17 +127,6 @@ const previewImage = (file: File) => {
     image.value = reader.result as string;
   };
   reader.readAsDataURL(file);
-};
-
-const handleDrop = (event: DragEvent) => {
-  event.preventDefault();
-  const file = event.dataTransfer?.files[0];
-  if (file) {
-    if (isValidFileImage(file)) {
-      fileImage.value = file
-      previewImage(file);
-    }
-  }
 };
 
 </script>
