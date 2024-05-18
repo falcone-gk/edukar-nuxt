@@ -57,17 +57,17 @@
               </p>
             </div>
             <div class="flex flex-wrap justify-start gap-2">
-              <UButton color="black" label="Descargar" size="xs" rounded :to="examSelectData?.source_exam" target="_blank"
+              <UButton color="gray" label="Descargar" size="xs" rounded :to="examSelectData?.source_exam" target="_blank"
                 :ui="customUIBtn" />
 
-              <UButton color="black" v-if="examSelectData?.source_video_solution" label="Video solucionario" size="xs"
+              <UButton color="gray" v-if="examSelectData?.source_video_solution" label="Video solucionario" size="xs"
                 rounded :to="examSelectData?.source_video_solution" target="_blank" :ui="customUIBtn">
                 <template #trailing>
                   <span class="text-black px-1.5 py-0.5 rounded bg-gray-300">Free</span>
                 </template>
               </UButton>
 
-              <UButton color="black" v-if="examSelectData?.source_video_solution_premium" label="Video solucionario"
+              <UButton color="gray" v-if="examSelectData?.source_video_solution_premium" label="Video solucionario"
                 size="xs" rounded :to="examSelectData?.source_video_solution_premium" target="_blank" :ui="customUIBtn">
                 <template #trailing>
                   <span class="flex gap-1 text-black px-1.5 py-0.5 rounded bg-yellow-400">
