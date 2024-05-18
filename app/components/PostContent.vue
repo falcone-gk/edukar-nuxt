@@ -23,12 +23,16 @@
           </div>
         </div>
       </template>
-      <div v-if="props.data.image">
-        <img :src="useImgFullPath(props.data.image)" alt="Post Image">
-      </div>
+
       <ClientOnly>
-        <article class="prose prose-sm md:prose-base dark:prose-invert" v-html="renderLatex(props.data.body)"></article>
+        <article class="prose prose-sm md:prose-base dark:prose-invert mb-8" v-html="renderLatex(props.data.body)">
+        </article>
       </ClientOnly>
+
+      <div v-if="props.data.image">
+        <img title="Visualizar imagen" @click="openImagePreview" class="cursor-pointer max-h-96"
+          :src="useImgFullPath(props.data.image)" alt="Post Image">
+      </div>
 
       <template v-if="!isReply || userStore.isAuthorUser(props.data.author.username)" #footer>
         <div class="space-x-2">
@@ -132,6 +136,19 @@ const renderEquation = (text: string) => {
       return match;
     }
   });
+}
+
+// image preview section
+const ModalImagePreview = defineAsyncComponent(() => import('~/components/modal/ImagePreview.vue'))
+const modal = useModal()
+const openImagePreview = () => {
+  if (!props.data.image) return
+  modal.open(ModalImagePreview, {
+    imgSrc: props.data.image,
+    onClose: () => {
+      modal.close()
+    }
+  })
 }
 
 </script>
