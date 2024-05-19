@@ -21,7 +21,7 @@
         <p></p>
       </div>
       <div class="flex-1">
-        <PostEditor v-model:text="exerciseLatexCode" />
+        <PostEditor v-model:text="exerciseLatexCode" :show-tips="false" />
       </div>
     </div>
   </div>

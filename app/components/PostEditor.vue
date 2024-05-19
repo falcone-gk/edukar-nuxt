@@ -33,12 +33,12 @@
                 <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
                   Sube o arrastra una imagen
                 </p>
-                <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+                <p class="text-xs text-gray-500 dark:text-gray-400">PNG, JPG, JPEG o GIF (MAX. 5MB)</p>
               </div>
               <input id="dropzone-file" type="file" class="hidden" @change="handleFileUploadOrDrop" />
             </label>
-            <p v-if="props.currentImageUrl" class="text-sm">Actualmente: <ULink :to="props.currentImageUrl"
-                class="underline" active-class="text-primary"
+            <p v-if="props.currentImageUrl" class="text-sm">Actualmente: <ULink
+                :to="useImgFullPath(props.currentImageUrl)" class="underline" active-class="text-primary"
                 inactive-class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
                 target="_blank">
                 {{ props.currentImageUrl.split('/').at(-1) }}
@@ -49,6 +49,11 @@
       </template>
     </UTabs>
 
+    <div v-if="props.showTips">
+      <p class="text-gray-400 dark:text-gray-500 text-xs"><i>Nota: Puedes enviar texto e imagen al mismo tiempo.</i></p>
+      <p class="text-gray-400 dark:text-gray-500 text-xs"><i>Tip: Las ecuaciones deben estar entre "$$" para
+          renderizarse: $$ f(x) = x $$</i></p>
+    </div>
     <p v-if="props.errors && props.errors.length > 0" class="mt-2 text-red-500 dark:text-red-400 text-sm">
       {{ props.errors[0].message }}
     </p>
@@ -64,6 +69,10 @@ const props = defineProps({
   },
   currentImageUrl: {
     type: String as PropType<string | null>
+  },
+  showTips: {
+    type: Boolean,
+    default: true
   }
 })
 
