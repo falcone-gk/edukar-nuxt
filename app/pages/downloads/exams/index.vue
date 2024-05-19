@@ -95,13 +95,17 @@
 
         <div>
           <div class="flex flex-col-reverse md:flex-row gap-2 px-3 py-3.5">
-            <div class="flex gap-2">
+            <div class="flex flex-col md:flex-row gap-2">
               <UFormGroup>
                 <USelect v-model="filters.year" :options="serviceStore.years" placeholder="--Seleccionar año--" />
               </UFormGroup>
               <UFormGroup>
                 <USelect v-model="filters.univ" :options="serviceStore.universities"
                   placeholder="--Seleccionar universidad--" />
+              </UFormGroup>
+              <UFormGroup>
+                <USelect v-model="filters.video" :options="serviceStore.videos"
+                  placeholder="--Seleccionar video solucionario--" />
               </UFormGroup>
             </div>
 
@@ -147,12 +151,12 @@ useSeoMeta({
 const customUIBtn = { rounded: 'rounded-full' }
 const serviceStore = useServiceStore()
 
-
 type ExamPagination = PaginationData<Exams>
 const route = useRoute()
 const filters = reactive({
   year: route.query.year as string | undefined,
-  univ: route.query.university as string | undefined
+  univ: route.query.university as string | undefined,
+  video: undefined as string | undefined
 })
 const pageCount = ref(8)
 const { data, pending, page, clearFilters } = usePaginationFilter<ExamPagination>(

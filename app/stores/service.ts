@@ -4,6 +4,10 @@ import type { UniversityOption, YearsOption, ExamsFilter } from '~/types'
 export const useServiceStore = defineStore('serviceStore', () => {
   const universities = ref<UniversityOption[]>([])
   const years = ref<YearsOption[]>([])
+  const videos = [
+    { label: 'Video Solucionario Gratis', value: 'free' },
+    { label: 'Video Solucionario Premium', value: 'premium' },
+  ]
 
   const { data: filters, execute: getFilters } = useAsyncData(
     'exams-filter',
@@ -30,5 +34,5 @@ export const useServiceStore = defineStore('serviceStore', () => {
   // TODO: find another way to do this with async and await
   setupFilters()
 
-  return { universities, years }
+  return { universities, years, videos }
 })
