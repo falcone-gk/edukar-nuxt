@@ -159,7 +159,7 @@ const filters = reactive({
   univ: route.query.university as string | undefined,
   video: undefined as string | undefined
 })
-const pageCount = ref(4)
+const pageCount = ref(8)
 const { data, pending, page, clearFilters } = usePaginationFilter<ExamPagination>(
   { key: 'exams', size: pageCount.value, filters: filters, url: '/services/exams-list/' }
 )
