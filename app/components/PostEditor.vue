@@ -49,7 +49,7 @@
       </template>
     </UTabs>
 
-    <div v-if="props.showTips">
+    <div class="mt-2" v-if="props.showTips">
       <p class="text-gray-400 dark:text-gray-500 text-xs"><i>Nota: Puedes enviar texto e imagen al mismo tiempo.</i></p>
       <p class="text-gray-400 dark:text-gray-500 text-xs"><i>Tip: Las ecuaciones deben estar entre "$$" para
           renderizarse: $$ f(x) = x $$</i></p>
