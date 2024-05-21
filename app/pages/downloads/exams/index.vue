@@ -97,20 +97,21 @@
           <div class="flex flex-col-reverse md:flex-row gap-2 px-3 py-3.5">
             <div class="flex flex-col md:flex-row gap-2">
               <UFormGroup>
-                <USelect v-model="filters.year" :options="serviceStore.years" placeholder="--Seleccionar año--" />
+                <USelect v-model="filters.year" :options="serviceStore.years" @change="updateQueryUrl"
+                  placeholder="--Seleccionar año--" />
               </UFormGroup>
               <UFormGroup>
-                <USelect v-model="filters.univ" :options="serviceStore.universities"
+                <USelect v-model="filters.univ" :options="serviceStore.universities" @change="updateQueryUrl"
                   placeholder="--Seleccionar universidad--" />
               </UFormGroup>
               <UFormGroup>
-                <USelect v-model="filters.video" :options="serviceStore.videos"
+                <USelect v-model="filters.video" :options="serviceStore.videos" @change="updateQueryUrl"
                   placeholder="--Seleccionar video solucionario--" />
               </UFormGroup>
             </div>
 
             <div class="md:ml-auto">
-              <UButton label="Limpiar filtros" variant="ghost" color="gray" @click="clearFilters" />
+              <UButton label="Limpiar filtros" variant="ghost" color="gray" @click="onClearFilters" />
             </div>
           </div>
 
@@ -158,7 +159,7 @@ const filters = reactive({
   univ: route.query.university as string | undefined,
   video: undefined as string | undefined
 })
-const pageCount = ref(8)
+const pageCount = ref(4)
 const { data, pending, page, clearFilters } = usePaginationFilter<ExamPagination>(
   { key: 'exams', size: pageCount.value, filters: filters, url: '/services/exams-list/' }
 )
@@ -179,5 +180,20 @@ const showSelectedExam = (examData: Exams) => {
   }
 }
 
+const router = useRouter()
+const updateQueryUrl = () => {
+  router.push({
+    path: route.path, query: {
+      year: filters.year,
+      university: filters.univ,
+      video: filters.video
+    }
+  })
+}
+
+const onClearFilters = () => {
+  clearFilters()
+  updateQueryUrl()
+}
 
 </script>
