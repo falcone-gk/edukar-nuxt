@@ -23,7 +23,7 @@
 
     </UCard>
   </UModal>
-  <section id="login" class="translate-y-32">
+  <section id="login">
     <UCard :ui="{
       base: 'mx-auto max-w-[400px]'
     }">
@@ -65,6 +65,7 @@ useSeoMeta({
 
 definePageMeta({
   middleware: ['anonymous'],
+  layout: 'centered'
 })
 
 type UserLogin = z.infer<typeof userLoginSchema>

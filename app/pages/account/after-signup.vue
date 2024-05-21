@@ -67,7 +67,8 @@ definePageMeta({
         return abortNavigation()
       }
     }
-  ]
+  ],
+  layout: 'centered'
 })
 
 const signupEmail = useState<string>('signupEmail')

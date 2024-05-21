@@ -22,6 +22,10 @@
 
 <script lang="ts" setup>
 
+definePageMeta({
+  layout: 'centered'
+})
+
 const route = useRoute()
 
 const { pending, error } = await useLazyAsyncData('account-activation',

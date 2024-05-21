@@ -8,4 +8,8 @@
 useHead({
   title: 'Restaurar Contraseña'
 })
+
+definePageMeta({
+  layout: 'centered'
+})
 </script>
