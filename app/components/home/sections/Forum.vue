@@ -32,10 +32,10 @@ import katex from 'katex';
 
 const latexCode = katex.renderToString('\\LaTeX')
 const exerciseLatexCode = ref(`
-<strong><h2>Ejercicio:</h2></strong>
+<strong>Ejercicio:</strong>
 <p>Calcular el valor de $$ "n" $$ si el grado del producto: $$ (x+1)(x^2+2)(x^3+3)(x^4+4) \\dots (x^n+n) $$ es igual a 210.</p>
 <p>Dato: $$ 1+2+3+4+\\dots+n = \\frac{n(n+1)}{2} $$</p> 
-<strong><h2>Solución:</h2></strong>
+<strong>Solución:</strong>
 <p>Grado del producto: $$1+2+3+4+\\dots+n = 210$$ </p>
 <p>Por dato del problema:</p>
 <ol>
