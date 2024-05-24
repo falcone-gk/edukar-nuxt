@@ -75,9 +75,9 @@
 import type { Post } from '~/types/forum';
 import { commentSchema } from '~/schemas/forum';
 
-useHead({
-  title: 'Publicación'
-})
+//useHead({
+//  title: 'Publicación'
+//})
 
 definePageMeta({
   name: 'post',
@@ -118,6 +118,26 @@ const { data: post, pending, refresh } = await useLazyAsyncData(
   'postData',
   () => useApiFetch<Post>(`/forum/posts/${postSlug}`)
 )
+
+const { getAbsoluteUrl } = useAbsoluteUrl()
+const { getAbsoluteApiUrl } = useAbsoluteApiUrl()
+
+useSeoMeta({
+  title: () => `${post.value?.title}`,
+  description: () => `${post.value?.body}`,
+
+  // Social media
+  ogImage: () => `${post.value?.image ? getAbsoluteApiUrl(post.value?.image) : getAbsoluteUrl('/images/banner_edukar.jpg')}`,
+  ogImageAlt: () => 'Imagen de la publicación',
+  ogDescription: () => `${post.value?.body}`,
+  ogTitle: () => `${post.value?.title}`,
+  ogUrl: () => getAbsoluteUrl(`/forum/${post.value?.section.slug}/${post.value?.slug}`),
+
+  // Twitter
+  twitterImage: () => `${post.value?.image ? getAbsoluteApiUrl(post.value?.image) : getAbsoluteUrl('/images/banner_edukar.jpg')}`,
+  twitterDescription: () => `${post.value?.body}`,
+  twitterTitle: () => `${post.value?.title}`,
+})
 
 interface PostModalOptions {
   method: 'post'
