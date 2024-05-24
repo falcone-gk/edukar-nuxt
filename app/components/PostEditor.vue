@@ -38,7 +38,7 @@
               <input id="dropzone-file" type="file" class="hidden" @change="handleFileUploadOrDrop" />
             </label>
             <p v-if="props.currentImageUrl" class="text-sm">Actualmente: <ULink
-                :to="useImgFullPath(props.currentImageUrl)" class="underline" active-class="text-primary"
+                :to="getAbsoluteApiUrl(props.currentImageUrl)" class="underline" active-class="text-primary"
                 inactive-class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
                 target="_blank">
                 {{ props.currentImageUrl.split('/').at(-1) }}
@@ -75,6 +75,8 @@ const props = defineProps({
     default: true
   }
 })
+
+const { getAbsoluteApiUrl } = useAbsoluteApiUrl()
 
 const items = [
   { slot: 'text', label: 'Editor de Texto' },

@@ -15,7 +15,7 @@
             @click="emits('close')" />
         </div>
       </template>
-      <img class="m-auto" :src="useImgFullPath(props.imgSrc)" :alt="props.imgSrc.split('/').at(-1)">
+      <img class="m-auto" :src="getAbsoluteApiUrl(props.imgSrc)" :alt="props.imgSrc.split('/').at(-1)">
     </UCard>
   </UModal>
 </template>
@@ -29,4 +29,5 @@ const props = defineProps({
 })
 
 const emits = defineEmits(['close'])
+const { getAbsoluteApiUrl } = useAbsoluteApiUrl()
 </script>

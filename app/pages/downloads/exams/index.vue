@@ -39,7 +39,7 @@
         <!-- Card Body -->
         <div class="flex flex-col justify-center gap-4 sm:flex-row">
           <div class="mx-auto sm:w-1/2">
-            <img :src="useImgFullPath(examSelectData?.cover as string)" alt="Book cover" class="w-full max-w-[400px]">
+            <img :src="getAbsoluteApiUrl(examSelectData?.cover as string)" alt="Book cover" class="w-full max-w-[400px]">
           </div>
           <div class="sm:w-1/2 pl-4">
             <div class="flex flex-col my-3 gap-2">
@@ -151,6 +151,7 @@ useSeoMeta({
 
 const customUIBtn = { rounded: 'rounded-full' }
 const serviceStore = useServiceStore()
+const { getAbsoluteApiUrl } = useAbsoluteApiUrl()
 
 type ExamPagination = PaginationData<Exams>
 const route = useRoute()

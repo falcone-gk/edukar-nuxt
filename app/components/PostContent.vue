@@ -7,7 +7,7 @@
       <template #header>
         <div class="flex gap-4">
           <div class="flex items-center">
-            <img class="rounded-full w-[48px] h-[48px] max-w-none" :src="useImgFullPath(props.data.author.picture)"
+            <img class="rounded-full w-[48px] h-[48px] max-w-none" :src="getAbsoluteApiUrl(props.data.author.picture)"
               alt="author post">
           </div>
           <div>
@@ -31,7 +31,7 @@
 
       <div v-if="props.data.image">
         <img title="Visualizar imagen" @click="openImagePreview" class="cursor-pointer max-h-96"
-          :src="useImgFullPath(props.data.image)" alt="Post Image">
+          :src="getAbsoluteApiUrl(props.data.image)" alt="Post Image">
       </div>
 
       <template v-if="!isReply || userStore.isAuthorUser(props.data.author.username)" #footer>
@@ -64,6 +64,7 @@ const userStore = useUserStore()
 const slots = useSlots()
 const { showNotification } = useNotification()
 const confimation = useConfirmDialog()
+const { getAbsoluteApiUrl } = useAbsoluteApiUrl()
 
 type Content = 'post' | 'comment' | 'reply'
 

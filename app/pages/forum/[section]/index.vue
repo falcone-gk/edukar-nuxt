@@ -24,7 +24,7 @@
               <div v-for="post in data?.results" @click="navigateTo(`/forum/${sectionSlug}/posts/${post.slug}`)"
                 class="flex items-center rounded w-full dark:border dark:border-slate-800 py-2 shadow-md cursor-pointer hover:bg-primary-200 dark:hover:bg-primary-600">
                 <div class="px-2">
-                  <img class="rounded-full w-[48px] h-[48px] max-w-none" :src="useImgFullPath(post.author.picture)"
+                  <img class="rounded-full w-[48px] h-[48px] max-w-none" :src="getAbsoluteApiUrl(post.author.picture)"
                     alt="picture">
                 </div>
                 <div class="w-full pr-4">
@@ -72,6 +72,7 @@ useHead({
   title: 'Secciones'
 })
 
+const { getAbsoluteApiUrl } = useAbsoluteApiUrl()
 type PostPagination = PaginationData<Post>
 
 const filters = reactive({
