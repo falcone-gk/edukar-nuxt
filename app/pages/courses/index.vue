@@ -10,14 +10,14 @@
           </Typography>
         </template>
 
-        <DataLoading :loading="pending" :data="data">
+        <DataLoading :loading="pending" :data="data" :list="data?.results">
           <template #loading>
             <SkeletonCardList />
           </template>
 
-          <template #data="{ data: courses }">
+          <template #data="{ data }">
             <div class="grid gap-4 auto-cols-auto grid-cols-[repeat(auto-fill,minmax(15rem,1fr))]">
-              <CardResume v-for="course in courses.results" :image="course.image" :title="course.name"
+              <CardResume v-for="course in data.results" :image="course.image" :title="course.name"
                 @callback="openURL(course.url)" />
             </div>
           </template>
