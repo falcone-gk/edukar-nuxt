@@ -4,6 +4,7 @@ export interface Exams {
     root: Root
     cover: string
     title: string
+    slug: string
     year: number
     source_exam: string
     source_video_solution: string
