@@ -5,8 +5,7 @@
     </p>
     <UCarousel v-if="exams" class="w-[256px] md:w-[512px] lg:w-[768px] rounded-lg overflow-hidden" arrows
       v-slot="{ item }" :items="exams" :ui="{ item: 'basis-full md:basis-1/2 lg:basis-1/3' }">
-      <CardResume :image="item.cover" :title="item.title" class="w-full"
-        @callback="onClick(item.year, item.root.siglas)" />
+      <CardResume :image="item.cover" :title="item.title" class="w-full" :to="`/downloads/exams/${item.slug}`" />
     </UCarousel>
     <CustomButtonGradient to="/downloads/exams" size="xl" label="Ver exámenes" icon="i-heroicons-book-open-solid" />
   </div>
@@ -18,7 +17,7 @@ import type { Exams } from '~/types/resultApiTypes'
 type ExamPagination = PaginationData<Exams>
 
 const { data: exams } = await useLazyAsyncData(
-  'exams-home-page', () => useApiFetch<ExamPagination>('/services/exams-list', {
+  'exams-home-page', () => useApiFetch<ExamPagination>('/services/exams/', {
     query: {
       size: 4
     }

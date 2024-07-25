@@ -124,7 +124,7 @@
             <template #data="{ data }">
               <div class="grid gap-4 auto-cols-auto grid-cols-[repeat(auto-fill,minmax(15rem,1fr))]">
                 <CardResume v-for="exam in data.results" :image="exam.cover" :title="exam.title"
-                  @callback="showSelectedExam(exam)" />
+                  :to="`/downloads/exams/${exam.slug}`" />
               </div>
             </template>
 
@@ -162,7 +162,7 @@ const filters = reactive({
 })
 const pageCount = ref(8)
 const { data, pending, page, clearFilters } = usePaginationFilter<ExamPagination>(
-  { key: 'exams', size: pageCount.value, filters: filters, url: '/services/exams-list/' }
+  { key: 'exams', size: pageCount.value, filters: filters, url: '/services/exams/' }
 )
 
 
