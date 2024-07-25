@@ -3,6 +3,9 @@ export default defineNuxtRouteMiddleware((to, from) => {
     const { showNotification } = useNotification();
     if (!userStore.isLogged) {
         showNotification({ message: 'Por favor inicia sesión', type: 'info' })
-        return navigateTo("/login")
+        return navigateTo({
+            path: '/login',
+            query: { next: from.fullPath }
+        })
     }
 })

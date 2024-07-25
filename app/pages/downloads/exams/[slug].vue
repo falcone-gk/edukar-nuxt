@@ -84,6 +84,10 @@
 <script lang="ts" setup>
 import type { Exams } from '~/types/resultApiTypes';
 
+definePageMeta({
+  middleware: ['auth']
+})
+
 const filters = reactive<{
   year: number | undefined
   univ: string | undefined

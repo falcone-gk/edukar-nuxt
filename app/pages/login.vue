@@ -94,11 +94,16 @@ const { data, status, error, execute } = await useAsyncData(
   }
 )
 
+
+const route = useRoute()
 const submitLogin = async (event: FormSubmitEvent<UserLogin>) => {
   await execute()
+
   if (status.value === 'success') {
     userStore.setUser(data.value)
-    navigateTo('/', { replace: true })
+    const nextPage = route.query.next ? route.query.next : '/'
+    navigateTo(nextPage as string, { replace: true })
+
   } else {
     if (error.value?.statusCode === 400) {
       form.value?.setErrors([{ message: 'El nombre de usuario o contraseña son incorrectos.', path: 'password' }])
