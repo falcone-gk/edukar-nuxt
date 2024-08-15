@@ -17,7 +17,11 @@ const props = defineProps({
     type: String,
     default: 'body',
     validator: (value: string) => {
-      return ['body', 'h1', 'h2', 'h3', 'big', 'bigger', 'small', 'smaller'].includes(value)
+      return [
+        'body', 'h1', 'h2', 'h3',
+        'big', 'bigger', 'biggest',
+        'small', 'smaller'
+      ].includes(value)
     }
   },
   color: {
@@ -43,6 +47,7 @@ const variantClasses = computed(() => {
     h3: 'text-lg sm:text-xl md:text-2xl',
     big: 'text-xl',
     bigger: 'text-[2.50rem] md:text-[3.25rem]',
+    biggest: 'text-[6.25rem] md:text-[7.25rem]',
     body: 'text-base',
     small: 'text-sm',
     smaller: 'text-xs'
