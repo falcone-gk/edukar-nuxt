@@ -120,7 +120,7 @@ const { data: recommendExams, execute: getRecommendedExams } = await useAsyncDat
 // Fetch exam data
 const route = useRoute()
 const examSlug = route.params.slug
-const { data: exam, pending } = useLazyAsyncData(
+const { data: exam, pending, error } = useLazyAsyncData(
   'examData',
   async () => useApiFetch<Exams>(`/services/exams/${examSlug}/`, {
     onResponse({ response }) {
@@ -129,6 +129,14 @@ const { data: exam, pending } = useLazyAsyncData(
       filters.univ = data.univ
       examId.value = data.id
       getRecommendedExams()
+    },
+    onResponseError({ response }) {
+      if (response.status === 404) {
+        throw showError({
+          statusCode: 404,
+          statusMessage: 'No existe el examen',
+        })
+      }
     }
   })
 )
