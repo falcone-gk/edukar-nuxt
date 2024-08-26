@@ -1,10 +1,11 @@
 // types for exams
-export interface Exams {
+export interface Exam {
     id: number
     root: Root
     cover: string
     title: string
     slug: string
+    univ: string
     year: number
     source_exam: string
     source_video_solution: string

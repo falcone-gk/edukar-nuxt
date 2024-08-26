@@ -25,10 +25,10 @@
     </UModal>
     <UCard>
       <div>
-        <DataLoading :loading="pending" :data="post">
-          <template #loading>
+        <DataLoading :data="post">
+          <!-- <template #loading>
             <SkeletonPostContent />
-          </template>
+          </template> -->
           <template #data="{ data: post }">
             <PostContent
               @on-reply="openModal({ method: 'post', url: '/forum/comments/', key: 'comment', parentId: post.id, parentKey: 'post' })"
@@ -44,10 +44,10 @@
         <h2>Comentarios:</h2>
 
         <div class="space-y-4">
-          <DataLoading :loading="pending" :data="post" :list="post?.comments" empty-message="No hay comentarios">
-            <template #loading>
+          <DataLoading :data="post" :list="post?.comments" empty-message="No hay comentarios">
+            <!-- <template #loading>
               <SkeletonPostContent />
-            </template>
+            </template> -->
             <template #data="{ data: post }">
               <div>
                 <PostContent v-for="comment in post.comments"
@@ -74,10 +74,6 @@
 <script lang="ts" setup>
 import type { Post } from '~/types/forum';
 import { commentSchema } from '~/schemas/forum';
-
-//useHead({
-//  title: 'Publicación'
-//})
 
 definePageMeta({
   name: 'post',
@@ -114,10 +110,21 @@ const commentModal = reactive<CommentPost>({
 const route = useRoute()
 const postSlug = route.params.slug
 
-const { data: post, pending, refresh } = await useLazyAsyncData(
-  'postData',
-  () => useApiFetch<Post>(`/forum/posts/${postSlug}`)
+const { data: post, refresh } = await useEdukarAPI<Post>(
+  `/forum/posts/${postSlug}`
 )
+
+if (!post.value) {
+  throw createError({
+    statusCode: 404,
+    statusMessage: 'No existe el examen'
+  })
+}
+
+//const { data: post, pending, refresh } = await useLazyAsyncData(
+//  'postData',
+//  () => useApiFetch<Post>(`/forum/posts/${postSlug}`)
+//)
 
 const { getAbsoluteUrl } = useAbsoluteUrl()
 const { getAbsoluteApiUrl } = useAbsoluteApiUrl()

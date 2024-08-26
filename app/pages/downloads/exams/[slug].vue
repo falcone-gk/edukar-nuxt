@@ -9,7 +9,7 @@
         </UButton>
       </div>
       <div class="w-full">
-        <DataLoading :loading="pending" :data="exam">
+        <DataLoading :data="exam">
 
           <template #data="{ data }">
             <div class="flex flex-col-reverse md:flex-row gap-24">
@@ -82,7 +82,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { Exams } from '~/types/resultApiTypes';
+import type { Exam } from '~/types/resultApiTypes';
 
 definePageMeta({
   middleware: ['auth']
@@ -98,49 +98,75 @@ const filters = reactive<{
 
 const examId = ref<undefined | number>()
 
-type ExamsPagination = PaginationData<Exams>
-const { data: recommendExams, execute: getRecommendedExams } = await useAsyncData(
-  'recommendExams',
-  () => useApiFetch<ExamsPagination>(`/services/exams/`, {
-    query: {
-      ...filters,
-      page: 1,
-      size: 4
-    },
-  }), {
-  // server: false,
+type ExamsPagination = PaginationData<Exam>
+
+const { data: recommendExams, execute: getRecommendedExams } = await useEdukarAPI<ExamsPagination>('/services/exams/', {
+  query: {
+    ...filters,
+    page: 1,
+    size: 4
+  },
   immediate: false,
   transform: (exams) => {
     exams.results = exams.results.filter((exam) => exam.id !== examId.value)
     return exams
   }
 })
+//const { data: recommendExams, execute: getRecommendedExams } = await useAsyncData(
+//  'recommendExams',
+//  () => useApiFetch<ExamsPagination>(`/services/exams/`, {
+//    query: {
+//      ...filters,
+//      page: 1,
+//      size: 4
+//    },
+//  }), {
+//  // server: false,
+//  immediate: false,
+//  transform: (exams) => {
+//    exams.results = exams.results.filter((exam) => exam.id !== examId.value)
+//    return exams
+//  }
+//})
 
 
 // Fetch exam data
 const route = useRoute()
 const examSlug = route.params.slug
-const { data: exam, pending, error } = useLazyAsyncData(
-  'examData',
-  async () => useApiFetch<Exams>(`/services/exams/${examSlug}/`, {
-    onResponse({ response }) {
-      const data = response._data
-      filters.year = data.year
-      filters.univ = data.univ
-      examId.value = data.id
-      getRecommendedExams()
-    },
-    onResponseError({ response }) {
-      if (response.status === 404) {
-        throw showError({
-          statusCode: 404,
-          statusMessage: 'No existe el examen',
-        })
-      }
-    }
-  })
-)
 
+const { data: exam } = await useEdukarAPI<Exam>(`/services/exams/${examSlug}/`)
+//const { data: exam, pending, error } = useLazyAsyncData(
+//  'examData',
+//  async () => useApiFetch<Exams>(`/services/exams/${examSlug}/`, {
+//    onResponse({ response }) {
+//      const data = response._data
+//      filters.year = data.year
+//      filters.univ = data.univ
+//      examId.value = data.id
+//      getRecommendedExams()
+//    },
+//    onResponseError({ response }) {
+//      if (response.status === 404) {
+//        throw showError({
+//          statusCode: 404,
+//          statusMessage: 'No existe el examen',
+//        })
+//      }
+//    }
+//  })
+//)
+
+if (exam.value) {
+  filters.year = exam.value.year
+  filters.univ = exam.value.univ
+  examId.value = exam.value.id
+  getRecommendedExams()
+} else {
+  throw showError({
+    statusCode: 404,
+    statusMessage: 'No existe el examen',
+  })
+}
 
 // Filling SEO data
 const { getAbsoluteUrl } = useAbsoluteUrl()
