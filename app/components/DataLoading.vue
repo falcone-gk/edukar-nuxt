@@ -29,7 +29,7 @@
 
 <script lang="ts" setup generic="T, E">
 const props = defineProps<{
-  loading: boolean,
+  loading?: boolean,
   data: T | null,
   list?: E[] | null,
   emptyMessage?: string
