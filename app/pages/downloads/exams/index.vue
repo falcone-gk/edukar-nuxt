@@ -61,7 +61,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { Exams } from '~/types/resultApiTypes';
+import type { Exam } from '~/types/resultApiTypes';
 
 useSeoMeta({
   title: 'Lista de Exámenes de Admisión',
@@ -72,7 +72,7 @@ useSeoMeta({
 const serviceStore = useServiceStore()
 // const { getAbsoluteApiUrl } = useAbsoluteApiUrl()
 
-type ExamPagination = PaginationData<Exams>
+type ExamPagination = PaginationData<Exam>
 const route = useRoute()
 const filters = reactive({
   year: route.query.year as string | undefined,

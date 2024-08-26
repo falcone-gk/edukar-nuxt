@@ -12,9 +12,9 @@
 </template>
 
 <script lang="ts" setup>
-import type { Exams } from '~/types/resultApiTypes'
+import type { Exam } from '~/types/resultApiTypes'
 
-type ExamPagination = PaginationData<Exams>
+type ExamPagination = PaginationData<Exam>
 
 const { data: exams } = await useLazyAsyncData(
   'exams-home-page', () => useApiFetch<ExamPagination>('/services/exams/', {

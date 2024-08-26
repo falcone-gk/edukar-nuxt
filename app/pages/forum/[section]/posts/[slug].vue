@@ -117,7 +117,7 @@ const { data: post, refresh } = await useEdukarAPI<Post>(
 if (!post.value) {
   throw createError({
     statusCode: 404,
-    statusMessage: 'No existe el examen'
+    statusMessage: 'No existe el post'
   })
 }
 
