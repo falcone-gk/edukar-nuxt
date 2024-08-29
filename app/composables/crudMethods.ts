@@ -28,39 +28,61 @@ export const useCrudMethods = () => {
     form.value = new FormData()
   }
 
-  const { data: retrieveData, status: retrieveStatus, execute: retrieveExecute } = useAsyncData(
+  const { data: retrieveData, status: retrieveStatus, execute: retrieveExecute } = useEdukarAPI(() => _urlCrud.value, {
+    method: 'get',
+    immediate: false,
+    watch: false
+  })
+  /* const { data: retrieveData, status: retrieveStatus, execute: retrieveExecute } = useAsyncData(
     _baseKey.value,
     () => useApiFetch(_urlCrud.value, {
       method: 'get'
     }), {
     immediate: false,
-  })
+  }) */
 
-  const { data: postData, status: postStatus, execute: postExecute } = useAsyncData(
+  const { data: postData, status: postStatus, execute: postExecute } = useEdukarAPI(() => _urlCrud.value, {
+    method: 'POST',
+    body: form,
+    immediate: false,
+    watch: false
+  })
+  /* const { data: postData, status: postStatus, execute: postExecute } = useAsyncData(
     `${_baseKey.value}-post`,
     () => useApiFetch(_urlCrud.value, {
       method: 'post',
       body: form.value
     }), {
     immediate: false
-  })
+  }) */
 
-  const { data: putData, status: putStatus, execute: putExecute } = useAsyncData(
+  const { data: putData, status: putStatus, execute: putExecute } = useEdukarAPI(() => pathWithId.value, {
+    method: 'PATCH',
+    body: form,
+    immediate: false,
+    watch: false
+  })
+  /* const { data: putData, status: putStatus, execute: putExecute } = useAsyncData(
     `${_baseKey.value}-put`,
     () => useApiFetch(pathWithId.value, {
       method: 'patch',
       body: form.value
     }), {
     immediate: false
-  })
+  }) */
 
-  const { data: deleteData, status: deleteStatus, execute: deleteExecute } = useAsyncData(
+  const { data: deleteData, status: deleteStatus, execute: deleteExecute } = useEdukarAPI(() => pathWithId.value, {
+    method: 'DELETE',
+    immediate: false,
+    watch: false
+  })
+  /* const { data: deleteData, status: deleteStatus, execute: deleteExecute } = useAsyncData(
     `${_baseKey.value}-delete`,
     () => useApiFetch(pathWithId.value, {
       method: 'delete'
     }), {
     immediate: false
-  })
+  }) */
 
   const getData = async () => {
     await retrieveExecute()

@@ -80,7 +80,14 @@ const modalContent = reactive({
   message: '',
 })
 
-const { status, execute } = useAsyncData('resend-email',
+const { status, execute } = useEdukarAPI('/account/users/resend_activation/', {
+  method: 'POST',
+  body: { email: signupEmail.value },
+  immediate: false,
+  watch: false
+})
+
+/* const { status, execute } = useAsyncData('resend-email',
   () => useApiFetch('/account/users/resend_activation/', {
     method: 'post',
     body: {
@@ -88,7 +95,7 @@ const { status, execute } = useAsyncData('resend-email',
     }
   }), {
   immediate: false
-})
+}) */
 
 const resendEmail = async () => {
   await execute()

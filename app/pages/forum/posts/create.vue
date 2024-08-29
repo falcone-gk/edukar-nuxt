@@ -31,6 +31,7 @@
 import { z } from 'zod'
 import { postSchema } from '~/schemas/forum';
 import type { Form, FormSubmitEvent } from '#ui/types'
+import type { Post } from '~/types/forum';
 
 useHead({
   title: 'Crear Publicación'
@@ -76,14 +77,20 @@ const onChangeSection = () => {
 }
 
 const postFormData = ref(new FormData())
-const { data, error, status, execute } = useAsyncData(
+const { data, error, status, execute } = useEdukarAPI<Post>('/forum/posts/', {
+  method: 'POST',
+  body: postFormData,
+  immediate: false,
+  watch: false
+})
+/* const { data, error, status, execute } = useAsyncData(
   'post-create',
   () => useApiFetch('/forum/posts/', {
     method: 'post',
     body: postFormData.value
   }), {
   immediate: false,
-})
+}) */
 
 const onSubmit = async (event: FormSubmitEvent<Schema>) => {
   form.value?.validate()
@@ -104,7 +111,8 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
   })
 
   await execute()
-  if (status.value === 'success') {
+  if (data.value) {
+    console.log(data.value)
     navigateTo(`/forum/${data.value.section.slug}/posts/${data.value.slug}`)
   } else {
     if (error.value?.statusCode === 429) {

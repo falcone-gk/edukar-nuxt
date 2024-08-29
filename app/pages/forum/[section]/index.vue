@@ -89,11 +89,14 @@ const { data, pending, page } = usePaginationFilter<PostPagination>({
   key: 'post-list', size: pageCount.value, filters, url: `/forum/sections/${sectionSlug}/`
 })
 
-const { data: sectionList, status: statusList, execute: getSections } = useAsyncData<Section[]>(
+const { data: sectionList, status: statusList, execute: getSections } = useEdukarAPI('/forum/section-list', {
+  immediate: false
+})
+/* const { data: sectionList, status: statusList, execute: getSections } = useAsyncData<Section[]>(
   'sections-list',
   () => useApiFetch<Section[]>('/forum/section-list'), {
   immediate: false
-})
+}) */
 
 if (!forumStore.sections) {
   await getSections()

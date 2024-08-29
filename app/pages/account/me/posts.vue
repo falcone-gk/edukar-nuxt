@@ -102,13 +102,19 @@ const postDeletePath = computed(() => {
   return `/forum/posts/${postSelected.value}`
 })
 
-const { execute: deletePost } = useAsyncData(
+const { execute: deletePost } = useEdukarAPI(() => postDeletePath.value, {
+  method: 'DELETE',
+  immediate: false,
+  watch: false
+})
+
+/* const { execute: deletePost } = useAsyncData(
   'post-delete',
   () => useApiFetch(postDeletePath.value, {
     method: 'delete'
   }), {
   immediate: false
-})
+}) */
 
 const confimation = useConfirmDialog()
 const deleteCallback = async (postSlug: string) => {

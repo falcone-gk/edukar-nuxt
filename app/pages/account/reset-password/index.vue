@@ -40,7 +40,13 @@ type Schema = z.output<typeof schema>
 const state = reactive({
   email: ''
 })
-const { error, status, execute } = useAsyncData(
+const { error, status, execute } = useEdukarAPI('account/users/reset_password/', {
+  method: 'POST',
+  body: state,
+  immediate: false,
+  watch: false
+})
+/* const { error, status, execute } = useAsyncData(
   'reset-password',
   () => useApiFetch('account/users/reset_password/', {
     method: 'post',
@@ -49,7 +55,7 @@ const { error, status, execute } = useAsyncData(
     }
   }), {
   immediate: false,
-})
+}) */
 
 // TODO: Agregar funcionalidad de recuperar contraseña
 const form = ref<Form<Schema> | undefined>()

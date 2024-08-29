@@ -4,11 +4,14 @@ import type { Section, Subsection } from '~/types/forum'
 export const useForumStore = defineStore('forumStore', () => {
   const sections = ref<Section[] | null>(null)
 
-  const { data: sectionList, status: statusSection, execute: getSections } = useAsyncData<Section[]>(
+  const { data: sectionList, status: statusSection, execute: getSections } = useEdukarAPI<Section[]>('/forum/section-list', {
+    immediate: false
+  })
+  /* const { data: sectionList, status: statusSection, execute: getSections } = useAsyncData<Section[]>(
     'sections-list',
     () => useApiFetch<Section[]>('/forum/section-list'), {
     immediate: false
-  })
+  }) */
 
   const setupSections = async () => {
     await getSections()

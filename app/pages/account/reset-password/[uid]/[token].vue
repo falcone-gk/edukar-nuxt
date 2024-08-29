@@ -71,14 +71,20 @@ const state = reactive({
   re_new_password: undefined
 })
 
-const { status, error, execute } = useAsyncData(
+const { status, error, execute } = useEdukarAPI('account/users/reset_password_confirm/', {
+  method: 'POST',
+  body: state,
+  immediate: false,
+  watch: false
+})
+/* const { status, error, execute } = useAsyncData(
   'send-reset-password',
   () => useApiFetch('account/users/reset_password_confirm/', {
     method: 'post',
     body: state
   }), {
   immediate: false
-})
+}) */
 
 const onCloseModal = () => {
   if (!error.value) {

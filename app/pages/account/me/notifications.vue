@@ -77,20 +77,29 @@ const { data, pending, page, clearFilters, refresh } = usePaginationFilter<Pagin
 
 const { showNotification } = useNotification()
 const selected = ref<Notification[]>([])
-const selectedIds = computed(() => {
-  return selected.value.filter(el => !el.is_read).map(el => el.id)
+const selectedIDs = computed(() => {
+  return selected.value.map(el => el.id)
 })
 
-const { execute: markAsRead } = useAsyncData(
+const { execute: markAsRead } = useEdukarAPI('/notification/notification-user/set-read/', {
+  method: 'POST',
+  body: {
+    selected_notifications: selectedIDs
+  },
+  immediate: false,
+  watch: false
+})
+
+/* const { execute: markAsRead } = useAsyncData(
   'user-notifications-mark-as-read',
   () => useApiFetch('/notification/notification-user/set-read/', {
     method: 'post',
     body: {
-      selected_notifications: selectedIds.value
+      selected_notifications: selectedIDs.value
     }
   }), {
   immediate: false
-})
+}) */
 
 const onView = (id: number) => {
   selected.value = data.value!.results.filter(el => el.id === id)
@@ -106,16 +115,25 @@ const onMarkAsRead = async () => {
   showNotification({ message: 'Notificaciones marcadas como leídas', type: 'success' })
 }
 
-const { execute: deleteNotifications } = useAsyncData(
+const { execute: deleteNotifications } = useEdukarAPI('/notification/notification-user/delete-notifications/', {
+  method: 'POST',
+  body: {
+    selected_notifications: selectedIDs
+  },
+  immediate: false,
+  watch: false
+})
+
+/* const { execute: deleteNotifications } = useAsyncData(
   'user-notifications-delete',
   () => useApiFetch('/notification/notification-user/delete-notifications/', {
     method: 'post',
     body: {
-      selected_notifications: selectedIds.value
+      selected_notifications: selectedIDs.value
     }
   }), {
   immediate: false
-})
+}) */
 
 const onDeleteNotifications = async () => {
   await deleteNotifications()

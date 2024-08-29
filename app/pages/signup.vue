@@ -84,7 +84,14 @@ const state = reactive<UserRegister>({
   about_me: ''
 })
 
-const { error, status, execute } = useAsyncData('signup',
+const { error, status, execute } = useEdukarAPI('account/users/', {
+  method: 'POST',
+  body: registerData.value,
+  immediate: false,
+  watch: false
+})
+
+/* const { error, status, execute } = useAsyncData('signup',
   () => useApiFetch('account/users/', {
     method: 'post',
     body: registerData.value
@@ -92,7 +99,7 @@ const { error, status, execute } = useAsyncData('signup',
   {
     immediate: false,
   }
-)
+) */
 
 const onSubmit = async (event: FormSubmitEvent<UserRegister>) => {
   Object.keys(event.data).forEach(key => {

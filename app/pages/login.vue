@@ -83,7 +83,14 @@ const validate = (state: any): FormError[] => {
   return errors
 }
 
-const { data, status, error, execute } = await useAsyncData(
+const { data, status, error, execute } = useEdukarAPI<userInfo>('account/login', {
+  method: 'post',
+  body: state,
+  immediate: false,
+  watch: false
+})
+
+/* const { data, status, error, execute } = await useAsyncData(
   'user',
   () => useApiFetch<userInfo>('/account/login', {
     method: 'post',
@@ -92,7 +99,7 @@ const { data, status, error, execute } = await useAsyncData(
   {
     immediate: false
   }
-)
+) */
 
 
 const route = useRoute()

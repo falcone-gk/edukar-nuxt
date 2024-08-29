@@ -103,14 +103,20 @@ const { data, pending, status } = await useLazyAsyncData(
 )
 
 const postFormData = ref(new FormData())
-const { data: newPost, status: statusUpdate, error: postError, execute } = await useAsyncData(
+const { data: newPost, status: statusUpdate, error: postError, execute } = useEdukarAPI<Post>(`/forum/posts/${postSlug}/`, {
+  method: 'PATCH',
+  body: postFormData,
+  immediate: false,
+  watch: false
+})
+/* const { data: newPost, status: statusUpdate, error: postError, execute } = await useAsyncData(
   'post-update',
   () => useApiFetch(`/forum/posts/${postSlug}/`, {
     method: 'patch',
     body: postFormData.value,
   }), {
   immediate: false,
-})
+}) */
 
 const onSubmit = async (event: FormSubmitEvent<Schema>) => {
   form.value?.validate()
@@ -133,7 +139,7 @@ const onSubmit = async (event: FormSubmitEvent<Schema>) => {
   postFormData.value.delete('currentImageUrl')
 
   await execute()
-  if (statusUpdate.value === 'success') {
+  if (newPost.value) {
     navigateTo(`/forum/${newPost.value.section.slug}/posts/${newPost.value.slug}`)
   } else {
     showNotification({ type: 'error', message: postError.value?.message })

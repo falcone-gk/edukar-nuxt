@@ -9,7 +9,10 @@ export const useServiceStore = defineStore('serviceStore', () => {
     { label: 'Video Solucionario Premium', value: 'premium' },
   ]
 
-  const { data: filters, execute: getFilters } = useAsyncData(
+  const { data: filters, execute: getFilters } = useEdukarAPI<ExamsFilter>('/services/exams-filters', {
+    immediate: false,
+  })
+  /* const { data: filters, execute: getFilters } = useAsyncData(
     'exams-filter',
     () => useApiFetch<ExamsFilter>('/services/exams-filters'), {
     immediate: false,
@@ -19,14 +22,14 @@ export const useServiceStore = defineStore('serviceStore', () => {
         years: data.years.map(el => ({ label: String(el), value: el }))
       }
     }
-  })
+  }) */
 
   const setupFilters = async () => {
     if (years.value.length === 0 || universities.value.length === 0) {
       await getFilters()
       if (filters.value) {
-        universities.value = filters.value.universities
-        years.value = filters.value.years
+        universities.value = filters.value.universities.map(el => ({ label: el.university, value: el.siglas }))
+        years.value = filters.value.years.map(el => ({ label: String(el), value: el }))
       }
     }
   }

@@ -114,7 +114,14 @@ const { data, pending, refresh } = await useLazyAsyncData(
   })
 )
 
-const { error, status: statusUpdate, execute: update } = useAsyncData(
+const { error, status: statusUpdate, execute: update } = useEdukarAPI('/account/users/me/', {
+  method: 'PATCH',
+  body: formData.value,
+  immediate: false,
+  watch: false
+})
+
+/* const { error, status: statusUpdate, execute: update } = useAsyncData(
   'user-update',
   () => useApiFetch<UserProfile>('/account/users/me/', {
     method: 'patch',
@@ -123,7 +130,7 @@ const { error, status: statusUpdate, execute: update } = useAsyncData(
   {
     immediate: false,
   }
-)
+) */
 
 const onUpdateSubmit = async (event: FormSubmitEvent<UserProfile>) => {
   form.value?.clear()

@@ -11,8 +11,19 @@ export const usePaginationFilter = <T>({ key, size, filters, url }: PaginationFi
   Object.keys(filters).forEach(filter => {
     initialUndefined[filter] = undefined
   })
+  const myFilters = toRefs(filters)
 
-  const { data, pending, refresh } = useAsyncData(
+  const { data, pending, refresh } = useEdukarAPI<T>(url, {
+    query: {
+      ...myFilters,
+      page: page,
+      size: size
+    },
+    lazy: true,
+    server: false,
+    watch: [page]
+  })
+  /* const { data, pending, refresh } = useAsyncData(
     key,
     () => useApiFetch<T>(url, {
       query: {
@@ -26,7 +37,7 @@ export const usePaginationFilter = <T>({ key, size, filters, url }: PaginationFi
       server: false,
       watch: [page]
     }
-  )
+  ) */
 
   watch(filters, async () => {
     if (page.value !== 1) {
