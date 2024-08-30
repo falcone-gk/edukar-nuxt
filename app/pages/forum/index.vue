@@ -19,7 +19,7 @@
       <CustomButtonGradient label="Crear nuevo post" icon="i-heroicons-plus-circle-solid" to="/forum/posts/create" />
     </div>
 
-    <DataLoading :loading="pending" :data="sections">
+    <DataLoading :loading="status === 'pending'" :data="sections">
 
       <template #loading>
         <SkeletonForumPost />
@@ -88,8 +88,11 @@ interface sectionData {
 
 const subsectionSelected = useState('subsection')
 
-const { data: sections, pending } = await useLazyAsyncData<sectionData[]>(
+const { data: sections, status } = useEdukarAPI<sectionData[]>('/forum/home-forum', {
+  lazy: true
+})
+/* const { data: sections, pending } = await useLazyAsyncData<sectionData[]>(
   'forum',
   () => useApiFetch<sectionData[]>('/forum/home-forum')
-)
+) */
 </script>

@@ -1,23 +1,13 @@
 <template>
-  <UCard v-if="!pending" :ui="{
-    base: 'mx-auto max-w-[700px]'
-  }">
-    <template #header>
-      <Typography tag="h1" variant="h1">
-        {{ title }}
-      </Typography>
-    </template>
-
-    <div class="flex gap-8">
-      <div>
-        <img class="w-48" :src="srcIcon" alt="Image mensaje enviado">
-      </div>
-      <div>
-        <p>{{ message }}</p>
-      </div>
+  <div>
+    <div v-if="status === 'pending' || status === 'idle'">
+      <DataLoadingTransition message="Verificando credenciales" />
     </div>
-
-  </UCard>
+    <div v-else>
+      <DisplayAnnouncement v-if="status === 'success'" v-bind="sucessContent" />
+      <DisplayAnnouncement v-else v-bind="errorContent" />
+    </div>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -28,7 +18,20 @@ definePageMeta({
 
 const route = useRoute()
 
-const { pending, error } = await useLazyAsyncData('account-activation',
+const { status } = useEdukarAPI('/account/users/activation/', {
+  method: 'POST',
+  lazy: true,
+  server: false,
+  body: {
+    uid: route.params.uid,
+    token: route.params.token
+  },
+})
+
+watch(status, () => {
+  console.log(status.value)
+})
+/* const { pending, error } = await useLazyAsyncData('account-activation',
   () => useApiFetch('/account/users/activation/', {
     method: 'post',
     body: {
@@ -38,21 +41,18 @@ const { pending, error } = await useLazyAsyncData('account-activation',
   }),
   { server: false }
 )
+ */
 
-const title = computed(() => {
-  return error.value ? 'Error en activación de cuenta' : 'Activación de cuenta satisfactoria'
+const sucessContent = reactive({
+  title: 'Activación de cuenta satisfactoria',
+  message: 'La cuenta ha sido activada satisfactoriamente. Ahora puedes iniciar sesión.',
+  icon: '/icons/Confetti.svg'
 })
 
-const message = computed(() => {
-  if (error.value) {
-    return 'Hubo un error al momento de activar la cuenta. Posiblemente esto se deba a que el link usado para activar la cuenta no es el correcto o este link ya ha sido usado para activar su cuenta.'
-  } else {
-    return 'La cuenta ha sido activada satisfactoriamente. Ahora puedes iniciar sesión.'
-  }
-})
-
-const srcIcon = computed(() => {
-  return error.value ? '/icons/identification.svg' : '/icons/Confetti.svg'
+const errorContent = reactive({
+  title: 'Error en activación de cuenta',
+  message: 'Hubo un error al momento de activar la cuenta. Posiblemente esto se deba a que el link usado para activar la cuenta no es el correcto o este link ya ha sido usado para activar su cuenta.',
+  icon: '/icons/identification.svg'
 })
 
 </script>

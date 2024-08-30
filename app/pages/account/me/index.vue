@@ -98,7 +98,20 @@ const state = reactive<UserProfile>({
 })
 const formData = ref(new FormData())
 
-const { data, pending, refresh } = await useLazyAsyncData(
+const { data, pending, refresh } = useEdukarAPI<UserProfile>('/account/users/me/', {
+  lazy: true,
+  onResponse({ response }) {
+    if (response.status === 200) {
+      const data = response._data as UserProfile
+      state.username = data.username
+      state.first_name = data.first_name
+      state.last_name = data.last_name
+      state.about_me = data.about_me
+      state.email = data.email
+    }
+  }
+})
+/* const { data, pending, refresh } = await useLazyAsyncData(
   'profile',
   () => useApiFetch<UserProfile>('/account/users/me/', {
     onResponse({ response }) {
@@ -112,7 +125,7 @@ const { data, pending, refresh } = await useLazyAsyncData(
       }
     }
   })
-)
+) */
 
 const { error, status: statusUpdate, execute: update } = useEdukarAPI('/account/users/me/', {
   method: 'PATCH',

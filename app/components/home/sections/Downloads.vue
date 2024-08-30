@@ -16,7 +16,19 @@ import type { Exam } from '~/types/resultApiTypes'
 
 type ExamPagination = PaginationData<Exam>
 
-const { data: exams } = await useLazyAsyncData(
+const { data: exams } = await useEdukarAPI<Exam[]>('/services/exams/', {
+  query: {
+    size: 4
+  },
+  lazy: true,
+  // @ts-ignore
+  transform: (data: ExamPagination): Exam[] => {
+    const _exams = data.results as Exam[]
+    return _exams
+  }
+})
+
+/* const { data: exams } = await useLazyAsyncData(
   'exams-home-page', () => useApiFetch<ExamPagination>('/services/exams/', {
     query: {
       size: 4
@@ -26,7 +38,7 @@ const { data: exams } = await useLazyAsyncData(
     const _exams = data.results
     return _exams
   }
-})
+}) */
 
 const onClick = (year: number, siglas: string) => {
   navigateTo(`/downloads/exams?year=${year}&university=${siglas}`)

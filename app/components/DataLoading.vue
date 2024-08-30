@@ -10,7 +10,9 @@
     <div v-else>
       <!--Error section-->
       <div v-if="props.data === null">
-        <DataError />
+        <slot name="error">
+          <DataError />
+        </slot>
       </div>
 
       <!--Data section-->

@@ -46,7 +46,15 @@ type CoursePagination = PaginationData<Courses>
 const page = ref(1)
 const pageCount = ref(8)
 
-const { data, pending } = await useLazyAsyncData<CoursePagination>(
+const { data, pending } = useEdukarAPI<CoursePagination>('/services/courses', {
+  lazy: true,
+  query: {
+    page: page,
+    size: pageCount
+  },
+  watch: [page]
+})
+/* const { data, pending } = await useLazyAsyncData<CoursePagination>(
   'courses',
   () => useApiFetch<CoursePagination>('/services/courses', {
     query: {
@@ -57,7 +65,7 @@ const { data, pending } = await useLazyAsyncData<CoursePagination>(
   {
     watch: [page,]
   }
-)
+) */
 
 const openURL = async (url: string) => {
   await navigateTo(url, {

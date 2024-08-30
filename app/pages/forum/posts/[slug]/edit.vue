@@ -6,7 +6,7 @@
           Editar Post
         </Typography>
       </div>
-      <DataLoading :data="data" :loading="pending">
+      <DataLoading :data="data" :loading="status === 'pending'">
         <template #data="{ data }">
           <div>
             <UForm ref="form" :state="body" :schema="postSchema" @submit="onSubmit" class="flex flex-col gap-4">
@@ -86,7 +86,20 @@ const body = reactive<PostUpdate>({
   currentImageUrl: undefined
 })
 
-const { data, pending, status } = await useLazyAsyncData(
+const { data, status } = useEdukarAPI<Post>(() => `/forum/posts/${postSlug}`, {
+  lazy: true,
+  onResponse({ response }) {
+    if (response.status === 200) {
+      const data = response._data as Post
+      body.section = data.section.id
+      body.subsection = data.subsection.id
+      body.title = data.title
+      body.body = data.body
+      body.currentImageUrl = data.image
+    }
+  }
+})
+/* const { data, pending, status } = await useLazyAsyncData(
   'post-retrieve',
   () => useApiFetch<Post>(`/forum/posts/${postSlug}`, {
     onResponse({ response }) {
@@ -100,7 +113,7 @@ const { data, pending, status } = await useLazyAsyncData(
       }
     }
   }), { server: false }
-)
+) */
 
 const postFormData = ref(new FormData())
 const { data: newPost, status: statusUpdate, error: postError, execute } = useEdukarAPI<Post>(`/forum/posts/${postSlug}/`, {
