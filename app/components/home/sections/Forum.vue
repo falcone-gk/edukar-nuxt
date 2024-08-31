@@ -9,12 +9,10 @@
     <div class="text-left flex flex-col md:flex-row gap-20 w-full">
       <div class="flex-1">
         <Typography color="gray" tag="h3" variant="h1" class="mb-12">
-          Utiliza nuestro editor de texto <br> con código <span aria-label="LaTeX" class="text-primary"
-            v-html="latexCode"></span>
+          Utiliza nuestro editor de texto <br> con código <LogoLatex class="inline-block" />
         </Typography>
         <Typography color="gray" variant="big">
-          Descubre nuestro editor con soporte para código <span aria-label="LaTeX" class="text-primary"
-            v-html="latexCode"></span>, ideal
+          Descubre nuestro editor con soporte para código <LogoLatex class="inline-block" height="h-6" />, ideal
           para crear <span class="text-primary">fórmulas matemáticas</span>, además puedes subir <span
             class="text-primary">imágenes</span> de tus ejercicios. ¡Empieza a compartir tus preguntas hoy mismo!
         </Typography>
@@ -28,9 +26,6 @@
 </template>
 
 <script setup lang="ts">
-import katex from 'katex';
-
-const latexCode = katex.renderToString('\\LaTeX')
 const exerciseLatexCode = ref(`
 <strong>Ejercicio:</strong>
 <p>Calcular el valor de $$ "n" $$ si el grado del producto: $$ (x+1)(x^2+2)(x^3+3)(x^4+4) \\dots (x^n+n) $$ es igual a 210.</p>
