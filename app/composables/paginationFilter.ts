@@ -20,7 +20,7 @@ export const usePaginationFilter = <T>({ key, size, filters, url }: PaginationFi
       size: size
     },
     lazy: true,
-    server: false,
+    //server: false,
     watch: [page]
   })
   /* const { data, pending, refresh } = useAsyncData(
