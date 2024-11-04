@@ -1,49 +1,44 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  modules: [
-    '@nuxt/ui', '@pinia/nuxt', 'nuxt-tiptap-editor',
-    'nuxt-gtag'
-  ],
+  modules: ["@nuxt/ui", "@pinia/nuxt", "nuxt-tiptap-editor"],
   tiptap: {
-    prefix: "Tiptap"
+    prefix: "Tiptap",
   },
   runtimeConfig: {
     public: {
-      apiURL: process.env.API_BASE
+      apiURL: process.env.API_BASE,
     },
   },
   app: {
     head: {
       htmlAttrs: {
-        lang: 'es'
+        lang: "es",
       },
-      link: [{ rel: 'icon', type: 'image/png', href: '/favicon.ico' }]
-    }
+      link: [{ rel: "icon", type: "image/png", href: "/favicon.ico" }],
+    },
     // pageTransition: { name: 'page', mode: 'out-in' }
   },
-  css: ['~/assets/css/main.css',],
+  css: ["~/assets/css/main.css"],
   colorMode: {
-    classSuffix: '',
-    preference: 'light',
-    fallback: 'light'
+    classSuffix: "",
+    preference: "light",
+    fallback: "light",
   },
   ui: {
-    icons: ["ri", "mdi"]
+    icons: ["ri", "mdi"],
   },
   pinia: {
-    storesDirs: ['./stores/**']
+    storesDirs: ["./stores/**"],
   },
-  // nitro: {
-  //   devProxy: {
-  //     host: 'localhost',
-  //   }
-  // }
+  routeRules: {
+    "/company/**": { prerender: true },
+    "/account/**": { ssr: false },
+    "/login": { ssr: false },
+    "/signup": { ssr: false },
+  },
   components: [
-    { path: '~/components/tiptap', pathPrefix: false },
-    '~/components'
+    { path: "~/components/tiptap", pathPrefix: false },
+    "~/components",
   ],
-  gtag: {
-    id: 'G-SY6C8KYYDR'
-  }
-})
+});
