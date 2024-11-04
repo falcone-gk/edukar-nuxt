@@ -120,7 +120,7 @@ const filters = reactive({
   univ: route.query.university as string | undefined,
   video: undefined as string | undefined,
 });
-const pageCount = ref(1);
+const pageCount = ref(8);
 const { getFilteredData, page, clearFilters } = usePaginationFilter({
   size: pageCount.value,
   filters: filters,
