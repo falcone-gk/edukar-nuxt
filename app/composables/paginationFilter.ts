@@ -1,57 +1,66 @@
+import type { UseFetchOptions } from "nuxt/app";
+
+type SerializedType = string | number | boolean | undefined;
+type FilterType = Record<string, SerializedType>;
+
 interface PaginationFilter {
-  key: string
-  size: number
-  filters: { [key: string]: string | number | boolean | undefined }
-  url: string
+  size: number;
+  filters: FilterType;
+  url: string;
+  cached?: boolean;
 }
 
-export const usePaginationFilter = <T>({ key, size, filters, url }: PaginationFilter) => {
-  const page = ref(1)
-  const initialUndefined: { [key: string]: undefined } = {}
-  Object.keys(filters).forEach(filter => {
-    initialUndefined[filter] = undefined
-  })
-  const myFilters = toRefs(filters)
+export const usePaginationFilter = <T>({
+  size,
+  filters,
+  url,
+}: PaginationFilter) => {
+  const nuxtApp = useNuxtApp();
+  const page = ref(1);
+  const initialUndefined: { [key: string]: undefined } = {};
+  Object.keys(filters).forEach((filter) => {
+    initialUndefined[filter] = undefined;
+  });
+  const myFilters = toRefs(filters);
 
-  const { data, pending, refresh } = useEdukarAPI<T>(url, {
-    query: {
-      ...myFilters,
-      page: page,
-      size: size
-    },
-    lazy: true,
-    //server: false,
-    watch: [page]
-  })
-  /* const { data, pending, refresh } = useAsyncData(
-    key,
-    () => useApiFetch<T>(url, {
+  // const filterKey = computed(() => {
+  //   return Object.entries(myFilters)
+  //     .filter(([, val]) => val.value !== undefined && val.value !== null) // Filter out undefined or null values
+  //     .map(([key, val]) => `${key}=${val.value}`)
+  //     .join("?");
+  // });
+
+  function getFilteredData<T>(options?: UseFetchOptions<T>) {
+    return useEdukarAPI<T>(url, {
+      ...options,
+      //TODO: Find a solution for dynamic key
+      // key: filterKey.value,
       query: {
-        ...filters,
-        page: page.value,
-        size: size
-      }
-    }),
-    {
-      lazy: true,
-      server: false,
-      watch: [page]
-    }
-  ) */
+        ...myFilters,
+        page: page,
+        size: size,
+      },
+      watch: [page, filters],
+      //TODO: getCachedData generate hydration mismatch
+      // getCachedData: () => {
+      //   return (
+      //     nuxtApp.payload.data[filterKey.value] ||
+      //     nuxtApp.static.data[filterKey.value]
+      //   );
+      // },
+    });
+  }
 
   watch(filters, async () => {
     if (page.value !== 1) {
-      page.value = 1
-    } else {
-      await refresh()
+      page.value = 1;
     }
-  })
+  });
 
   const clearFilters = async () => {
     // Clear all filters and reset page to 1
-    Object.assign(filters, initialUndefined)
-  }
+    Object.assign(filters, initialUndefined);
+  };
 
-  return { data, pending, page, clearFilters, refresh }
-
-}
+  return { page, clearFilters, getFilteredData };
+};
