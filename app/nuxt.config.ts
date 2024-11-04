@@ -32,6 +32,7 @@ export default defineNuxtConfig({
     storesDirs: ["./stores/**"],
   },
   routeRules: {
+    "/": { prerender: true },
     "/company/**": { prerender: true },
     "/account/**": { ssr: false },
     "/login": { ssr: false },
