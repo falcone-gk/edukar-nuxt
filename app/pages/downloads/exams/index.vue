@@ -115,10 +115,11 @@ const { data: filtersOpt } = await useEdukarAPI<ExamsFilter>(
 
 type ExamPagination = PaginationData<Exam>;
 const route = useRoute();
+//TODO: check why on refresh filter.year in select is not applied
 const filters = reactive({
   year: route.query.year as string | undefined,
   univ: route.query.university as string | undefined,
-  video: undefined as string | undefined,
+  video: route.query.video as string | undefined,
 });
 const pageCount = ref(8);
 const { getFilteredData, page, clearFilters } = usePaginationFilter({
