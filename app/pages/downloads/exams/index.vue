@@ -17,7 +17,7 @@
           <div class="flex flex-col-reverse md:flex-row gap-2 px-3 py-3.5">
             <div class="flex flex-col md:flex-row gap-2">
               <UFormGroup>
-                <USelect
+                <UiSelect
                   v-model="filters.year"
                   :options="filtersOpt?.years"
                   @change="updateQueryUrl"
@@ -25,7 +25,7 @@
                 />
               </UFormGroup>
               <UFormGroup>
-                <USelect
+                <UiSelect
                   v-model="filters.univ"
                   :options="filtersOpt?.universities"
                   option-attribute="university"
@@ -35,7 +35,7 @@
                 />
               </UFormGroup>
               <UFormGroup>
-                <USelect
+                <UiSelect
                   v-model="filters.video"
                   :options="videos"
                   @change="updateQueryUrl"

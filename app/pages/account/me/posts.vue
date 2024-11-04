@@ -16,14 +16,14 @@
           :value="filters.q"
           @input="onInputSearch"
         />
-        <USelect
+        <UiSelect
           v-model="filters.section"
           label="Sección"
           :options="sections"
           placeholder="--Seleccionar sección--"
           @change="filters.subsection = undefined"
         />
-        <USelect
+        <UiSelect
           v-model="filters.subsection"
           label="Sección"
           :options="subsections"

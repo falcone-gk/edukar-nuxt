@@ -8,21 +8,21 @@
       class="flex justify-between px-3 py-3.5 border-b border-gray-200 dark:border-gray-700"
     >
       <div>
-        <USelect
+        <UiSelect
           v-model="filters.is_read"
           label="Sección"
           :options="isReadOptions"
           placeholder="--Seleccionar sección--"
         />
       </div>
-      <div>
+      <!-- <div>
         <UButton
           label="Limpiar filtros"
           variant="ghost"
           color="gray"
           @click="clearFilters"
         />
-      </div>
+      </div> -->
     </div>
 
     <UTable
