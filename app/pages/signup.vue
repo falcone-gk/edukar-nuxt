@@ -1,8 +1,10 @@
 <template>
   <section id="signup" class="flex mx-4">
-    <UCard :ui="{
-      base: 'mx-auto max-w-[700px]'
-    }">
+    <UCard
+      :ui="{
+        base: 'mx-auto max-w-[700px]',
+      }"
+    >
       <template #header>
         <div class="flex flex-col">
           <div class="flex justify-center">
@@ -10,8 +12,11 @@
           </div>
           <div class="my-4">
             <span><b>Importante:</b></span>
-            <p>No está permitido ningún tipo de publicidad en el foro, ni en las publicaciones ni en las imágenes de
-              perfil. Si se observa algún tipo de publicidad se procederá a banear la cuenta.</p>
+            <p>
+              No está permitido ningún tipo de publicidad en el foro, ni en las
+              publicaciones ni en las imágenes de perfil. Si se observa algún
+              tipo de publicidad se procederá a banear la cuenta.
+            </p>
           </div>
           <div>
             <span><b>Nota:</b></span>
@@ -19,13 +24,24 @@
           </div>
         </div>
       </template>
-      <UForm id="form" ref="form" :schema="userRegisterSchema" :state="state" @submit="onSubmit">
+      <UForm
+        id="form"
+        ref="form"
+        :schema="userRegisterSchema"
+        :state="state"
+        @submit="onSubmit"
+      >
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <UFormGroup label="Nombre de usuario" name="username" required>
             <UInput v-model="state.username" />
           </UFormGroup>
           <UFormGroup label="Email" name="email" required>
-            <UInput v-model="state.email" type="email" placeholder="you@example.com" icon="i-heroicons-envelope" />
+            <UInput
+              v-model="state.email"
+              type="email"
+              placeholder="you@example.com"
+              icon="i-heroicons-envelope"
+            />
           </UFormGroup>
           <UFormGroup label="Nombre(s)" name="first_name" required>
             <UInput v-model="state.first_name" />
@@ -48,48 +64,54 @@
             <UInput ref="fileImg" type="file" accept="image/*" />
           </UFormGroup>
         </div>
-        <UButton type="submit" class="mt-4" block :loading="status === 'pending'">Registrarse</UButton>
+        <UButton
+          type="submit"
+          class="mt-4"
+          block
+          :loading="status === 'pending'"
+          >Registrarse</UButton
+        >
       </UForm>
     </UCard>
   </section>
 </template>
 
 <script lang="ts" setup>
-import type { Form, FormSubmitEvent } from '#ui/types'
-import { userRegisterSchema } from '~/schemas/auth';
-import { z } from 'zod'
+import type { Form, FormSubmitEvent } from "#ui/types";
+import { userRegisterSchema } from "~/schemas/auth";
+import { z } from "zod";
 
 useSeoMeta({
-  title: 'Regristrar',
-  description: 'Regístrate y sé parte de nuestra comunidad de estudiantes.'
-})
+  title: "Regristrar",
+  description: "Regístrate y sé parte de nuestra comunidad de estudiantes.",
+});
 
 definePageMeta({
-  middleware: ['anonymous']
-})
+  middleware: ["anonymous"],
+});
 
-const signupEmail = useState<string | null>('signupEmail', () => null)
-type UserRegister = z.infer<typeof userRegisterSchema>
-const form = ref<Form<UserRegister> | undefined>()
-const registerData = ref(new FormData())
-const fileImg = ref()
+const signupEmail = useState<string | null>("signupEmail", () => null);
+type UserRegister = z.infer<typeof userRegisterSchema>;
+const form = ref<Form<UserRegister> | undefined>();
+const registerData = ref(new FormData());
+const fileImg = ref();
 
 const state = reactive<UserRegister>({
-  username: '',
-  email: '',
-  first_name: '',
-  last_name: '',
-  password: '',
-  re_password: '',
-  about_me: ''
-})
+  username: "",
+  email: "",
+  first_name: "",
+  last_name: "",
+  password: "",
+  re_password: "",
+  about_me: "",
+});
 
-const { error, status, execute } = useEdukarAPI('account/users/', {
-  method: 'POST',
+const { error, status, execute } = useEdukarAPI("account/users/", {
+  method: "POST",
   body: registerData.value,
   immediate: false,
-  watch: false
-})
+  watch: false,
+});
 
 /* const { error, status, execute } = useAsyncData('signup',
   () => useApiFetch('account/users/', {
@@ -102,26 +124,27 @@ const { error, status, execute } = useEdukarAPI('account/users/', {
 ) */
 
 const onSubmit = async (event: FormSubmitEvent<UserRegister>) => {
-  Object.keys(event.data).forEach(key => {
-    const value = event.data[key as keyof typeof event.data]
-    if (value !== undefined)
-      registerData.value.append(key, value)
-  })
+  Object.keys(event.data).forEach((key) => {
+    const value = event.data[key as keyof typeof event.data];
+    if (value !== undefined) registerData.value.append(key, value);
+  });
 
-  const file = fileImg.value.input.files[0]
-  if (file !== undefined) registerData.value.append('picture', file)
+  const file = fileImg.value.input.files[0];
+  if (file !== undefined) registerData.value.append("picture", file);
 
-  await execute()
+  await execute();
 
-  if (status.value === 'error') {
-    const errorData = error.value?.data as { [key: string]: string[] }
+  if (status.value === "error") {
+    const errorData = error.value?.data as Record<string, string[]>;
     form.value?.setErrors(
-      Object.keys(errorData).map(key => ({ path: key, message: errorData[key][0] }))
-    )
+      Object.keys(errorData).map((key) => ({
+        path: key,
+        message: errorData[key][0],
+      })),
+    );
   } else {
-    signupEmail.value = state.email
-    navigateTo('/account/after-signup', { replace: true })
+    signupEmail.value = state.email;
+    navigateTo("/account/after-signup", { replace: true });
   }
-}
-
+};
 </script>

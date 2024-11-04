@@ -1,17 +1,19 @@
 <template>
   <UCard class="w-full" :ui="{ background: '', ring: '', shadow: '' }">
-
     <template #header>
-      <Typography tag="h1" variant="h1">
-        Perfil
-      </Typography>
+      <Typography tag="h1" variant="h1"> Perfil </Typography>
     </template>
 
     <DataLoading :loading="pending" :data="data">
       <template #data="{ data: profile }">
         <div class="flex flex-col gap-4">
           <div class="text-center">
-            <UAvatar img-class="object-cover" :src="profile.picture" size="3xl" alt="picture" />
+            <UAvatar
+              img-class="object-cover"
+              :src="profile.picture"
+              size="3xl"
+              alt="picture"
+            />
           </div>
 
           <!-- User profile data -->
@@ -38,12 +40,21 @@
               <Typography tag="span">Sobre mi:</Typography>
               <p>{{ profile.about_me }}</p>
             </div>
-            <UButton icon="i-heroicons-pencil-square" label="Editar" @click="isEditMode = true" />
+            <UButton
+              icon="i-heroicons-pencil-square"
+              label="Editar"
+              @click="isEditMode = true"
+            />
           </div>
 
           <!-- Edit mode -->
           <div v-else>
-            <UForm ref="form" :state="state" @submit="onUpdateSubmit" :schema="userUpdateSchema">
+            <UForm
+              ref="form"
+              :state="state"
+              @submit="onUpdateSubmit"
+              :schema="userUpdateSchema"
+            >
               <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <UFormGroup label="Nombre de usuario" name="username" required>
                   <UInput v-model="state.username" />
@@ -64,53 +75,64 @@
                 </UFormGroup>
               </div>
               <div class="space-x-2">
-                <UButton label="Cancelar" color="gray" @click="isEditMode = false" />
-                <UButton type="submit" class="mt-4" label="Actualizar" :loading="statusUpdate === 'pending'" />
+                <UButton
+                  label="Cancelar"
+                  color="gray"
+                  @click="isEditMode = false"
+                />
+                <UButton
+                  type="submit"
+                  class="mt-4"
+                  label="Actualizar"
+                  :loading="statusUpdate === 'pending'"
+                />
               </div>
             </UForm>
           </div>
-
         </div>
       </template>
     </DataLoading>
-
   </UCard>
 </template>
 
 <script lang="ts" setup>
-import type { FormSubmitEvent, Form } from '#ui/types'
-import type { UserProfile } from '~/types'
-import { userUpdateSchema } from '~/schemas/auth'
+import type { FormSubmitEvent, Form } from "#ui/types";
+import type { UserProfile } from "~/types";
+import { userUpdateSchema } from "~/schemas/auth";
 
 definePageMeta({
-  middleware: ['auth']
-})
+  middleware: ["auth"],
+});
 
-const form = ref<Form<UserProfile> | undefined>()
-const fileImg = ref()
-const isEditMode = ref(false)
+const form = ref<Form<UserProfile> | undefined>();
+const fileImg = ref();
+const isEditMode = ref(false);
 const state = reactive<UserProfile>({
-  username: '',
-  first_name: '',
-  last_name: '',
-  about_me: '',
-  email: ''
-})
-const formData = ref(new FormData())
+  username: "",
+  first_name: "",
+  last_name: "",
+  about_me: "",
+  email: "",
+});
+const formData = ref(new FormData());
 
-const { data, pending, refresh } = useEdukarAPI<UserProfile>('/account/users/me/', {
-  lazy: true,
-  onResponse({ response }) {
-    if (response.status === 200) {
-      const data = response._data as UserProfile
-      state.username = data.username
-      state.first_name = data.first_name
-      state.last_name = data.last_name
-      state.about_me = data.about_me
-      state.email = data.email
-    }
-  }
-})
+const { data, status, refresh } = useEdukarAPI<UserProfile>(
+  "/account/users/me/",
+  {
+    lazy: true,
+    onResponse({ response }) {
+      if (response.status === 200) {
+        const data = response._data as UserProfile;
+        state.username = data.username;
+        state.first_name = data.first_name;
+        state.last_name = data.last_name;
+        state.about_me = data.about_me;
+        state.email = data.email;
+      }
+    },
+  },
+);
+const pending = computed(() => status.value === "pending");
 /* const { data, pending, refresh } = await useLazyAsyncData(
   'profile',
   () => useApiFetch<UserProfile>('/account/users/me/', {
@@ -127,12 +149,16 @@ const { data, pending, refresh } = useEdukarAPI<UserProfile>('/account/users/me/
   })
 ) */
 
-const { error, status: statusUpdate, execute: update } = useEdukarAPI('/account/users/me/', {
-  method: 'PATCH',
+const {
+  error,
+  status: statusUpdate,
+  execute: update,
+} = useEdukarAPI("/account/users/me/", {
+  method: "PATCH",
   body: formData.value,
   immediate: false,
-  watch: false
-})
+  watch: false,
+});
 
 /* const { error, status: statusUpdate, execute: update } = useAsyncData(
   'user-update',
@@ -146,29 +172,31 @@ const { error, status: statusUpdate, execute: update } = useEdukarAPI('/account/
 ) */
 
 const onUpdateSubmit = async (event: FormSubmitEvent<UserProfile>) => {
-  form.value?.clear()
-  Object.keys(event.data).forEach(key => {
-    const value = event.data[key as keyof typeof event.data]
+  form.value?.clear();
+  Object.keys(event.data).forEach((key) => {
+    const value = event.data[key as keyof typeof event.data];
     if (value !== undefined) {
-      formData.value.append(key, value)
+      formData.value.append(key, value);
     }
-  })
+  });
 
-  const file = fileImg.value.input.files[0]
-  if (file !== undefined) formData.value.append('picture', file)
+  const file = fileImg.value.input.files[0];
+  if (file !== undefined) formData.value.append("picture", file);
 
-  await update()
+  await update();
 
-  if (statusUpdate.value === 'error') {
-    const errorData = error.value?.data as { [key: string]: string[] }
+  if (statusUpdate.value === "error") {
+    const errorData = error.value?.data as Record<string, string[]>;
     form.value?.setErrors(
-      Object.keys(errorData).map(key => ({ path: key, message: errorData[key][0] }))
-    )
+      Object.keys(errorData).map((key) => ({
+        path: key,
+        message: errorData[key][0],
+      })),
+    );
   } else {
-    await refresh()
-    isEditMode.value = false
-    formData.value = new FormData()
+    await refresh();
+    isEditMode.value = false;
+    formData.value = new FormData();
   }
-}
-
+};
 </script>
