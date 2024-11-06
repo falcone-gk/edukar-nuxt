@@ -129,6 +129,9 @@ const { getFilteredData, page, clearFilters } = usePaginationFilter({
 });
 
 const { data, status } = getFilteredData<ExamPagination>({
+  //TODO: key parameter is not dynamic and refresh by watch doesnt
+  // care by getCachedData
+  key: route.fullPath,
   lazy: true,
 });
 const pending = computed(() => status.value === "pending");

@@ -41,13 +41,9 @@ export const usePaginationFilter = <T>({
         size: size,
       },
       watch: [page, filters],
-      //TODO: getCachedData generate hydration mismatch
-      // getCachedData: () => {
-      //   return (
-      //     nuxtApp.payload.data[filterKey.value] ||
-      //     nuxtApp.static.data[filterKey.value]
-      //   );
-      // },
+      getCachedData: (key) => {
+        return nuxtApp.payload.data[key] || nuxtApp.static.data[key];
+      },
     });
   }
 
