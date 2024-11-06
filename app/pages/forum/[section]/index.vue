@@ -16,7 +16,7 @@
         </template>
         <div class="space-y-4">
           <UFormGroup class="flex items-center">
-            <UiSelect
+            <USelect
               v-model="filters.subsection"
               :options="subsections"
               option-attribute="name"
