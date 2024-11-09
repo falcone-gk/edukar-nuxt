@@ -29,7 +29,13 @@
       </div>
       <div class="flex-1">
         <!-- <PostEditor v-model:text="exerciseLatexCode" :show-tips="false" /> -->
-        <img src="/images/text-editor.webp" loading="lazy" alt="text-editor" />
+
+        <img
+          class="drop-shadow-md"
+          src="/images/text-editor-light.webp"
+          loading="lazy"
+          alt="text-editor"
+        />
       </div>
     </div>
   </div>
