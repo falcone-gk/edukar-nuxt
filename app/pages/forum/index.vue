@@ -94,32 +94,15 @@
 </template>
 
 <script lang="ts" setup>
-import { truncateText } from "~/utils/text";
-
-interface sectionData {
-  id: number;
-  name: string;
-  slug: string;
-  subsections: {
-    id: number;
-    name: string;
-    slug: string;
-    last_post: {
-      title: string;
-      slug: string;
-      date: string;
-      author: string;
-    };
-  }[];
-}
+import type { ForumData } from "~/types/forum";
 
 const subsectionSelected = useState("subsection");
 
 const nuxtApp = useNuxtApp();
-const { data: sections, status } = useEdukarAPI<sectionData[]>(
+const { data: sections, status } = useEdukarAPI<ForumData[]>(
   "/forum/home-forum",
   {
-    key: "forum-home",
+    key: FORUM_HOME_KEY,
     lazy: true,
     getCachedData: (key) =>
       nuxtApp.payload.data[key] || nuxtApp.static.data[key],

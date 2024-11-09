@@ -59,7 +59,7 @@
 import { z } from "zod";
 import { postSchema } from "~/schemas/forum";
 import type { Form, FormSubmitEvent } from "#ui/types";
-import type { Post } from "~/types/forum";
+import type { ForumData, Post } from "~/types/forum";
 
 useHead({
   title: "Crear Publicación",
@@ -73,8 +73,8 @@ definePageMeta({
   },
 });
 
-const { showNotification } = useNotification();
-const form = ref<Form<any>>();
+type Schema = z.output<typeof postSchema>;
+const form = ref<Form<Schema>>();
 const forumStore = useForumStore();
 const sections = await forumStore.getSectionOptions();
 const subsections = computed(() => {
@@ -83,8 +83,6 @@ const subsections = computed(() => {
   }
   return [];
 });
-
-type Schema = z.output<typeof postSchema>;
 
 const body = ref<{
   section: number | undefined;
@@ -104,6 +102,7 @@ const onChangeSection = () => {
   body.value.subsection = undefined;
 };
 
+const { data: forum } = useNuxtData<ForumData>(FORUM_HOME_KEY);
 const postFormData = ref(new FormData());
 const { data, error, status, execute } = useEdukarAPI<Post>("/forum/posts/", {
   method: "POST",
@@ -120,6 +119,7 @@ const { data, error, status, execute } = useEdukarAPI<Post>("/forum/posts/", {
   immediate: false,
 }) */
 
+const { showNotification } = useNotification();
 const onSubmit = async (event: FormSubmitEvent<Schema>) => {
   form.value?.validate();
   const errors = form.value?.getErrors();
