@@ -22,8 +22,8 @@ export default defineNuxtConfig({
   css: ["~/assets/css/main.css"],
   colorMode: {
     classSuffix: "",
-    preference: "light",
-    fallback: "light",
+    preference: "dark",
+    fallback: "dark",
   },
   ui: {
     icons: ["ri", "mdi"],

@@ -11,6 +11,9 @@
       <UButton
         v-show="!isOpen"
         aria-label="Mostra sidebar"
+        aria-haspopup="true"
+        tabindex="0"
+        title="menu bar"
         icon="i-heroicons-bars-3-20-solid"
         color="primary"
         variant="link"
