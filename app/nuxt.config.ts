@@ -1,7 +1,12 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  modules: ["@nuxt/ui", "@pinia/nuxt", "nuxt-tiptap-editor"],
+  modules: [
+    "@nuxt/ui",
+    "@pinia/nuxt",
+    "nuxt-tiptap-editor",
+    "@nuxtjs/google-adsense",
+  ],
   tiptap: {
     prefix: "Tiptap",
   },
@@ -30,6 +35,9 @@ export default defineNuxtConfig({
   },
   pinia: {
     storesDirs: ["./stores/**"],
+  },
+  googleAdsense: {
+    id: "ca-pub-7415328561504626",
   },
   routeRules: {
     "/": { prerender: true },
