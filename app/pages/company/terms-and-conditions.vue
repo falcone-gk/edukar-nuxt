@@ -6,7 +6,7 @@
       <p>¡Bienvenido a Edukar!</p>
 
       <p>Estos términos y condiciones delinean las reglas y regulaciones para el uso del Sitio Web de Edukar, ubicado en
-        http://www.aedukar.com.</p>
+        https://www.aedukar.com.</p>
 
       <p>Al acceder a este sitio web, asumimos que aceptas estos términos y condiciones. No continúes usando Edukar si no
         estás de acuerdo en aceptar todos los términos y condiciones establecidos en esta página.</p>
