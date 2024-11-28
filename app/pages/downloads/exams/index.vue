@@ -1,89 +1,89 @@
 <template>
   <section id="downloads" class="flex justify-center px-2">
     <!-- Downloads content -->
-    <UContainer
-      :ui="{
-        base: 'w-full max-w-[900px]',
-      }"
-    >
-      <UCard class="flex-grow flex-shrink-0 basis-full">
-        <template #header>
-          <Typography tag="h1" variant="h1" color="primary">
-            Exámenes
-          </Typography>
-        </template>
-
-        <div>
-          <div class="flex flex-col-reverse md:flex-row gap-2 px-3 py-3.5">
-            <div class="flex flex-col md:flex-row gap-2">
-              <UFormGroup>
-                <UiSelect
-                  v-model="filters.year"
-                  :options="filtersOpt?.years"
-                  @change="updateQueryUrl"
-                  placeholder="--Seleccionar año--"
-                />
-              </UFormGroup>
-              <UFormGroup>
-                <UiSelect
-                  v-model="filters.univ"
-                  :options="filtersOpt?.universities"
-                  option-attribute="university"
-                  value-attribute="siglas"
-                  @change="updateQueryUrl"
-                  placeholder="--Seleccionar universidad--"
-                />
-              </UFormGroup>
-              <UFormGroup>
-                <UiSelect
-                  v-model="filters.video"
-                  :options="videos"
-                  @change="updateQueryUrl"
-                  placeholder="--Seleccionar video solucionario--"
-                />
-              </UFormGroup>
-            </div>
-
-            <div class="md:ml-auto">
-              <UButton
-                label="Limpiar filtros"
-                variant="ghost"
-                color="gray"
-                @click="onClearFilters"
+    <div class="w-full flex flex-col md:flex-row gap-8">
+      <UCard class="md:min-w-72 lg:min-w-96">
+        <div class="flex flex-col gap-8 px-3 py-3.5">
+          <div class="flex flex-col gap-5">
+            <UFormGroup label="Año:">
+              <UiSelect
+                class="w-full"
+                v-model="filters.year"
+                :options="filtersOpt?.years"
               />
-            </div>
+            </UFormGroup>
+            <UFormGroup label="Universidad:">
+              <UiSelect
+                class="w-full"
+                v-model="filters.univ"
+                :options="filtersOpt?.universities"
+                option-attribute="name"
+                value-attribute="siglas"
+              />
+            </UFormGroup>
+            <UFormGroup label="Tipo de examen:">
+              <UiSelect
+                class="w-full"
+                v-model="filters.type"
+                :options="typesOpt"
+                :disabled="!filters.univ"
+              />
+            </UFormGroup>
+            <UFormGroup label="Are de examen">
+              <UiSelect
+                class="w-full"
+                v-model="filters.area"
+                :options="areasOpt"
+                :disabled="!filters.univ"
+              />
+            </UFormGroup>
           </div>
 
+          <div>
+            <UButton
+              label="Limpiar filtros"
+              color="gray"
+              @click="clearFilters"
+            />
+          </div>
+        </div>
+      </UCard>
+
+      <div class="w-full">
+        <Typography class="mb-8" tag="h1" variant="h1" color="primary">
+          Exámenes
+        </Typography>
+        <div
+          class="h-[700px] overflow-y-auto border-2 border-gray-200 dark:border-gray-800 p-8 rounded-lg"
+        >
           <DataLoading :loading="pending" :data="data" :list="data?.results">
             <template #loading>
               <SkeletonCardList />
             </template>
 
             <template #data="{ data }">
-              <div
-                class="grid gap-4 auto-cols-auto grid-cols-[repeat(auto-fill,minmax(15rem,1fr))]"
-              >
+              <DisplayGrid>
                 <CardResume
                   v-for="exam in data.results"
                   :image="exam.cover"
                   :title="exam.title"
                   :to="`/downloads/exams/${exam.slug}`"
                 />
-              </div>
+              </DisplayGrid>
             </template>
           </DataLoading>
         </div>
-        <template v-if="!pending && data" #footer>
-          <div class="flex justify-center">
+        <div v-if="!pending && data">
+          <div class="flex justify-center mt-8">
             <UPagination
               :total="data?.count"
               :page-count="pageCount"
               v-model="page"
             />
           </div>
-        </template>
-      </UCard>
-    </UContainer>
+        </div>
+      </div>
+    </div>
   </section>
 </template>
 
@@ -107,11 +107,32 @@ const { data: filtersOpt } = await useEdukarAPI<ExamsFilter>(
   "/services/exams-filters",
   {
     key: "exams-filter",
+    transform: (filters) => ({
+      ...filters,
+      universities: filters.universities.map((univ) => ({
+        ...univ,
+        name: `${univ.name} (${univ.siglas})`,
+      })),
+    }),
     getCachedData: (key) => {
       return nuxtApp.payload.data[key] || nuxtApp.static.data[key];
     },
   },
 );
+
+const typesOpt = computed(() => {
+  if (!filtersOpt.value) return [];
+
+  return filtersOpt.value.universities.find((el) => el.siglas === filters.univ)
+    ?.exam_types;
+});
+
+const areasOpt = computed(() => {
+  if (!filtersOpt.value) return [];
+
+  return filtersOpt.value.universities.find((el) => el.siglas === filters.univ)
+    ?.exam_areas;
+});
 
 type ExamPagination = PaginationData<Exam>;
 const route = useRoute();
@@ -119,7 +140,9 @@ const route = useRoute();
 const filters = reactive({
   year: route.query.year as string | undefined,
   univ: route.query.university as string | undefined,
-  video: route.query.video as string | undefined,
+  type: route.query.type as string | undefined,
+  area: route.query.area as string | undefined,
+  // video: route.query.video as string | undefined,
 });
 const pageCount = ref(8);
 const { getFilteredData, page, clearFilters } = usePaginationFilter({
@@ -143,13 +166,22 @@ const updateQueryUrl = () => {
     query: {
       year: filters.year,
       university: filters.univ,
-      video: filters.video,
+      type: filters.type,
+      area: filters.area,
+      // video: filters.video,
     },
   });
 };
 
-const onClearFilters = () => {
-  clearFilters();
+watch(filters, () => {
   updateQueryUrl();
-};
+});
+
+watch(
+  () => filters.univ,
+  () => {
+    filters.area = undefined;
+    filters.type = undefined;
+  },
+);
 </script>

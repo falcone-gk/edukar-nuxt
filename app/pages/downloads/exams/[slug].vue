@@ -96,11 +96,11 @@
           </div>
         </div>
 
-        <div class="space-y-2 mt-8" v-if="recommendExams?.results">
+        <div class="space-y-2 mt-8">
           <Typography tag="h2"> Exámenes Relacionados: </Typography>
           <DataLoading
             :data="recommendExams"
-            :list="recommendExams.results"
+            :list="recommendExams?.results"
             :loading="recommendStatus === 'pending'"
           >
             <template #loading>
@@ -135,9 +135,17 @@ type ExamsPagination = PaginationData<Exam>;
 
 // Fetch exam data
 const route = useRoute();
-const examSlug = route.params.slug;
+const examSlug = route.params.slug as string;
 
-const { data: exam } = await useEdukarAPI<Exam>(`/services/exams/${examSlug}/`);
+const nuxtApp = useNuxtApp();
+const { data: exam } = await useEdukarAPI<Exam>(
+  `/services/exams/${examSlug}/`,
+  {
+    key: examSlug,
+    getCachedData: (key) =>
+      nuxtApp.payload.data[key] || nuxtApp.static.data[key],
+  },
+);
 
 if (!exam.value) {
   throw showError({
@@ -155,6 +163,7 @@ const examId = ref(exam.value.id);
 
 const { data: recommendExams, status: recommendStatus } =
   useEdukarAPI<ExamsPagination>("/services/exams/", {
+    key: `recommend-${filters.year}-${filters.univ}`,
     query: {
       ...filters,
       page: 1,
@@ -165,6 +174,8 @@ const { data: recommendExams, status: recommendStatus } =
       exams.results = exams.results.filter((exam) => exam.id !== examId.value);
       return exams;
     },
+    getCachedData: (key) =>
+      nuxtApp.payload.data[key] || nuxtApp.static.data[key],
   });
 
 // Filling SEO data
