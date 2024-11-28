@@ -8,7 +8,7 @@
           color="gray"
           icon="i-mdi-chevron-left"
           variant="link"
-          to="/downloads/exams"
+          :to="backTo"
         >
           Volver
         </UButton>
@@ -84,7 +84,7 @@
               </UButton>
             </div>
           </div>
-          <div>
+          <div class="ml-auto">
             <div class="book-container">
               <div class="book">
                 <img
@@ -129,6 +129,19 @@ import type { Exam } from "~/types/resultApiTypes";
 
 definePageMeta({
   middleware: ["auth"],
+});
+
+const router = useRouter();
+const backTo = computed(() => {
+  const from = router.options.history.state.back;
+  const defaultBackTo = "/downloads/exams";
+
+  if (!from) return defaultBackTo;
+  if (typeof from !== "string") return defaultBackTo;
+
+  if (from.includes(defaultBackTo)) {
+    return from;
+  }
 });
 
 type ExamsPagination = PaginationData<Exam>;
