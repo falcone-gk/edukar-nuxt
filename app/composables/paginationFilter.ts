@@ -17,11 +17,6 @@ export const usePaginationFilter = <T>({
 }: PaginationFilter) => {
   const nuxtApp = useNuxtApp();
   const page = ref(1);
-  const initialUndefined: { [key: string]: undefined } = {};
-  Object.keys(filters).forEach((filter) => {
-    initialUndefined[filter] = undefined;
-  });
-  const myFilters = toRefs(filters);
 
   // const filterKey = computed(() => {
   //   return Object.entries(myFilters)
@@ -35,8 +30,8 @@ export const usePaginationFilter = <T>({
       ...options,
       //TODO: Find a solution for dynamic key
       // key: filterKey.value,
-      query: {
-        ...myFilters,
+      query: filters,
+      params: {
         page: page,
         size: size,
       },
@@ -47,15 +42,19 @@ export const usePaginationFilter = <T>({
     });
   }
 
-  watch(filters, async () => {
+  // Reset the page to 1 whenever filters change
+  watch(filters, () => {
     if (page.value !== 1) {
       page.value = 1;
     }
   });
 
-  const clearFilters = async () => {
-    // Clear all filters and reset page to 1
-    Object.assign(filters, initialUndefined);
+  const clearFilters = () => {
+    // Reset all filters and page
+    Object.keys(filters).forEach((key) => {
+      filters[key] = undefined;
+    });
+    page.value = 1;
   };
 
   return { page, clearFilters, getFilteredData };

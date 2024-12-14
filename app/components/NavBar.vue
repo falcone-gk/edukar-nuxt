@@ -23,6 +23,7 @@ const links = [
   { text: "Cursos", path: "/courses", name: "course", id: 2 },
   { text: "Foro", path: "/forum", name: "forum", id: 3 },
   { text: "Descargas", path: "/downloads/exams", name: "download", id: 4 },
+  { text: "Tienda", path: "/store", name: "store", id: 5 },
 ];
 
 /* const darkModeItem = [
