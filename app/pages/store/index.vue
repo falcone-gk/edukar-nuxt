@@ -149,7 +149,7 @@ onMounted(() => {
                 v-for="product in data.results"
                 :image="product.product_image"
                 :title="product.name"
-                :to="`/downloads/exams/${product.slug}`"
+                :to="`/store/${product.slug}`"
               />
             </DisplayGrid>
           </template>

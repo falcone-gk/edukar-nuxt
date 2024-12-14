@@ -1,6 +1,5 @@
 <template>
   <section>
-    <div></div>
     <UContainer class="w-full max-w-[1200px]">
       <div class="mb-4">
         <UButton
