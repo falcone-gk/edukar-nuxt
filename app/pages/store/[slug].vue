@@ -1,6 +1,18 @@
 <script lang="ts" setup>
 import type { Product } from "~/types/store";
 
+const router = useRouter();
+const backTo = computed(() => {
+  const from = router.options.history.state.back;
+  const defaultBackTo = "/store";
+
+  if (!from) return defaultBackTo;
+  if (typeof from !== "string") return defaultBackTo;
+
+  if (from.includes(defaultBackTo)) {
+    return from;
+  }
+});
 const route = useRoute();
 const productSlug = route.params.slug as string;
 
@@ -68,6 +80,17 @@ const selectedProduct = computed(() => {
 <template>
   <section id="store-product">
     <UContainer class="w-full max-w-[1200px]">
+      <div class="mb-4">
+        <UButton
+          size="sm"
+          color="gray"
+          icon="i-mdi-chevron-left"
+          variant="link"
+          :to="backTo"
+        >
+          Volver
+        </UButton>
+      </div>
       <div class="container mx-auto">
         <!-- <div class="flex justify-end mb-4">
         <UToggle v-model="isPackageView" :options="viewOptions" />
@@ -120,21 +143,7 @@ const selectedProduct = computed(() => {
             </div>
 
             <!-- Price -->
-            <div class="space-y-2">
-              <div
-                class="inline-block bg-red-600 text-white text-sm px-2 py-1 rounded"
-              >
-                PRECIO ONLINE
-              </div>
-              <div class="flex items-baseline gap-4">
-                <span class="text-4xl font-bold"
-                  >S/ {{ selectedProduct?.price }}</span
-                >
-                <!-- <span class="text-gray-400 line-through"
-                >Normal S/ {{ selectedProduct?.normalPrice }}</span
-              > -->
-              </div>
-            </div>
+            <StoreProductPrice :price="selectedProduct?.price" />
 
             <!-- Stock -->
             <!-- <div class="text-sm text-gray-300">
@@ -179,10 +188,10 @@ const selectedProduct = computed(() => {
       <div class="space-y-4 mt-16">
         <h3 class="text-2xl font-bold">Recomendaciones</h3>
         <DisplayGrid>
-          <UiProductCard
+          <StoreProductCard
             v-for="item in 4"
             :key="product?.id"
-            :product="product"
+            :product="product!"
           />
         </DisplayGrid>
       </div>

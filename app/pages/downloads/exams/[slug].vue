@@ -86,10 +86,7 @@
           <div class="ml-auto">
             <div class="book-container">
               <div class="book">
-                <img
-                  alt="Imagen de portada"
-                  :src="getAbsoluteApiUrl(exam?.cover as string)"
-                />
+                <img alt="Imagen de portada" :src="exam?.cover" />
               </div>
             </div>
           </div>

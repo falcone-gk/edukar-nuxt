@@ -96,6 +96,10 @@ onMounted(() => {
     <!-- Downloads content -->
     <div class="w-full flex flex-col md:flex-row gap-8">
       <UCard class="md:min-w-72 lg:min-w-96">
+        <template #header>
+          <Typography tag="h2" variant="h3" color="gray"> Filtros </Typography>
+        </template>
+
         <div class="flex flex-col gap-8 px-3 py-3.5">
           <div class="flex flex-col gap-5">
             <UFormGroup label="Categoria:">
@@ -140,18 +144,32 @@ onMounted(() => {
         </Typography>
         <DataLoading :loading="pending" :data="data" :list="data?.results">
           <template #loading>
-            <SkeletonCardList />
+            <div class="flex flex-col gap-8">
+              <div
+                v-for="i in 3"
+                :key="i"
+                class="bg-gray-800 p-6 rounded-lg animate-pulse"
+              >
+                <div class="flex gap-6">
+                  <div class="w-48 h-48 bg-gray-700 rounded-lg"></div>
+                  <div class="flex-1 space-y-4">
+                    <div class="h-4 bg-gray-700 rounded w-3/4"></div>
+                    <div class="h-4 bg-gray-700 rounded w-1/4"></div>
+                    <div class="h-4 bg-gray-700 rounded w-1/2"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </template>
 
           <template #data="{ data }">
-            <DisplayGrid>
-              <CardResume
+            <div class="flex flex-col gap-8">
+              <StoreProductHorizontalCard
                 v-for="product in data.results"
-                :image="product.product_image"
-                :title="product.name"
+                :product="product"
                 :to="`/store/${product.slug}`"
               />
-            </DisplayGrid>
+            </div>
           </template>
         </DataLoading>
         <div v-if="!pending && data">
