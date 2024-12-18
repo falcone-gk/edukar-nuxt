@@ -8,17 +8,19 @@
           <LogoEdukar />
         </NuxtLink>
       </div>
-      <UButton
-        v-show="!isOpen"
-        aria-label="Mostra sidebar"
-        aria-haspopup="true"
-        tabindex="0"
-        title="menu bar"
-        icon="i-heroicons-bars-3-20-solid"
-        color="primary"
-        variant="link"
-        @click="isOpen = true"
-      />
+      <div class="flex gap-2">
+        <StoreCart />
+        <UButton
+          aria-label="Mostra sidebar"
+          aria-haspopup="true"
+          tabindex="0"
+          title="menu bar"
+          icon="i-heroicons-bars-3-20-solid"
+          color="primary"
+          variant="link"
+          @click="isOpen = true"
+        />
+      </div>
     </div>
   </header>
   <USlideover
@@ -150,6 +152,12 @@ const navLinks = [
     label: "Descargas",
     to: "/downloads/exams",
     icon: "i-heroicons-arrow-down-circle-20-solid",
+    click: () => (isOpen.value = false),
+  },
+  {
+    label: "Tienda",
+    to: "/store",
+    icon: "i-mdi-store",
     click: () => (isOpen.value = false),
   },
 ];

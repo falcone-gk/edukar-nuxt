@@ -13,9 +13,11 @@ defineEmits(["add-to-cart"]);
 </script>
 
 <template>
-  <div class="flex gap-6 bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+  <div
+    class="flex flex-col sm:flex-row sm:text-left gap-6 bg-gray-50 dark:bg-gray-800 rounded-lg p-4"
+  >
     <!-- Product Image -->
-    <div class="w-48 shrink-0">
+    <div class="w-48 shrink-0 mx-auto">
       <NuxtLink :to="props.to">
         <img
           :src="product.product_image"
@@ -47,9 +49,7 @@ defineEmits(["add-to-cart"]);
       </div>
 
       <!-- Add to Cart Button -->
-      <UButton class="px-6 py-2 rounded transition-colors">
-        Add to cart
-      </UButton>
+      <StoreButtonAddToCart :product="props.product" />
     </div>
   </div>
 </template>

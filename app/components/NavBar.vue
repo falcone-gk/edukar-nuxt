@@ -98,7 +98,7 @@ const menuItems = [
           variant="outline"
           label="Registrarse"
         />
-        <div>
+        <div class="flex flex-row gap-2">
           <ColorScheme>
             <UButton
               aria-label="modo-oscuro"
@@ -108,6 +108,7 @@ const menuItems = [
               @click="toggleColorMode"
             />
           </ColorScheme>
+          <StoreCart />
         </div>
         <div v-if="userStore.user" class="flex gap-2">
           <UDropdown :items="menuItems" :popper="{ placement: 'bottom-start' }">
