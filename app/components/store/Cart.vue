@@ -69,11 +69,14 @@ const { cart, total, removeProductFromCart } = useUserCart();
           </div>
 
           <div class="p-4 border-t">
-            <button
-              class="w-full text-[#2d9c7a] hover:text-[#2d9c7a]/90 text-center"
+            <UButton
+              class="w-full text-center"
+              variant="ghost"
+              to="/checkout/cart"
+              block
             >
               Ver y editar carro
-            </button>
+            </UButton>
           </div>
         </div>
 

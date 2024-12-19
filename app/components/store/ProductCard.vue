@@ -16,13 +16,7 @@
         </NuxtLink>
       </Typography>
       <StoreProductPrice :price="product.price" />
-      <UButton
-        @click="$emit('add-to-cart', product)"
-        class="w-full py-2 px-4 mt-8 font-medium transition-colors"
-        block
-      >
-        Añadir al carro
-      </UButton>
+      <StoreButtonAddToCart :product="product" block />
     </div>
   </UCard>
 </template>

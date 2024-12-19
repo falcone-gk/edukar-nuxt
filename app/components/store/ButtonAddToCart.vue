@@ -47,6 +47,7 @@ async function onAddToCart() {
     class="px-6 py-2 rounded transition-colors"
     @click="onAddToCart"
     :loading="pending"
+    v-bind="$attrs"
   >
     Agregar al carrito
   </UButton>

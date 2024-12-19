@@ -177,11 +177,11 @@ const selectedProduct = computed(() => {
           </div> -->
 
             <!-- Add to Cart Button -->
-            <button
-              class="w-full bg-[#2d9c7a] hover:bg-[#248c6a] text-white py-3 px-6 rounded-lg font-medium transition-colors"
-            >
-              AÑADIR AL CARRO
-            </button>
+            <StoreButtonAddToCart
+              :product="product!"
+              class="uppercase text-xl font-medium py-3 px-6"
+              block
+            />
           </div>
         </div>
       </div>

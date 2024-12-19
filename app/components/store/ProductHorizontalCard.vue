@@ -14,7 +14,7 @@ defineEmits(["add-to-cart"]);
 
 <template>
   <div
-    class="flex flex-col sm:flex-row sm:text-left gap-6 bg-gray-50 dark:bg-gray-800 rounded-lg p-4"
+    class="flex flex-col sm:flex-row sm:text-left gap-6 border shadow-sm dark:border-gray-900 bg-gray-50 dark:bg-gray-800 rounded-lg p-4"
   >
     <!-- Product Image -->
     <div class="w-48 shrink-0 mx-auto">

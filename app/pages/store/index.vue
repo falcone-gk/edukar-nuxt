@@ -148,14 +148,22 @@ onMounted(() => {
               <div
                 v-for="i in 3"
                 :key="i"
-                class="bg-gray-800 p-6 rounded-lg animate-pulse"
+                class="bg-gray-200 p-6 rounded-lg animate-pulse dark:bg-gray-800"
               >
                 <div class="flex gap-6">
-                  <div class="w-48 h-48 bg-gray-700 rounded-lg"></div>
+                  <div
+                    class="w-48 h-48 bg-gray-100 rounded-lg dark:bg-gray-700"
+                  ></div>
                   <div class="flex-1 space-y-4">
-                    <div class="h-4 bg-gray-700 rounded w-3/4"></div>
-                    <div class="h-4 bg-gray-700 rounded w-1/4"></div>
-                    <div class="h-4 bg-gray-700 rounded w-1/2"></div>
+                    <div
+                      class="h-4 bg-gray-100 rounded w-3/4 dark:bg-gray-700"
+                    ></div>
+                    <div
+                      class="h-4 bg-gray-100 rounded w-1/4 dark:bg-gray-700"
+                    ></div>
+                    <div
+                      class="h-4 bg-gray-100 rounded w-1/2 dark:bg-gray-700"
+                    ></div>
                   </div>
                 </div>
               </div>
