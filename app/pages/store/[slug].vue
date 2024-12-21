@@ -75,6 +75,16 @@ const selected = ref(product.value.identifier);
 const selectedProduct = computed(() => {
   return products.find((prod) => prod.identifier === selected.value);
 });
+
+// recommended products
+
+const { data: recommendations, status: recommendStatus } = useEdukarAPI<
+  Product[]
+>(`/store/products/${productSlug}/recommendations`, {
+  key: `${productSlug}-recommendations`,
+  lazy: true,
+  getCachedData: (key) => nuxtApp.payload.data[key] || nuxtApp.static.data[key],
+});
 </script>
 
 <template>
@@ -187,13 +197,24 @@ const selectedProduct = computed(() => {
       </div>
       <div class="space-y-4 mt-16">
         <h3 class="text-2xl font-bold">Recomendaciones</h3>
-        <DisplayGrid>
-          <StoreProductCard
-            v-for="item in 4"
-            :key="product?.id"
-            :product="product!"
-          />
-        </DisplayGrid>
+        <DataLoading
+          :data="recommendations"
+          :loading="recommendStatus === 'pending'"
+        >
+          <template #loading>
+            <SkeletonCardList />
+          </template>
+
+          <template #data="{ data: prods }">
+            <DisplayGrid>
+              <StoreProductCard
+                v-for="prod in prods"
+                :key="`${prod.identifier}-recommend`"
+                :product="prod"
+              />
+            </DisplayGrid>
+          </template>
+        </DataLoading>
       </div>
     </UContainer>
   </section>

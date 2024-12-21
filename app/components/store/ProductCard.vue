@@ -9,14 +9,16 @@
         />
       </UButton>
     </template>
-    <div>
-      <Typography tag="h4" color="gray" class="hover:underline">
-        <NuxtLink :to="redirectPath">
+    <div class="flex flex-col justify-between">
+      <Typography tag="h4" color="gray" class="hover:underline line-clamp-3">
+        <NuxtLink :to="redirectPath" :title="product.name">
           {{ product.name }}
         </NuxtLink>
       </Typography>
-      <StoreProductPrice :price="product.price" />
-      <StoreButtonAddToCart :product="product" block />
+      <div>
+        <StoreProductPrice :price="product.price" />
+        <StoreButtonAddToCart :product="product" block />
+      </div>
     </div>
   </UCard>
 </template>

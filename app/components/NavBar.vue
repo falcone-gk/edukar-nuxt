@@ -108,7 +108,7 @@ const menuItems = [
               @click="toggleColorMode"
             />
           </ColorScheme>
-          <StoreCart />
+          <StoreCart v-if="userStore.isLogged" />
         </div>
         <div v-if="userStore.user" class="flex gap-2">
           <UDropdown :items="menuItems" :popper="{ placement: 'bottom-start' }">

@@ -8,14 +8,30 @@ const props = defineProps({
   },
 });
 
+const { isLogged } = useUserStore();
+
 const { checkProduct, addProductToCart, checkProductAlreadyInCart } =
   useUserCart();
 
 const { data, status, execute } = checkProduct(props.product.identifier);
 const pending = computed(() => status.value === "pending");
 
+const route = useRoute();
 const { showNotification } = useNotification();
 async function onAddToCart() {
+  if (!isLogged) {
+    navigateTo({
+      name: "login",
+      query: { next: route.path },
+    });
+    showNotification({
+      message:
+        "Debes iniciar sesión o registrarte para agregar productos a tu carrito.",
+      type: "error",
+    });
+    return;
+  }
+
   const isProductInCart = checkProductAlreadyInCart(props.product);
 
   if (isProductInCart) {

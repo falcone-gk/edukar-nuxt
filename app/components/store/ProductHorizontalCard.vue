@@ -28,7 +28,7 @@ defineEmits(["add-to-cart"]);
     </div>
 
     <!-- Product Details -->
-    <div class="flex-1">
+    <div class="flex flex-col flex-1">
       <Typography tag="h2" variant="h3" color="gray" class="hover:underline">
         <NuxtLink :to="props.to">
           {{ product.name }}
@@ -36,7 +36,7 @@ defineEmits(["add-to-cart"]);
       </Typography>
 
       <div>
-        <p class="text-gray-800 dark:text-gray-300">
+        <p class="mt-4 text-gray-800 dark:text-gray-300">
           {{ product.description }}
         </p>
       </div>
@@ -49,7 +49,12 @@ defineEmits(["add-to-cart"]);
       </div>
 
       <!-- Add to Cart Button -->
-      <StoreButtonAddToCart :product="props.product" />
+      <div>
+        <StoreButtonAddToCart
+          :product="props.product"
+          class="flex-0 flex-end"
+        />
+      </div>
     </div>
   </div>
 </template>

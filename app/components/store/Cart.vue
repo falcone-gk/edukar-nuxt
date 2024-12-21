@@ -34,24 +34,31 @@ const { cart, total, removeProductFromCart } = useUserCart();
               <span class="text-sm">Subtotal del carro de compras:</span>
               <span class="font-medium">S/ {{ total }}</span>
             </div>
-            <UButton class="py-2 rounded" block>Comprar</UButton>
+            <UButton class="py-2 rounded" to="/checkout/payment" block
+              >Comprar</UButton
+            >
           </div>
 
           <div class="p-4 space-y-4 max-h-[50vh] overflow-y-auto">
             <div v-for="item in cart" :key="item.id" class="flex gap-4">
-              <!-- <img
-            :src="item.image"
-            :alt="item.name"
-            class="w-[60px] h-[80px] object-cover"
-          /> -->
-              <div class="bg-red-300 w-[60px] h-[80px]"></div>
+              <div class="w-[60px] h-[80px]">
+                <img
+                  :src="item.product_image"
+                  :alt="item.name"
+                  class="w-full h-full object-cover"
+                />
+              </div>
               <div class="flex justify-between gap-2 w-full">
                 <div>
-                  <p
-                    class="text-md text-blue-600 hover:underline cursor-pointer"
+                  <NuxtLink
+                    :to="{
+                      name: 'store-slug',
+                      params: { slug: item.slug },
+                    }"
+                    class="text-sm font-bold hover:underline cursor-pointer mb-2"
                   >
                     {{ item.name }}
-                  </p>
+                  </NuxtLink>
                   <p class="font-medium">
                     S/ {{ new Big(item.price).toFixed(2) }}
                   </p>
