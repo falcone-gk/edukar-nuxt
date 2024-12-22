@@ -38,16 +38,17 @@ const submitSale = async () => {
         v-if="cart.length > 0"
       >
         <UFormGroup label="Nombre" name="firstName" required>
-          <UInput v-model="state.firstName" />
+          <UInput v-model="state.firstName" disabled />
         </UFormGroup>
         <UFormGroup label="Apellido" name="lastName" required>
-          <UInput v-model="state.lastName" />
+          <UInput v-model="state.lastName" disabled />
         </UFormGroup>
         <!-- <UFormGroup label="DNI" name="dni" required>
           <UInput
             v-model="state.dni"
             placeholder="12345678"
             icon="i-heroicons-identification"
+            disabled
           />
         </UFormGroup> -->
         <UFormGroup label="Email" name="email" required>
@@ -55,11 +56,14 @@ const submitSale = async () => {
             v-model="state.email"
             placeholder="you@example.com"
             icon="i-mdi-email"
+            disabled
           />
         </UFormGroup>
-        <UButton type="submit" block :loading="status === 'pending'">
-          Realizar pago
-        </UButton>
+        <UTooltip text="Proximamente disponible">
+          <UButton type="submit" block :loading="status === 'pending'" disabled>
+            Realizar pago
+          </UButton>
+        </UTooltip>
       </UForm>
       <div v-else>
         <p>
