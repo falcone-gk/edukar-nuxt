@@ -127,6 +127,15 @@ const userLoggedLinks = [
     exact: true,
     click: () => (isOpen.value = false),
   },
+  {
+    icon: "i-mdi-book",
+    label: "Solucionarios",
+    to: "/account/me/products",
+  },
+  {
+    icon: "i-mdi-cart-variant",
+    label: "Mis compras",
+  },
 ];
 
 const navLinks = [

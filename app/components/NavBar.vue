@@ -47,6 +47,15 @@ const menuItems = [
       label: "Notificaciones",
       click: () => navigateTo("/account/me/notifications"),
     },
+    {
+      icon: "i-mdi-book",
+      label: "Solucionarios",
+      to: "/account/me/products",
+    },
+    {
+      icon: "i-mdi-cart-variant",
+      label: "Mis compras",
+    },
   ],
   [
     {
