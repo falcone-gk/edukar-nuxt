@@ -40,6 +40,7 @@ const links = [
   {
     icon: "i-mdi-cart-variant",
     label: "Mis compras",
+    to: "/account/me/sells",
   },
 ];
 </script>

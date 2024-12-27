@@ -55,6 +55,7 @@ const menuItems = [
     {
       icon: "i-mdi-cart-variant",
       label: "Mis compras",
+      to: "/account/me/sells",
     },
   ],
   [
