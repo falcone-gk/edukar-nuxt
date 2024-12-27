@@ -1,26 +1,32 @@
 <script setup lang="ts">
 import Big from "big.js";
+import { paymentSchema } from "~/schemas/store";
 
-const form = ref(null);
-const status = ref("idle");
-
-const state = ref({
-  firstName: "",
-  lastName: "",
-  dni: "",
+const state = reactive({
+  first_name: "",
+  last_name: "",
   email: "",
 });
 
-const { cart, total } = useUserCart();
+const { cart, total, buyProducts } = useUserCart();
+const { data, status, execute: buy } = buyProducts();
 
-const submitSale = async () => {
-  status.value = "pending";
-  // Simulate API call
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  status.value = "idle";
-  console.log("Sale submitted:", state.value);
-  // Here you would typically send the data to your backend
-};
+const isPaid = useState<boolean | null>("isPaid");
+const { showNotification } = useNotification();
+async function onPay() {
+  await buy();
+  if (!data.value) {
+    showNotification({
+      type: "error",
+      title: "Error al realizar compra",
+      message:
+        "Hubo un error al realizar su compra, por favor contactar con soporte de Edukar.",
+    });
+  } else {
+    isPaid.value = true;
+    navigateTo("/checkout/success");
+  }
+}
 </script>
 
 <template>
@@ -31,24 +37,24 @@ const submitSale = async () => {
         Completar Compra
       </Typography>
       <UForm
-        ref="form"
         :state="state"
-        @submit="submitSale"
+        :schema="paymentSchema"
+        @submit="onPay"
         class="flex flex-col gap-4"
         v-if="cart.length > 0"
       >
-        <UFormGroup label="Nombre" name="firstName" required>
-          <UInput v-model="state.firstName" disabled />
+        <UFormGroup label="Nombre" name="first_name" required>
+          <UInput v-model="state.first_name" />
         </UFormGroup>
-        <UFormGroup label="Apellido" name="lastName" required>
-          <UInput v-model="state.lastName" disabled />
+        <UFormGroup label="Apellido" name="last_name" required>
+          <UInput v-model="state.last_name" />
         </UFormGroup>
         <!-- <UFormGroup label="DNI" name="dni" required>
           <UInput
             v-model="state.dni"
             placeholder="12345678"
             icon="i-heroicons-identification"
-            disabled
+
           />
         </UFormGroup> -->
         <UFormGroup label="Email" name="email" required>
@@ -56,14 +62,11 @@ const submitSale = async () => {
             v-model="state.email"
             placeholder="you@example.com"
             icon="i-mdi-email"
-            disabled
           />
         </UFormGroup>
-        <UTooltip text="Proximamente disponible">
-          <UButton type="submit" block :loading="status === 'pending'" disabled>
-            Realizar pago
-          </UButton>
-        </UTooltip>
+        <UButton type="submit" block :loading="status === 'pending'">
+          Realizar pago
+        </UButton>
       </UForm>
       <div v-else>
         <p>

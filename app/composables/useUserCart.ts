@@ -3,6 +3,9 @@ import Big from "big.js";
 
 export const useUserCart = () => {
   const cart = useState<Product[]>("user-cart", () => []);
+  const productIds = computed(() => {
+    return cart.value.map((prod) => prod.id);
+  });
 
   const total = computed(() => {
     return cart.value
@@ -39,12 +42,25 @@ export const useUserCart = () => {
     );
   }
 
+  function buyProducts() {
+    return useEdukarAPI("/store/payment", {
+      body: {
+        products: productIds,
+      },
+      method: "POST",
+      immediate: false,
+      watch: false,
+    });
+  }
+
   return {
     cart,
+    productIds,
     total,
     checkProduct,
     addProductToCart,
     removeProductFromCart,
     checkProductAlreadyInCart,
+    buyProducts,
   };
 };

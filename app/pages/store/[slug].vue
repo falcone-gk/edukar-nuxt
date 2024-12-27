@@ -41,7 +41,7 @@ function buildProductArray(product: Product): Option[] {
   result.push({ label: product.name, value: product.identifier });
 
   // Add the child items recursively only if it is package
-  if (product.type === 2) {
+  if (product.type === 3) {
     for (const item of product.items) {
       result.push(...buildProductArray(item));
     }
