@@ -1,5 +1,6 @@
 import type { Product } from "~/types/store";
 import Big from "big.js";
+import type { Receipt } from "~/types";
 
 export const useUserCart = () => {
   const cart = useState<Product[]>("user-cart", () => []);
@@ -43,7 +44,7 @@ export const useUserCart = () => {
   }
 
   function buyProducts() {
-    return useEdukarAPI("/store/payment", {
+    return useEdukarAPI<Receipt>("/store/payment", {
       body: {
         products: productIds,
       },

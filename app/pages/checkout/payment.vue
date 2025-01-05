@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Big from "big.js";
 import { paymentSchema } from "~/schemas/store";
+import type { Receipt } from "~/types";
 
 const state = reactive({
   first_name: "",
@@ -9,13 +10,14 @@ const state = reactive({
 });
 
 const { cart, total, buyProducts } = useUserCart();
-const { data, status, execute: buy } = buyProducts();
+const { data: receipt, status, execute: buy } = buyProducts();
 
-const isPaid = useState<boolean | null>("isPaid");
+const isPaid = useState<boolean>("isPaid", () => false);
+const userReceipt = useState<Receipt | null>("user-receipt", () => null);
 const { showNotification } = useNotification();
 async function onPay() {
   await buy();
-  if (!data.value) {
+  if (!receipt.value) {
     showNotification({
       type: "error",
       title: "Error al realizar compra",
@@ -24,7 +26,9 @@ async function onPay() {
     });
   } else {
     isPaid.value = true;
+    userReceipt.value = receipt.value;
     navigateTo("/checkout/success");
+    cart.value = [];
   }
 }
 </script>

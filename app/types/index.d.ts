@@ -72,3 +72,5 @@ export interface Notification {
   full_source_path: string;
   time_difference: string;
 }
+
+export type Receipt = { receipt_url: string };
