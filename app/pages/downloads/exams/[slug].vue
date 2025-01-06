@@ -220,20 +220,19 @@ const {
 
 const pendingDownload = computed(() => downloadStatus.value === "pending");
 
+const { showNotification } = useNotification();
 async function onDownload() {
   await downloadExam();
-  if (!exam.value || !examFile.value) return;
-  const urlObject = window.URL.createObjectURL(examFile.value);
-
-  const anchor = document.createElement("a");
-  anchor.href = urlObject;
-  anchor.download = exam.value.title;
-
-  document.body.appendChild(anchor);
-  anchor.click();
-
-  document.body.removeChild(anchor);
-  window.URL.revokeObjectURL(urlObject);
+  if (!exam.value || !examFile.value) {
+    showNotification({
+      title: "Error al descargar examen",
+      type: "error",
+      message:
+        "Hubo un error al descargar el examen. Por favor contactar con soporte de Edukar.",
+    });
+  } else {
+    downloadFile(examFile.value, exam.value.title);
+  }
 }
 </script>
 
