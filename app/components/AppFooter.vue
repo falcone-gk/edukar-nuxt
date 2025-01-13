@@ -119,6 +119,18 @@ const socials = [
         </address>
       </div>
     </div>
+
+    <div class="flex justify-center sm:block mt-8">
+      <UButton
+        class="hover:bg-gray-200/20 transition-colors"
+        label="Libro de reclamaciones"
+        variant="outline"
+        color="white"
+        icon="i-mdi-book-open-variant"
+        to="/lreclamaciones"
+      />
+    </div>
+
     <hr class="my-4" />
     <div
       class="flex gap-4 md:justify-between items-center flex-col md:flex-row"
