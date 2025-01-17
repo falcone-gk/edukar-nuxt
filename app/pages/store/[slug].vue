@@ -50,26 +50,21 @@ function buildProductArray(product: Product): Option[] {
   return result;
 }
 
-type ProductWithoutItems = Omit<Product, "items">;
 // Recursive function to build the array
-function buildProductArrayWithoutItems(
-  product: Product,
-): ProductWithoutItems[] {
-  const result: ProductWithoutItems[] = [];
+function buildListProducts(product: Product): Product[] {
+  const result: Product[] = [];
 
-  // Create a copy of the product without the 'items' field
-  const { items, ...productWithoutItems } = product;
-  result.push(productWithoutItems);
+  result.push(product);
 
   // Add the child items recursively
   for (const item of product.items) {
-    result.push(...buildProductArrayWithoutItems(item));
+    result.push(...buildListProducts(item));
   }
 
   return result;
 }
 
-const products = buildProductArrayWithoutItems(product.value);
+const products = buildListProducts(product.value);
 const options = buildProductArray(product.value);
 const selected = ref(product.value.identifier);
 const selectedProduct = computed(() => {
@@ -133,7 +128,7 @@ const { data: recommendations, status: recommendStatus } = useEdukarAPI<
               class="space-y-4"
             >
               <h3 class="text-lg font-semibold">Escoge una opción:</h3>
-              <div class="space-y-2">
+              <div>
                 <URadioGroup :options="options" v-model="selected" />
               </div>
             </div>
@@ -188,7 +183,7 @@ const { data: recommendations, status: recommendStatus } = useEdukarAPI<
 
             <!-- Add to Cart Button -->
             <StoreButtonAddToCart
-              :product="product!"
+              :product="selectedProduct!"
               class="uppercase text-xl font-medium py-3 px-6"
               block
             />
@@ -219,3 +214,33 @@ const { data: recommendations, status: recommendStatus } = useEdukarAPI<
     </UContainer>
   </section>
 </template>
+
+<style scoped>
+:deep(fieldset) {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+:deep(label) {
+  cursor: pointer;
+  width: 100%;
+  padding: 10px;
+}
+
+:deep(fieldset > .items-start) {
+  align-items: center;
+  border-radius: 10px;
+  width: 100%;
+  padding: 0 10px;
+  border-radius: 10px;
+}
+
+:deep(fieldset > .items-start):hover {
+  background-color: rgba(150, 241, 147, 0.178);
+}
+
+:deep(fieldset > .items-start > .ms-3) {
+  width: 100%;
+}
+</style>
