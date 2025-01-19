@@ -3,31 +3,21 @@ import { z } from "zod";
 
 const schema = z
   .object({
-    nombre: z.string().min(1, "El nombre es obligatorio."),
-    domicilio: z.string().min(1, "El domicilio es obligatorio."),
+    name: z.string().min(1, "El nombre es obligatorio."),
     dni: z.string().min(1, "El DNI es obligatorio."),
-    telefono: z.string().min(1, "El teléfono es obligatorio."),
-    correo: z
-      .string()
-      .email("El correo debe ser una dirección válida.")
-      .min(1, "El correo es obligatorio."),
-    tipoBien: z.string().min(1, "El tipo de bien es obligatorio."),
-    montoReclamado: z.number().min(1, "El monto reclamado es obligatorio."),
-    descripcion: z.string().min(1, "La descripción es obligatoria."),
-    tipoReclamacion: z
-      .string()
-      .min(1, "El tipo de reclamación es obligatorio."),
-    detalle: z.string().min(1, "El detalle es obligatorio."),
-    pedido: z.string().min(1, "El pedido es obligatorio."),
-    menorDeEdad: z.boolean(),
-    nombreApoderado: z
-      .string()
-      .min(1, "El nombre del apoderado es obligatorio.")
-      .optional(),
+    email: z.string().email().min(1, "El correo es obligatorio."),
+    phone: z.string().min(1, "El teléfono es obligatorio."),
+    claim_amount: z.number().min(1, "El monto reclamado es obligatorio."),
+    description: z.string().min(1, "La descripción es obligatoria."),
+    type_good: z.number(),
+    claim_detail: z.string().min(1, "El detalle es obligatorio."),
+    request: z.string().min(1, "El pedido es obligatorio."),
+    is_minor: z.boolean(),
+    proxy_name: z.string(),
   })
   .refine(
     (data) => {
-      if (data.menorDeEdad && !data.nombreApoderado) {
+      if (data.is_minor && !data.proxy_name) {
         return false;
       }
       return true;
@@ -35,33 +25,80 @@ const schema = z
     {
       message:
         "El nombre del apoderado es obligatorio si el reclamante es menor de edad.",
-      path: ["nombreApoderado"], // Apunta al campo específico con el error
+      path: ["proxy_name"],
     },
   );
 
 const state = ref({
-  nombre: "",
-  domicilio: "",
+  name: "",
   dni: "",
-  telefono: "",
-  correo: "",
-  tipoBien: "",
-  montoReclamado: "",
-  descripcion: "",
-  tipoReclamacion: "",
-  detalle: "",
-  pedido: "",
-  menorDeEdad: false,
-  nombreApoderado: "",
+  address: "",
+  email: "",
+  phone: "",
+  claim_amount: undefined,
+  description: "",
+  type_good: undefined,
+  claim_detail: "",
+  request: "",
+  is_minor: false,
+  proxy_name: "",
 });
 
-const tipoBien = ["Producto", "Servicio"];
-const tipoReclamo = ["Reclamo", "Queja"];
+const tipoBien = [
+  { label: "Producto", value: 1 },
+  { label: "Servicio", value: 2 },
+];
 
-function onSubmit() {}
+const { data, status, execute } = useEdukarAPI("store/lreclamaciones", {
+  method: "POST",
+  body: state,
+  immediate: false,
+  watch: false,
+});
+
+const isOpen = ref(false);
+const { showNotification } = useNotification();
+async function onSubmit() {
+  await execute();
+  if (!data.value) {
+    showNotification({
+      type: "error",
+      title: "Error al enviar reclamo",
+      message:
+        "Hubo un problema al enviar tu reclamo. Por favor contactar con soporte",
+    });
+  } else {
+    isOpen.value = true;
+  }
+}
 </script>
 
 <template>
+  <!-- Modal for success claim -->
+  <UModal v-model="isOpen">
+    <UCard
+      :ui="{
+        ring: '',
+        divide: 'divide-y divide-gray-100 dark:divide-gray-800',
+      }"
+    >
+      <template #header>
+        <Typography tag="h2" variant="h3"> Reclamación realizada </Typography>
+      </template>
+
+      <div>
+        <p>
+          Hemos recibido tu reclamo. Trabajaremos para solucionarlo lo más
+          pronto posible
+        </p>
+      </div>
+
+      <template #footer>
+        <UButton label="Aceptar" to="/" />
+      </template>
+    </UCard>
+  </UModal>
+
   <UCard
     :ui="{
       base: 'mx-auto max-w-[700px]',
@@ -97,29 +134,28 @@ function onSubmit() {}
           >
           <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <!-- Identificación del consumidor reclamante -->
-            <UFormGroup label="Nombre" name="nombre" required>
-              <UInput v-model="state.nombre" placeholder="Ingresa tu nombre" />
+            <UFormGroup label="Nombre" name="name" required>
+              <UInput v-model="state.name" placeholder="Ingresa tu nombre" />
             </UFormGroup>
-            <UFormGroup label="Domicilio" name="domicilio" required>
+            <UFormGroup label="Domicilio" name="address" required>
               <UInput
-                v-model="state.domicilio"
+                v-model="state.address"
                 placeholder="Ingresa tu domicilio"
               />
             </UFormGroup>
             <UFormGroup label="DNI/CE" name="dni" required>
               <UInput v-model="state.dni" placeholder="Ingresa tu DNI o CE" />
             </UFormGroup>
-            <UFormGroup label="Teléfono" name="telefono" required>
+            <UFormGroup label="Correo" name="email" required>
               <UInput
-                v-model="state.telefono"
-                placeholder="Ingresa tu número telefónico"
+                v-model="state.email"
+                placeholder="Ingresa tu número telefónico o correo"
               />
             </UFormGroup>
-            <UFormGroup label="Correo electrónico" name="correo" required>
+            <UFormGroup label="Teléfono" name="phone" required>
               <UInput
-                v-model="state.correo"
-                type="email"
-                placeholder="Ingresa tu correo electrónico"
+                v-model="state.phone"
+                placeholder="Ingresa tu número telefónico o correo"
               />
             </UFormGroup>
           </div>
@@ -132,23 +168,23 @@ function onSubmit() {}
 
           <!-- Identificación del bien contratado -->
           <div class="grid grid-cols-1 gap-4 mt-6">
-            <UFormGroup label="Tipo de Bien" name="tipoBien" required>
-              <USelect v-model="state.tipoBien" :options="tipoBien">
+            <UFormGroup label="Tipo de Bien" name="type_good" required>
+              <USelect v-model.number="state.type_good" :options="tipoBien">
                 <option value="" disabled>Seleccionar tipo de bien</option>
                 <option value="producto">Producto</option>
                 <option value="servicio">Servicio</option>
               </USelect>
             </UFormGroup>
-            <UFormGroup label="Monto Reclamado" name="montoReclamado" required>
+            <UFormGroup label="Monto Reclamado" name="claim_amount" required>
               <UInput
-                v-model="state.montoReclamado"
+                v-model="state.claim_amount"
                 type="number"
                 placeholder="Ingresa el monto reclamado"
               />
             </UFormGroup>
-            <UFormGroup label="Descripción" name="descripcion" required>
+            <UFormGroup label="Descripción" name="description" required>
               <UTextarea
-                v-model="state.descripcion"
+                v-model="state.description"
                 placeholder="Describe el bien contratado"
               />
             </UFormGroup>
@@ -162,29 +198,16 @@ function onSubmit() {}
 
           <!-- Detalle de la reclamación y pedido -->
           <div class="grid grid-cols-1 gap-4 mt-6">
-            <UFormGroup
-              label="Tipo de Reclamación"
-              name="tipoReclamacion"
-              required
-            >
-              <USelect v-model="state.tipoReclamacion" :options="tipoReclamo">
-                <option value="" disabled>
-                  Seleccionar tipo de reclamación
-                </option>
-                <option value="queja">Queja</option>
-                <option value="reclamo">Reclamo</option>
-              </USelect>
-            </UFormGroup>
             <UFormGroup label="Detalle" name="detalle" required>
               <UTextarea
-                v-model="state.detalle"
+                v-model="state.claim_detail"
                 placeholder="Ingresa el detalle de tu reclamación"
                 :rows="5"
               />
             </UFormGroup>
-            <UFormGroup label="Pedido" name="pedido" required>
+            <UFormGroup label="Pedido" name="request" required>
               <UTextarea
-                v-model="state.pedido"
+                v-model="state.request"
                 placeholder="Ingresa el detalle de tu pedido"
                 :rows="3"
               />
@@ -204,18 +227,18 @@ function onSubmit() {}
               name="menor_edad"
               :ui="{ wrapper: 'flex items-center gap-4' }"
             >
-              <UCheckbox v-model="state.menorDeEdad" />
+              <UCheckbox v-model="state.is_minor" />
             </UFormGroup>
           </div>
 
           <div
-            v-if="state.menorDeEdad"
+            v-if="state.is_minor"
             class="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-6"
           >
             <!-- Identificación del consumidor reclamante -->
-            <UFormGroup label="Nombre de apoderado" name="nombreApoderado">
+            <UFormGroup label="Nombre de apoderado" name="proxy_name">
               <UInput
-                v-model="state.nombreApoderado"
+                v-model="state.proxy_name"
                 placeholder="Ingresa tu nombre"
               />
             </UFormGroup>
@@ -223,7 +246,7 @@ function onSubmit() {}
         </div>
       </div>
 
-      <UButton type="submit" class="mt-6" block :loading="false"
+      <UButton :loading="status === 'pending'" type="submit" class="mt-6" block
         >Enviar Reclamo</UButton
       >
     </UForm>
