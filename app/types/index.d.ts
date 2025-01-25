@@ -74,3 +74,19 @@ export interface Notification {
 }
 
 export type Receipt = { receipt_url: string };
+
+// Type for a single video part
+export interface VideoPart {
+  part_number: number;
+  title: string;
+  url: string;
+  base_url: string;
+}
+
+// Type for a video product with its parts
+export interface ProductVideoParts {
+  id: number;
+  name: string;
+  description: string;
+  video_parts: VideoPart[];
+}

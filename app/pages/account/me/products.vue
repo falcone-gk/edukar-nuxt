@@ -86,7 +86,16 @@ async function onClickDownloadDocument(product: PrivateProduct) {
           @click="onClickDownloadDocument(row)"
           block
         />
-        <UButton v-else-if="row.type === 2" label="Ver" color="gray" block />
+        <UButton
+          v-else-if="row.type === 2"
+          label="Ver"
+          color="gray"
+          :to="{
+            name: 'services-videos-identifier',
+            params: { identifier: row.slug },
+          }"
+          block
+        />
       </template>
     </UTable>
   </UCard>

@@ -1,0 +1,54 @@
+<template>
+  <div>
+    <!-- Video player container -->
+    <video ref="videoPlayer" class="video-js"></video>
+  </div>
+</template>
+
+<script setup lang="ts">
+import videojs from "video.js";
+import type Player from "video.js/dist/types/player";
+import "video.js/dist/video-js.css"; // Import video.js styles
+
+const props = defineProps({
+  src: {
+    type: String,
+    required: true,
+  },
+  type: {
+    type: String,
+    required: true,
+  },
+});
+
+const videoPlayer = ref<HTMLDivElement | null>(null); // Reference to the video player container
+const player = ref<Player | null>(null); // Reference to the video.js player instance
+
+// Initialize the video.js player
+onMounted(() => {
+  if (videoPlayer.value) {
+    player.value = videojs(videoPlayer.value, {
+      width: "640px",
+      height: "267px",
+      controls: true,
+      preload: "none",
+      playbackRates: [1, 1.5, 2],
+      aspectRatio: "640:267",
+      restoreEl: true,
+      sources: [
+        {
+          src: props.src,
+          type: props.type,
+        },
+      ],
+    });
+  }
+});
+
+// Clean up the player when the component is destroyed
+onBeforeUnmount(() => {
+  if (player.value) {
+    player.value.dispose();
+  }
+});
+</script>

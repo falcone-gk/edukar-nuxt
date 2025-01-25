@@ -1,6 +1,7 @@
 <template>
-  <div class="grid gap-4 auto-cols-auto grid-cols-[repeat(auto-fill,minmax(15rem,1fr))]">
+  <div
+    class="grid gap-4 auto-cols-auto grid-cols-[repeat(auto-fill,minmax(15rem,1fr))]"
+  >
     <slot />
   </div>
 </template>
-
