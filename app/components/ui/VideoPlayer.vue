@@ -1,8 +1,5 @@
 <template>
-  <div>
-    <!-- Video player container -->
-    <video ref="videoPlayer" class="video-js"></video>
-  </div>
+  <video ref="videoPlayer" class="video-js"></video>
 </template>
 
 <script setup lang="ts">
@@ -28,12 +25,10 @@ const player = ref<Player | null>(null); // Reference to the video.js player ins
 onMounted(() => {
   if (videoPlayer.value) {
     player.value = videojs(videoPlayer.value, {
-      width: "640px",
-      height: "267px",
+      fluid: true,
       controls: true,
       preload: "none",
       playbackRates: [1, 1.5, 2],
-      aspectRatio: "640:267",
       restoreEl: true,
       sources: [
         {

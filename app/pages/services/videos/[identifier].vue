@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import videojs from "video.js";
-import type Player from "video.js/dist/types/player";
-import "video.js/dist/video-js.css";
-import "@videojs/themes/dist/forest/index.css";
 import type { ProductVideoParts } from "~/types";
+
+definePageMeta({
+  middleware: ["auth"],
+});
 
 interface Result {
   result: {
@@ -73,11 +73,11 @@ async function onChangeVideoPart(part: number) {
 </script>
 
 <template>
-  <UContainer>
+  <UContainer :ui="{ constrained: 'max-w-[1500px]' }">
     <DataLoading :loading="status === 'pending'" :data="productVideo">
       <template #data="{ data }">
-        <div class="flex w-full">
-          <div v-if="currentVideo" class="flex-grow p-4 space-y-4">
+        <div class="flex w-full flex-col md:flex-row">
+          <div v-if="currentVideo" class="flex flex-1 flex-col p-4 space-y-4">
             <Typography tag="h1" variant="h2" color="gray">
               {{ currentVideo.title }}
             </Typography>

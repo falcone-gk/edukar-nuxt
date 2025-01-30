@@ -1,36 +1,22 @@
 <script setup lang="ts">
 import Big from "big.js";
 import { paymentSchema } from "~/schemas/store";
-import type { Receipt } from "~/types";
+
+const { openCulqiCheckout } = useCulqiCheckout();
+const { cart, total, first_name, last_name, email } = useUserCart();
 
 const state = reactive({
   first_name: "",
   last_name: "",
   email: "",
+  isAcceptedTerms: false,
 });
 
-const { cart, total, buyProducts } = useUserCart();
-const { data: receipt, status, execute: buy } = buyProducts();
-
-const isPaid = useState<boolean>("isPaid", () => false);
-const userReceipt = useState<Receipt | null>("user-receipt", () => null);
-const { showNotification } = useNotification();
-async function onPay() {
-  await buy();
-  if (!receipt.value) {
-    showNotification({
-      type: "error",
-      title: "Error al realizar compra",
-      message:
-        "Hubo un error al realizar su compra, por favor contactar con soporte de Edukar.",
-    });
-  } else {
-    isPaid.value = true;
-    userReceipt.value = receipt.value;
-    navigateTo("/checkout/success");
-    cart.value = [];
-  }
-}
+watch(state, (newState) => {
+  first_name.value = newState.first_name;
+  last_name.value = newState.last_name;
+  email.value = newState.email;
+});
 </script>
 
 <template>
@@ -43,7 +29,7 @@ async function onPay() {
       <UForm
         :state="state"
         :schema="paymentSchema"
-        @submit="onPay"
+        @submit="openCulqiCheckout(Number(total))"
         class="flex flex-col gap-4"
         v-if="cart.length > 0"
       >
@@ -53,14 +39,6 @@ async function onPay() {
         <UFormGroup label="Apellido" name="last_name" required>
           <UInput v-model="state.last_name" />
         </UFormGroup>
-        <!-- <UFormGroup label="DNI" name="dni" required>
-          <UInput
-            v-model="state.dni"
-            placeholder="12345678"
-            icon="i-heroicons-identification"
-
-          />
-        </UFormGroup> -->
         <UFormGroup label="Email" name="email" required>
           <UInput
             v-model="state.email"
@@ -68,9 +46,19 @@ async function onPay() {
             icon="i-mdi-email"
           />
         </UFormGroup>
-        <UButton type="submit" block :loading="status === 'pending'">
-          Realizar pago
-        </UButton>
+        <UCheckbox v-model="state.isAcceptedTerms">
+          <template #label>
+            <Typography tag="span" variant="smaller" color="gray">
+              Acepto los
+              <NuxtLink
+                class="text-blue-500 hover:underline dark:text-blue-400"
+                to="/company/terms-and-conditions"
+                >Términos y condiciones</NuxtLink
+              >
+            </Typography>
+          </template>
+        </UCheckbox>
+        <UButton type="submit" block> Realizar pago </UButton>
       </UForm>
       <div v-else>
         <p>

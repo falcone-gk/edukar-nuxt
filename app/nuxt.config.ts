@@ -8,6 +8,17 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiURL: process.env.API_BASE,
+      culqiPublicKey: process.env.CULQI_PUBLIC_KEY,
+    },
+  },
+  nitro: {
+    devProxy: {
+      "/culqi": {
+        target: "https://checkout.culqi.com",
+        prependPath: true,
+        changeOrigin: true,
+        secure: true,
+      },
     },
   },
   app: {
@@ -37,6 +48,8 @@ export default defineNuxtConfig({
     "/account/**": { ssr: false },
     "/login": { ssr: false },
     "/signup": { ssr: false },
+    "/checkout/**": { ssr: false },
+    "/services/**": { ssr: false },
   },
   components: [
     { path: "~/components/tiptap", pathPrefix: false },
