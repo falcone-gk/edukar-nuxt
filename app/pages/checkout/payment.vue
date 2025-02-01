@@ -29,6 +29,7 @@ watch(state, (newState) => {
       <UForm
         :state="state"
         :schema="paymentSchema"
+        @submit="openCulqiCheckout"
         class="flex flex-col gap-4"
         v-if="cart.length > 0"
       >
@@ -57,7 +58,7 @@ watch(state, (newState) => {
             </Typography>
           </template>
         </UCheckbox>
-        <UButton type="submit" block disabled> Realizar pago </UButton>
+        <UButton type="submit" block> Realizar pago </UButton>
       </UForm>
       <div v-else>
         <p>

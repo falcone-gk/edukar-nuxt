@@ -11,16 +11,6 @@ export default defineNuxtConfig({
       culqiPublicKey: process.env.CULQI_PUBLIC_KEY,
     },
   },
-  nitro: {
-    devProxy: {
-      "/culqi": {
-        target: "https://checkout.culqi.com",
-        prependPath: true,
-        changeOrigin: true,
-        secure: true,
-      },
-    },
-  },
   app: {
     head: {
       htmlAttrs: {

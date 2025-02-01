@@ -4,7 +4,7 @@ export const useCulqiCheckout = () => {
   const config = useRuntimeConfig();
   const isCulqiLoaded = ref(false);
 
-  const { cart, buyProducts, tokenSaleID } = useUserCart();
+  const { cart, buyProducts, tokenSaleID, total } = useUserCart();
   const { data: receipt, status, execute: buy } = buyProducts();
 
   const loadCulqiScript = () => {
@@ -15,7 +15,7 @@ export const useCulqiCheckout = () => {
       }
 
       const script = document.createElement("script");
-      script.src = "/culqi/js/v4";
+      script.src = "https://checkout.culqi.com/js/v4";
       script.async = true;
       script.onload = () => {
         isCulqiLoaded.value = true;
@@ -44,13 +44,13 @@ export const useCulqiCheckout = () => {
     }
   };
 
-  const openCulqiCheckout = (price: number) => {
+  const openCulqiCheckout = () => {
     if (typeof window.Culqi !== "undefined") {
       window.Culqi.settings({
         title: "Edukar Pasarela de Compras",
         currency: "PEN",
         description: "Orden de compra",
-        amount: price * 100,
+        amount: Number(total.value) * 100,
       });
       window.Culqi.open();
     } else {
