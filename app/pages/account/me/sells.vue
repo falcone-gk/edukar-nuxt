@@ -15,7 +15,7 @@ const loading = computed(() => status.value === "pending");
 <template>
   <UCard class="w-full" :ui="{ background: '', ring: '', shadow: '' }">
     <template #header>
-      <Typography tag="h1" variant="h1"> Productos </Typography>
+      <Typography tag="h1" variant="h1"> Mis compras </Typography>
     </template>
     <UTable
       :loading="loading"
