@@ -1,5 +1,7 @@
 <template>
-  <video ref="videoPlayer" class="video-js"></video>
+  <div>
+    <video ref="videoPlayer" class="video-js"></video>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -18,7 +20,7 @@ const props = defineProps({
   },
 });
 
-const videoPlayer = ref<HTMLDivElement | null>(null); // Reference to the video player container
+const videoPlayer = ref<HTMLVideoElement | null>(null); // Reference to the video player container
 const player = ref<Player | null>(null); // Reference to the video.js player instance
 
 // Initialize the video.js player

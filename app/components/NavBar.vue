@@ -35,17 +35,20 @@ const menuItems = [
     {
       icon: "i-heroicons-user-solid",
       label: "Ver perfil",
-      click: () => navigateTo("/account/me"),
+      // click: () => navigateTo("/account/me"),
+      to: "/account/me",
     },
     {
       icon: "i-heroicons-chat-bubble-left-right-solid",
       label: "Mis publicaciones",
-      click: () => navigateTo("/account/me/posts"),
+      // click: () => navigateTo("/account/me/posts"),
+      to: "/account/me/posts",
     },
     {
       icon: "i-heroicons-envelope-solid",
       label: "Notificaciones",
-      click: () => navigateTo("/account/me/notifications"),
+      // click: () => navigateTo("/account/me/notifications"),
+      to: "/account/me/notifications",
     },
     {
       icon: "i-mdi-book",

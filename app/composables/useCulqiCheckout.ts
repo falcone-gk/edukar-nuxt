@@ -1,4 +1,5 @@
 import type { Receipt } from "~/types";
+import { ModalLoadingSell } from "#components";
 
 export const useCulqiCheckout = () => {
   const config = useRuntimeConfig();
@@ -60,13 +61,16 @@ export const useCulqiCheckout = () => {
 
   const isPaid = useState<boolean>("isPaid", () => false);
   const userReceipt = useState<Receipt | null>("user-receipt", () => null);
+  const modal = useModal();
   const { showNotification } = useNotification();
   async function culqi() {
     if (window.Culqi.token) {
       // ¡Objeto Token creado exitosamente!
+      window.Culqi.close();
+      modal.open(ModalLoadingSell);
       tokenSaleID.value = window.Culqi.token.id;
       await buy();
-      window.Culqi.close();
+      modal.close();
 
       if (!receipt.value) {
         showNotification({

@@ -131,11 +131,13 @@ const userLoggedLinks = [
     icon: "i-mdi-book",
     label: "Solucionarios",
     to: "/account/me/products",
+    click: () => (isOpen.value = false),
   },
   {
     icon: "i-mdi-cart-variant",
     label: "Mis compras",
     to: "/account/me/sells",
+    click: () => (isOpen.value = false),
   },
 ];
 

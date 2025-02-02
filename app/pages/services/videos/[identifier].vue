@@ -14,11 +14,12 @@ interface Result {
   messages: string[];
 }
 
+const currentSignedUrl = ref<string>();
 const route = useRoute();
 const identifier = route.params.identifier;
 const { $api } = useNuxtApp();
 
-const { data: productVideo, status } = await useAsyncData(
+const { data: productVideo, status } = useAsyncData(
   "cart-discount",
   async () => {
     const [parts, signedUrl] = await Promise.all([
@@ -27,10 +28,17 @@ const { data: productVideo, status } = await useAsyncData(
         query: {
           part: 1,
         },
+        onResponse({ response }) {
+          const data = response._data;
+          currentSignedUrl.value = data.result.token;
+        },
       }),
     ]);
-
     return { parts, signedUrl };
+  },
+  {
+    lazy: true,
+    server: false,
   },
 );
 const currentPart = ref(1);
@@ -49,13 +57,6 @@ const { data: partVideo, refresh: getSignedUrl } = useEdukarAPI<Result>(
 const currentVideo = computed(
   () => productVideo.value?.parts.video_parts[currentPart.value - 1],
 );
-const currentSignedUrl = ref(productVideo.value?.signedUrl.result.token);
-
-const relatedVideos = computed(() => {
-  return productVideo.value?.parts.video_parts.filter(
-    (part) => part.part_number !== currentPart.value,
-  );
-});
 
 const isVideoReady = ref(true);
 async function onChangeVideoPart(part: number) {
@@ -78,7 +79,7 @@ async function onChangeVideoPart(part: number) {
       <template #data="{ data }">
         <div class="flex w-full flex-col md:flex-row">
           <div v-if="currentVideo" class="flex flex-1 flex-col p-4 space-y-4">
-            <Typography tag="h1" variant="h2" color="gray">
+            <Typography tag="h1" variant="h2">
               {{ currentVideo.title }}
             </Typography>
             <UiVideoPlayer
@@ -100,16 +101,20 @@ async function onChangeVideoPart(part: number) {
               <div>
                 <ul>
                   <li
-                    v-for="video in relatedVideos"
+                    v-for="video in productVideo?.parts.video_parts"
                     @click="onChangeVideoPart(video.part_number)"
                     :key="video.part_number"
-                    class="mb-4 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 rounded-lg overflow-hidden"
+                    class="mb-4 cursor-pointer hover:bg-primary-200 dark:hover:bg-primary-600 transition-colors duration-200 rounded-lg overflow-hidden"
+                    :class="{
+                      'bg-primary-200 dark:bg-primary-600':
+                        video.part_number === currentPart,
+                    }"
                   >
                     <div class="p-2">
                       <Typography tag="h2" variant="body" color="gray">
                         {{ video.title }}
                       </Typography>
-                      <p class="text-sm text-gray-600 dark:text-gray-300">
+                      <p class="text-sm text-gray-600 dark:text-gray-200">
                         Parte {{ video.part_number }}
                       </p>
                     </div>
