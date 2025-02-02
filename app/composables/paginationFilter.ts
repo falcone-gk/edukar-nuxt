@@ -36,9 +36,9 @@ export const usePaginationFilter = <T>({
         size: size,
       },
       watch: [page, filters],
-      getCachedData: (key) => {
-        return nuxtApp.payload.data[key] || nuxtApp.static.data[key];
-      },
+      // getCachedData: (key) => {
+      //   return nuxtApp.payload.data[key] || nuxtApp.static.data[key];
+      // },
     });
   }
 
