@@ -20,10 +20,12 @@ function onClose() {
         </div>
       </template>
       <div>
-        <img
-          src="/images/store_presentation.webp"
-          alt="Presentacion de tienda"
-        />
+        <NuxtLink to="/store">
+          <img
+            src="/images/store_presentation.webp"
+            alt="Presentacion de tienda"
+          />
+        </NuxtLink>
       </div>
     </UCard>
   </UModal>
