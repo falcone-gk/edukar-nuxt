@@ -35,6 +35,10 @@ export const useCulqiCheckout = () => {
       window.Culqi.publicKey = publicKey;
       window.Culqi.options({
         lang: "es",
+        paymentMethods: {
+          tarjeta: false,
+          yape: true,
+        },
         style: {
           logo: "https://aedukar.com/logos/logo.svg",
           bannerColor: "#2d9c7a",

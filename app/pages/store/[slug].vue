@@ -137,7 +137,7 @@ const { data: recommendations, status: recommendStatus } = useEdukarAPI<
             <div class="space-y-2">
               <UAlert
                 icon="i-mdi-wallet"
-                description="Puedes comprar este producto usando Yape o Plin"
+                description="Puedes comprar este producto usando Yape"
               />
             </div>
 

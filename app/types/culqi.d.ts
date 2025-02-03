@@ -25,8 +25,18 @@ export interface CulqiSettings {
   options?: CulqiOptions;
 }
 
+export interface CulqiPaymentMethods {
+  tarjeta?: boolean;
+  yape?: boolean;
+  bancaMovil?: boolean;
+  agente?: boolean;
+  billetera?: boolean;
+  cuotealo?: boolean;
+}
+
 export interface CulqiOptions {
   lang?: string;
+  paymentMethods?: CulqiPaymentMethods;
   installments?: boolean;
   style?: CulqiStyle;
 }
