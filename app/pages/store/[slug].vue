@@ -176,7 +176,7 @@ const { getAbsoluteApiUrl } = useAbsoluteApiUrl();
         </div>
       </div>
       <div class="space-y-16 mt-16">
-        <div>
+        <div v-if="product?.comments.length! > 0">
           <Typography tag="h2" variant="h2" color="gray" class="mb-2">
             Comentarios:
           </Typography>
