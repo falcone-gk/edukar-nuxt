@@ -11,6 +11,7 @@ export const useUserCart = () => {
   const first_name = useState("sell-user-data-first-name", () => "");
   const last_name = useState("sell-user-data-last-name", () => "");
   const email = useState("sell-user-data-email", () => "");
+  const phone_number = useState("sell-user-data-phone_number", () => "");
 
   const total = computed(() => {
     return cart.value
@@ -69,6 +70,7 @@ export const useUserCart = () => {
     first_name,
     last_name,
     email,
+    phone_number,
     total,
     checkProduct,
     addProductToCart,

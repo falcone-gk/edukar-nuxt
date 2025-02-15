@@ -79,3 +79,26 @@ export interface CulqiError {
   message: string;
   param?: string;
 }
+
+export interface Order {
+  object: string;
+  id: string;
+  amount: number;
+  payment_code: string;
+  currency_code: string;
+  description: string;
+  order_number: string;
+  state: string;
+  total_fee: number | null;
+  net_amount: number | null;
+  fee_details: any | null;
+  creation_date: number;
+  expiration_date: number;
+  updated_at: number;
+  paid_at: number | null;
+  available_on: number | null;
+  metadata: any | null;
+  qr: string;
+  cuotealo: any | null;
+  url_pe: string | null;
+}

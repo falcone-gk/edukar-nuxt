@@ -38,6 +38,7 @@ export const useCulqiCheckout = () => {
         paymentMethods: {
           tarjeta: false,
           yape: true,
+          // billetera: true,
         },
         style: {
           logo: "https://aedukar.com/logos/logo.svg",
@@ -49,13 +50,14 @@ export const useCulqiCheckout = () => {
     }
   };
 
-  const openCulqiCheckout = () => {
+  const openCulqiCheckout = (order?: string) => {
     if (typeof window.Culqi !== "undefined") {
       window.Culqi.settings({
         title: "Edukar Pasarela de Compras",
         currency: "PEN",
         description: "Orden de compra",
         amount: Number(total.value) * 100,
+        order: order,
       });
       window.Culqi.open();
     } else {

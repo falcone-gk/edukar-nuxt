@@ -1,14 +1,38 @@
 <script setup lang="ts">
 import Big from "big.js";
 import { paymentSchema } from "~/schemas/store";
+import type { Order } from "~/types/culqi";
 
 const { openCulqiCheckout } = useCulqiCheckout();
-const { cart, total, first_name, last_name, email } = useUserCart();
+const { cart, total, first_name, last_name, email, phone_number } =
+  useUserCart();
+
+const {
+  data,
+  status,
+  execute: createOrder,
+} = useEdukarAPI<Order>("/store/orders/", {
+  method: "POST",
+  body: {
+    amount: total,
+    description: "Compra de productos.",
+    currency_code: "PEN",
+    client_details: {
+      first_name: first_name,
+      last_name: last_name,
+      email: email,
+      // phone_number: phone_number,
+    },
+  },
+  immediate: false,
+  watch: false,
+});
 
 const state = reactive({
   first_name: "",
   last_name: "",
   email: "",
+  // phone_number: "",
   isAcceptedTerms: false,
 });
 
@@ -16,7 +40,17 @@ watch(state, (newState) => {
   first_name.value = newState.first_name;
   last_name.value = newState.last_name;
   email.value = newState.email;
+  // phone_number.value = newState.phone_number;
 });
+
+async function onOpenCulqiCheckout() {
+  // await createOrder();
+  if (!data.value) {
+    openCulqiCheckout();
+  } else {
+    openCulqiCheckout(data.value.id);
+  }
+}
 </script>
 
 <template>
@@ -29,7 +63,7 @@ watch(state, (newState) => {
       <UForm
         :state="state"
         :schema="paymentSchema"
-        @submit="openCulqiCheckout"
+        @submit="onOpenCulqiCheckout"
         class="flex flex-col gap-4"
         v-if="cart.length > 0"
       >
@@ -46,6 +80,13 @@ watch(state, (newState) => {
             icon="i-mdi-email"
           />
         </UFormGroup>
+        <!-- <UFormGroup label="Número de teléfono" name="phone_number" required>
+          <UInput
+            v-model="state.phone_number"
+            placeholder="999999999"
+            icon="i-mdi-phone"
+          />
+        </UFormGroup> -->
         <UCheckbox v-model="state.isAcceptedTerms">
           <template #label>
             <Typography tag="span" variant="smaller" color="gray">
@@ -58,7 +99,9 @@ watch(state, (newState) => {
             </Typography>
           </template>
         </UCheckbox>
-        <UButton type="submit" block> Realizar pago </UButton>
+        <UButton type="submit" block :loading="status === 'pending'">
+          Realizar pago
+        </UButton>
       </UForm>
       <div v-else>
         <p>
