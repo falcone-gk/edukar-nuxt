@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { Product } from "~/types/store";
 
+const userStore = useUserStore();
 const router = useRouter();
 const backTo = computed(() => {
   const from = router.options.history.state.back;
@@ -25,6 +26,24 @@ const { data: product } = await useEdukarAPI<Product>(
       nuxtApp.payload.data[key] || nuxtApp.static.data[key],
   },
 );
+
+const newComment = ref("");
+const { status: commentStatus, execute: addComment } = useEdukarAPI<Product>(
+  `/store/products/${productSlug}/comment/`,
+  {
+    immediate: false,
+    method: "POST",
+    body: {
+      comment: newComment,
+    },
+    watch: false,
+  },
+);
+
+async function onCommentSubmit() {
+  await addComment();
+  newComment.value = "";
+}
 
 if (!product.value) {
   throw showError({
@@ -71,15 +90,16 @@ const selectedProduct = computed(() => {
   return products.find((prod) => prod.identifier === selected.value);
 });
 
-// recommended products
+const { getAbsoluteApiUrl } = useAbsoluteApiUrl();
 
-const { data: recommendations, status: recommendStatus } = useEdukarAPI<
-  Product[]
->(`/store/products/${productSlug}/recommendations`, {
-  key: `${productSlug}-recommendations`,
-  lazy: true,
-  getCachedData: (key) => nuxtApp.payload.data[key] || nuxtApp.static.data[key],
-});
+// recommended products
+// const { data: recommendations, status: recommendStatus } = useEdukarAPI<
+//   Product[]
+// >(`/store/products/${productSlug}/recommendations`, {
+//   key: `${productSlug}-recommendations`,
+//   lazy: true,
+//   getCachedData: (key) => nuxtApp.payload.data[key] || nuxtApp.static.data[key],
+// });
 </script>
 
 <template>
@@ -97,10 +117,6 @@ const { data: recommendations, status: recommendStatus } = useEdukarAPI<
         </UButton>
       </div>
       <div class="container mx-auto">
-        <!-- <div class="flex justify-end mb-4">
-        <UToggle v-model="isPackageView" :options="viewOptions" />
-      </div> -->
-
         <div class="grid md:grid-cols-2 gap-8 items-start">
           <!-- Product/Package Image -->
           <div class="bg-white rounded-lg p-1 max-w-[400px] md:w-full mx-auto">
@@ -150,37 +166,6 @@ const { data: recommendations, status: recommendStatus } = useEdukarAPI<
             <!-- Price -->
             <StoreProductPrice :price="selectedProduct?.price" />
 
-            <!-- Stock -->
-            <!-- <div class="text-sm text-gray-300">
-            Disponible más de {{ selectedProduct?.stock }} unidades
-          </div> -->
-
-            <!-- Quantity Selector -->
-            <!-- <div class="space-y-2">
-            <label class="block text-sm">Cantidad</label>
-            <div class="flex items-center gap-2">
-              <button
-                @click="decrementQuantity"
-                class="bg-gray-700 hover:bg-gray-600 p-2 rounded-lg"
-                :disabled="quantity <= 1"
-              >
-                <MinusIcon class="h-5 w-5" />
-              </button>
-              <input
-                v-model="quantity"
-                type="number"
-                class="w-16 text-center bg-gray-700 rounded-lg p-2 text-white"
-                min="1"
-              />
-              <button
-                @click="incrementQuantity"
-                class="bg-gray-700 hover:bg-gray-600 p-2 rounded-lg"
-              >
-                <PlusIcon class="h-5 w-5" />
-              </button>
-            </div>
-          </div> -->
-
             <!-- Add to Cart Button -->
             <StoreButtonAddToCart
               :product="selectedProduct!"
@@ -190,9 +175,48 @@ const { data: recommendations, status: recommendStatus } = useEdukarAPI<
           </div>
         </div>
       </div>
-      <div class="space-y-4 mt-16">
-        <h3 class="text-2xl font-bold">Recomendaciones</h3>
-        <DataLoading
+      <div class="space-y-16 mt-16">
+        <div>
+          <Typography tag="h2" variant="h2" color="gray" class="mb-2">
+            Comentarios:
+          </Typography>
+          <DisplayGrid>
+            <UCard
+              v-for="(comment, ind) in product?.comments"
+              :key="`comment-${ind}`"
+            >
+              <template #header>
+                <div class="flex gap-2 items-center">
+                  <img
+                    class="rounded-full w-[48px] h-[48px] max-w-none"
+                    :src="getAbsoluteApiUrl(comment.user.picture)"
+                    :alt="comment.user.username"
+                  />
+
+                  <span>{{ comment.user.username }}</span>
+                </div>
+              </template>
+              {{ comment.comment }}
+            </UCard>
+          </DisplayGrid>
+        </div>
+        <div v-if="userStore.isLogged">
+          <ClientOnly>
+            <Typography tag="h2" variant="h2" color="gray" class="mb-2">
+              Deja un comentario:
+            </Typography>
+            <UTextarea v-model="newComment" placeholder="Escribe aquí..." />
+            <UButton
+              class="mt-4"
+              label="Enviar"
+              color="primary"
+              :loading="commentStatus === 'pending'"
+              :disabled="newComment === ''"
+              @click="onCommentSubmit"
+            />
+          </ClientOnly>
+        </div>
+        <!-- <DataLoading
           :data="recommendations"
           :loading="recommendStatus === 'pending'"
         >
@@ -209,7 +233,7 @@ const { data: recommendations, status: recommendStatus } = useEdukarAPI<
               />
             </DisplayGrid>
           </template>
-        </DataLoading>
+        </DataLoading> -->
       </div>
     </UContainer>
   </section>

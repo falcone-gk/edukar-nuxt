@@ -14,14 +14,6 @@ export interface Exam {
   source_video_solution_premium: string;
 }
 
-//export interface Root {
-//    id: number
-//    university: string
-//    siglas: string
-//    exam_type: string
-//    area: string
-//}
-
 // Type for courses
 export interface Courses {
   id: number;

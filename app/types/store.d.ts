@@ -29,4 +29,9 @@ export interface Product {
   is_one_time_purchase: boolean;
   items: Product[];
   identifier: string;
+  comments: {
+    user: Author;
+    comment: string;
+    created_at: string;
+  }[];
 }
