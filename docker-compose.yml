@@ -1,16 +1,18 @@
 services:
   nuxt:
-    build: ./app
+    build:
+      context: .
+      dockerfile: docker/app/Dockerfile
     expose:
       - 3000
-    command:
-      "node .output/server/index.mjs"
+    command: "node /app/server/index.mjs"
     restart: always
-    env_file:
-      ./app/.env
+    env_file: ./.env
 
   nginx:
-    build: ./nginx
+    build:
+      context: .
+      dockerfile: docker/nginx/Dockerfile
     ports:
       - 3000:80
     depends_on:

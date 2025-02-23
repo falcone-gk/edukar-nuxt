@@ -2,15 +2,22 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ["@nuxt/ui", "@pinia/nuxt", "nuxt-tiptap-editor"],
+
+  future: {
+    compatibilityVersion: 4,
+  },
+
   tiptap: {
     prefix: "Tiptap",
   },
+
   runtimeConfig: {
     public: {
       apiURL: process.env.API_BASE,
       culqiPublicKey: process.env.CULQI_PUBLIC_KEY,
     },
   },
+
   app: {
     head: {
       htmlAttrs: {
@@ -18,20 +25,20 @@ export default defineNuxtConfig({
       },
       link: [{ rel: "icon", type: "image/png", href: "/favicon.ico" }],
     },
-    // pageTransition: { name: 'page', mode: 'out-in' }
   },
+
   css: ["~/assets/css/main.css"],
+
   colorMode: {
     classSuffix: "",
     preference: "dark",
     fallback: "dark",
   },
-  ui: {
-    icons: ["ri", "mdi"],
-  },
+
   pinia: {
-    storesDirs: ["./stores/**"],
+    storesDirs: ["./app/stores/**"],
   },
+
   routeRules: {
     "/": { prerender: true },
     "/company/**": { prerender: true },
@@ -41,8 +48,11 @@ export default defineNuxtConfig({
     "/checkout/**": { ssr: false },
     "/services/**": { ssr: false },
   },
+
   components: [
     { path: "~/components/tiptap", pathPrefix: false },
     "~/components",
   ],
+
+  compatibilityDate: "2025-02-22",
 });
