@@ -1,114 +1,272 @@
-import type { Receipt } from "~/types";
-import { ModalLoadingSell } from "#components";
+import type {
+  IAuthentication3DS,
+  ICulqiConfig,
+  ICulqiSettings,
+} from "~/types/culqi";
 
-export const useCulqiCheckout = () => {
-  const config = useRuntimeConfig();
-  const isCulqiLoaded = ref(false);
+interface ChargeData {
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone_number: string;
+  token: string;
+  device_id: string | null;
+  parameters_3DS: IAuthentication3DS | null;
+}
 
-  const { cart, buyProducts, tokenSaleID, total } = useUserCart();
-  const { data: receipt, status, execute: buy } = buyProducts();
-
-  const loadCulqiScript = () => {
-    return new Promise<void>((resolve, reject) => {
-      if (isCulqiLoaded.value) {
-        resolve();
-        return;
-      }
-
-      const script = document.createElement("script");
-      script.src = "https://checkout.culqi.com/js/v4";
-      script.async = true;
-      script.onload = () => {
-        isCulqiLoaded.value = true;
-        resolve();
-      };
-      script.onerror = () => {
-        reject(new Error("Failed to load Culqi Checkout script"));
-      };
-      document.head.appendChild(script);
-    });
-  };
-
-  const configureCulqi = () => {
-    if (typeof window.Culqi !== "undefined") {
-      const publicKey = config.public.culqiPublicKey;
-      window.Culqi.publicKey = publicKey;
-      window.Culqi.options({
-        lang: "es",
-        paymentMethods: {
-          tarjeta: false,
-          yape: true,
-          // billetera: true,
-        },
-        style: {
-          logo: "https://aedukar.com/logos/logo.svg",
-          bannerColor: "#2d9c7a",
-        },
-      });
-    } else {
-      console.error("Culqi is not loaded yet.");
-    }
-  };
-
-  const openCulqiCheckout = (order?: string) => {
-    if (typeof window.Culqi !== "undefined") {
-      window.Culqi.settings({
-        title: "Edukar Pasarela de Compras",
-        currency: "PEN",
-        description: "Orden de compra",
-        amount: Number(total.value) * 100,
-        order: order,
-      });
-      window.Culqi.open();
-    } else {
-      console.error("Culqi is not loaded yet.");
-    }
-  };
-
-  const isPaid = useState<boolean>("isPaid", () => false);
-  const userReceipt = useState<Receipt | null>("user-receipt", () => null);
-  const modal = useModal();
+export function useCulqiCheckout() {
   const { showNotification } = useNotification();
-  async function culqi() {
-    if (window.Culqi.token) {
-      // ¡Objeto Token creado exitosamente!
-      window.Culqi.close();
-      modal.open(ModalLoadingSell);
-      tokenSaleID.value = window.Culqi.token.id;
-      await buy();
-      modal.close();
+  const { $api } = useNuxtApp();
 
-      if (!receipt.value) {
-        showNotification({
-          type: "error",
-          title: "Error al realizar compra",
-          message:
-            "Hubo un error al realizar su compra, por favor contactar con soporte de Edukar.",
-        });
-      } else {
-        isPaid.value = true;
-        userReceipt.value = receipt.value;
-        navigateTo("/checkout/success");
-        cart.value = [];
-      }
-    } else {
-      // Mostramos JSON de objeto error en consola
-      console.log("Error: Al intentar generar token");
-    }
+  const isPaid = useState("isPaid", () => false);
+  const emailPayment = useState("emailPayment", () => "");
+  const { cart } = useUserCart();
+  function paymentSuccess() {
+    isPaid.value = true;
+    emailPayment.value = antifraudData.value.email;
+    cart.value = [];
+    navigateTo("/checkout/success");
   }
 
-  onMounted(async () => {
-    try {
-      await loadCulqiScript();
-      configureCulqi();
-      window.culqi = culqi;
-    } catch (error) {
-      console.error("Error loading Culqi:", error);
-    }
+  let checkout: CulqiCheckout | null = null;
+  let culqi3DS: Culqi3DSService | null = null;
+
+  const urlPayment = ref("");
+  const errorUrlPayment = ref("");
+  const url3DS = ref("");
+
+  function setUrls(payUrl: string, errorUrl: string, threeDSUrl: string) {
+    urlPayment.value = payUrl;
+    errorUrlPayment.value = errorUrl;
+    url3DS.value = threeDSUrl;
+  }
+
+  const chargeMessage = ref("");
+
+  const antifraudData = ref<ChargeData>({
+    first_name: "",
+    last_name: "",
+    email: "",
+    phone_number: "",
+    device_id: "",
+    token: "",
+    parameters_3DS: null,
   });
 
-  return {
-    isCulqiLoaded,
-    openCulqiCheckout,
+  // Culqi3DS configuration
+  const { load: loadCulqi3DS } = useScript(
+    {
+      src: "https://3ds.culqi.com",
+      referrerpolicy: false,
+      crossorigin: false,
+    },
+    {
+      trigger: "manual",
+      use() {
+        return { Culqi3DS: window.Culqi3DS };
+      },
+    },
+  );
+
+  // CulqiCheckout configuration
+  const { load: loadCulqiCheckout } = useScript(
+    {
+      src: "https://js.culqi.com/checkout-js",
+      referrerpolicy: false,
+      crossorigin: false,
+    },
+    {
+      trigger: "manual",
+      use() {
+        return { CulqiCheckout: window.CulqiCheckout };
+      },
+    },
+  );
+
+  const settings = reactive<ICulqiSettings>({
+    title: "Tienda Edukar",
+    currency: "PEN",
+    amount: 0,
+    order: "",
+  });
+  const config = useRuntimeConfig();
+  const culqiKey = config.public.culqiPublicKey as string;
+
+  const culqiConfig: ICulqiConfig = reactive({
+    settings,
+    client: {
+      email: "",
+    },
+    options: OPTIONS,
+    appearance: APPEARANCE,
+  });
+
+  const statusCodeCharge = ref<number | null>(null);
+  const {
+    data: chargeData,
+    error: errorCharge,
+    execute: createCharge,
+  } = useEdukarAPI(() => urlPayment.value, {
+    immediate: false,
+    watch: false,
+    method: "POST",
+    body: antifraudData.value,
+    onResponse({ response }) {
+      statusCodeCharge.value = response.status;
+    },
+  });
+
+  async function onCreateCharge() {
+    showNotification({
+      type: "info",
+      message: "PROCESANDO PAGO DE PRODUCTOS...",
+    });
+    await createCharge();
+  }
+
+  // Functions to handle the response of the 3DS
+  const handleSuccess3DSParameters = async (
+    parameters3DS: IAuthentication3DS,
+  ) => {
+    antifraudData.value.parameters_3DS = parameters3DS;
+    await onCreateCharge();
+    chargeMessage.value = "OPERACIÓN REALIZADA EXITOSAMENTE";
+    showNotification({
+      type: "success",
+      message: chargeMessage.value,
+    });
+    culqi3DS?.reset();
+    paymentSuccess();
   };
-};
+
+  const sendMessage = () =>
+    getMessage(handleSuccess3DSParameters, (err) => {
+      console.log("ERROR 3DS CARGO:: ", err);
+      // Update the payment status to failed
+      $api(errorUrlPayment.value, {
+        method: "POST",
+        body: {
+          error: err,
+        },
+      });
+
+      // Show an error notification to the user
+      showNotification({
+        type: "error",
+        message: err,
+      });
+    });
+
+  function handleResponse(
+    token: string,
+    email: string,
+    statusCode: number,
+    objResponse: any,
+  ): void {
+    let type: "info" | "success" | "error";
+    switch (statusCode) {
+      case 200:
+        if (objResponse.action_code === "REVIEW") {
+          showNotification({
+            title: "Validación 3DS",
+            type: "info",
+            message: "Iniciando autenticación 3DS",
+          });
+          culqi3DS?.validationInit3DS({
+            token,
+            statusCode,
+            email,
+            amount: settings.amount,
+            url: url3DS.value,
+          });
+          sendMessage();
+          return;
+        }
+        type = "error";
+        chargeMessage.value = "ERROR AL REALIZAR LA OPERACIÓN";
+        break;
+      case 201:
+        type = "success";
+        chargeMessage.value = objResponse.outcome.user_message;
+        culqi3DS?.reset();
+        paymentSuccess();
+        break;
+      default:
+        type = "error";
+        chargeMessage.value = objResponse.user_message;
+        culqi3DS?.reset();
+        break;
+    }
+
+    showNotification({
+      type: type,
+      message: chargeMessage.value,
+    });
+  }
+
+  async function handleCulqiToken(): Promise<void> {
+    const token = checkout?.getToken();
+    const error = checkout?.getError();
+
+    if (error) {
+      showNotification({
+        type: "error",
+        message: error.user_message,
+      });
+      return;
+    }
+    if (!token) {
+      return;
+    }
+
+    antifraudData.value.token = token.id;
+    antifraudData.value.email = token.email;
+    checkout!.close();
+    await onCreateCharge();
+
+    const responseData = chargeData.value
+      ? chargeData.value
+      : errorCharge.value?.data;
+    handleResponse(
+      antifraudData.value.token,
+      antifraudData.value.email,
+      statusCodeCharge.value!,
+      responseData,
+    );
+  }
+
+  async function setupCulqi3DS() {
+    await loadCulqi3DS();
+    culqi3DS = new Culqi3DSService(culqiKey);
+    await culqi3DS.open();
+    console.log("3DS GENERADO");
+    antifraudData.value.device_id = culqi3DS.getDevice();
+  }
+
+  async function setupCulqiCheckout() {
+    await loadCulqiCheckout();
+    checkout = new CulqiCheckout(culqiKey, culqiConfig);
+    checkout.handleAction = handleCulqiToken;
+    checkout.closeCheckoutFunction = () => {
+      console.log("closing...");
+    };
+  }
+
+  async function openCulqiCheckout() {
+    showNotification({
+      type: "info",
+      message: "Abriendo pasarela de pago.",
+    });
+    await setupCulqi3DS();
+    await setupCulqiCheckout();
+    checkout!.open();
+  }
+
+  return {
+    openCulqiCheckout,
+    culqiConfig,
+    settings,
+    antifraudData,
+    setUrls,
+  };
+}

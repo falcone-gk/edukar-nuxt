@@ -35,3 +35,14 @@ export interface Product {
     created_at: string;
   }[];
 }
+
+type Sell = {
+  id: number;
+  user_name: string;
+  user_last_name: string;
+  user_email: string;
+  user_phone_number: string;
+  products: number[];
+  order_id: string;
+  total_cost: string;
+};

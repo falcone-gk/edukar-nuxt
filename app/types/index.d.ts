@@ -30,6 +30,13 @@ declare global {
   }
 }
 
+declare global {
+  interface Window {
+    CulqiCheckout: new (codigoComercio: string, config: ICulqiConfig) => ICulqi;
+    Culqi3DS: ICulqi3DS;
+  }
+}
+
 export interface ExamsFilter {
   universities: University[];
   years: number[];

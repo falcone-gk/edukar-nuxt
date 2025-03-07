@@ -7,11 +7,6 @@ export const useUserCart = () => {
   const productIds = computed(() => {
     return cart.value.map((prod) => prod.id);
   });
-  const tokenSaleID = useState<string>("token-sale", () => "");
-  const first_name = useState("sell-user-data-first-name", () => "");
-  const last_name = useState("sell-user-data-last-name", () => "");
-  const email = useState("sell-user-data-email", () => "");
-  const phone_number = useState("sell-user-data-phone_number", () => "");
 
   const total = computed(() => {
     return cart.value
@@ -48,34 +43,13 @@ export const useUserCart = () => {
     );
   }
 
-  function buyProducts() {
-    return useEdukarAPI<Receipt>("/store/payment", {
-      body: {
-        first_name: first_name,
-        last_name: last_name,
-        email: email,
-        products: productIds,
-        token_id: tokenSaleID,
-      },
-      method: "POST",
-      immediate: false,
-      watch: false,
-    });
-  }
-
   return {
     cart,
     productIds,
-    tokenSaleID,
-    first_name,
-    last_name,
-    email,
-    phone_number,
     total,
     checkProduct,
     addProductToCart,
     removeProductFromCart,
     checkProductAlreadyInCart,
-    buyProducts,
   };
 };

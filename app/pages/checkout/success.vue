@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import type { Receipt } from "~/types";
-
 definePageMeta({
   layout: "centered",
   middleware: [
@@ -14,13 +12,11 @@ definePageMeta({
   ],
 });
 
-const { getAbsoluteApiUrl } = useAbsoluteApiUrl();
-const userReceipt = useState<Receipt | null>("user-receipt", () => null);
-
 const successContent = reactive({
   title: "Compra realizada exitosamente",
   icon: "/icons/Confetti.svg",
 });
+const emailPayment = useState<string>("emailPayment");
 </script>
 
 <template>
@@ -50,17 +46,13 @@ const successContent = reactive({
             producto en tu perfil, en el apartado de
             <span class="text-primary-500 dark:text-primary-400"
               >Mis solucionarios</span
-            >. Para descargar el recibo de su compra, dar click al botón de
-            abajo. Además, tambien te hemos enviado el recibo al correo de tu
-            cuenta de Edukar.
+            >. El comprobante de pago de su compra fue enviado a su correo
+            electrónico <strong>{{ emailPayment }}</strong
+            >.
           </p>
 
           <div class="mt-8">
-            <UButton
-              :to="getAbsoluteApiUrl(userReceipt!.receipt_url)"
-              target="_blank"
-              label="Descargar Recibo"
-            />
+            <UButton to="/" target="_blank" label="Ir al inicio" />
           </div>
         </div>
       </div>

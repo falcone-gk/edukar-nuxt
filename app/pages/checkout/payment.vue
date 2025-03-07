@@ -1,55 +1,56 @@
 <script setup lang="ts">
 import Big from "big.js";
 import { paymentSchema } from "~/schemas/store";
-import type { Order } from "~/types/culqi";
+import type { Sell } from "~/types/store";
 
-const { openCulqiCheckout } = useCulqiCheckout();
-const { cart, total, first_name, last_name, email, phone_number } =
-  useUserCart();
+const { openCulqiCheckout, culqiConfig, settings, antifraudData, setUrls } =
+  useCulqiCheckout();
+
+const { cart, total, productIds } = useUserCart();
+
+const isAcceptedTerms = ref(false);
+const bodySell = computed(() => {
+  return {
+    user_name: antifraudData.value.first_name,
+    user_last_name: antifraudData.value.last_name,
+    user_email: antifraudData.value.email,
+    user_phone_number: antifraudData.value.phone_number,
+    products: productIds.value,
+  };
+});
 
 const {
-  data,
+  data: sell,
   status,
-  execute: createOrder,
-} = useEdukarAPI<Order>("/store/orders/", {
+  execute: createSell,
+} = useEdukarAPI<Sell>("/store/sells/", {
   method: "POST",
-  body: {
-    amount: total,
-    description: "Compra de productos.",
-    currency_code: "PEN",
-    client_details: {
-      first_name: first_name,
-      last_name: last_name,
-      email: email,
-      // phone_number: phone_number,
-    },
-  },
+  body: bodySell,
   immediate: false,
   watch: false,
 });
 
-const state = reactive({
-  first_name: "",
-  last_name: "",
-  email: "",
-  // phone_number: "",
-  isAcceptedTerms: false,
-});
-
-watch(state, (newState) => {
-  first_name.value = newState.first_name;
-  last_name.value = newState.last_name;
-  email.value = newState.email;
-  // phone_number.value = newState.phone_number;
-});
-
+const { showNotification } = useNotification();
 async function onOpenCulqiCheckout() {
-  // await createOrder();
-  if (!data.value) {
-    openCulqiCheckout();
-  } else {
-    openCulqiCheckout(data.value.id);
+  await createSell();
+  if (!sell.value) {
+    showNotification({
+      type: "error",
+      message: "Hubo un error al iniciar su compra",
+    });
+    return;
   }
+  // Actualizamos los datos de la compra para la pasarela
+  const url = useRequestURL();
+  const urlPayment = `/store/sells/${sell.value.id}/pay/`;
+  const errorUrl = `/store/sells/${sell.value.id}/set-error/`;
+  const threeDSUrl = url.href;
+  setUrls(urlPayment, errorUrl, threeDSUrl);
+  settings.amount = new Big(sell.value.total_cost).times(100).toNumber();
+  settings.order = sell.value.order_id;
+  culqiConfig.client!.email = antifraudData.value.email;
+
+  await openCulqiCheckout();
 }
 </script>
 
@@ -61,33 +62,33 @@ async function onOpenCulqiCheckout() {
         Completar Compra
       </Typography>
       <UForm
-        :state="state"
+        :state="antifraudData"
         :schema="paymentSchema"
         @submit="onOpenCulqiCheckout"
         class="flex flex-col gap-4"
         v-if="cart.length > 0"
       >
         <UFormGroup label="Nombre" name="first_name" required>
-          <UInput v-model="state.first_name" />
+          <UInput v-model="antifraudData.first_name" />
         </UFormGroup>
         <UFormGroup label="Apellido" name="last_name" required>
-          <UInput v-model="state.last_name" />
+          <UInput v-model="antifraudData.last_name" />
         </UFormGroup>
         <UFormGroup label="Email" name="email" required>
           <UInput
-            v-model="state.email"
+            v-model="antifraudData.email"
             placeholder="you@example.com"
             icon="i-mdi-email"
           />
         </UFormGroup>
-        <!-- <UFormGroup label="Número de teléfono" name="phone_number" required>
+        <UFormGroup label="Número de teléfono" name="phone_number" required>
           <UInput
-            v-model="state.phone_number"
+            v-model="antifraudData.phone_number"
             placeholder="999999999"
             icon="i-mdi-phone"
           />
-        </UFormGroup> -->
-        <UCheckbox v-model="state.isAcceptedTerms">
+        </UFormGroup>
+        <UCheckbox v-model="isAcceptedTerms">
           <template #label>
             <Typography tag="span" variant="smaller" color="gray">
               Acepto los
@@ -99,7 +100,12 @@ async function onOpenCulqiCheckout() {
             </Typography>
           </template>
         </UCheckbox>
-        <UButton type="submit" block :loading="status === 'pending'">
+        <UButton
+          type="submit"
+          block
+          :loading="status === 'pending'"
+          :disabled="!isAcceptedTerms"
+        >
           Realizar pago
         </UButton>
       </UForm>
