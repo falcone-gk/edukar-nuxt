@@ -5,9 +5,10 @@ export const FORUM_HOME_KEY = "forum-home";
 const PAYMENT_METHODS = {
   tarjeta: true,
   yape: true,
-  billetera: true,
-  bancaMovil: true,
-  agente: true,
+  billetera: false,
+  bancaMovil: false,
+  agente: false,
+  cuotealo: false,
 };
 
 export const OPTIONS: ICulqiOptions = {

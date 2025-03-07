@@ -46,7 +46,7 @@ async function onAddToCart() {
   if (!data.value) {
     showNotification({
       message: "Ya has adquirido el producto.",
-      type: "error",
+      type: "info",
     });
     return;
   }
