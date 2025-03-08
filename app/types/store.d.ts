@@ -36,7 +36,7 @@ export interface Product {
   }[];
 }
 
-type Sell = {
+export interface Sell {
   id: number;
   user_name: string;
   user_last_name: string;
@@ -45,4 +45,4 @@ type Sell = {
   products: number[];
   order_id: string;
   total_cost: string;
-};
+}
