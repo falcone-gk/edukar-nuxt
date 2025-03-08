@@ -1,3 +1,4 @@
+import { ModalSimpleMessage } from "#components";
 import type {
   IAuthentication3DS,
   ICulqiConfig,
@@ -18,6 +19,7 @@ export function useCulqiCheckout() {
   const { showNotification } = useNotification();
   const { $api } = useNuxtApp();
 
+  const modal = useModal();
   const isPaid = useState("isPaid", () => false);
   const emailPayment = useState("emailPayment", () => "");
   const { cart } = useUserCart();
@@ -117,11 +119,11 @@ export function useCulqiCheckout() {
   });
 
   async function onCreateCharge() {
-    showNotification({
-      type: "info",
-      message: "PROCESANDO PAGO DE PRODUCTOS...",
+    modal.open(ModalSimpleMessage, {
+      message: "Procesando pago de productos...",
     });
     await createCharge();
+    modal.close();
   }
 
   // Functions to handle the response of the 3DS
@@ -227,6 +229,7 @@ export function useCulqiCheckout() {
     const responseData = chargeData.value
       ? chargeData.value
       : errorCharge.value?.data;
+
     handleResponse(
       antifraudData.value.token,
       antifraudData.value.email,
