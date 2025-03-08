@@ -10,6 +10,7 @@ interface PrivateProduct {
 const columns = [
   { key: "name", label: "Nombre" },
   { key: "description", label: "Descripción" },
+  { key: "date", label: "Fecha de adquisición" },
   { key: "source" },
 ];
 
