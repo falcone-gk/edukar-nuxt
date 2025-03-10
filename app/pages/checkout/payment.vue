@@ -3,8 +3,16 @@ import Big from "big.js";
 import { paymentSchema } from "~/schemas/store";
 import type { Sell } from "~/types/store";
 
-const { openCulqiCheckout, culqiConfig, settings, antifraudData, setUrls } =
-  useCulqiCheckout();
+const {
+  openCulqiCheckout,
+  culqiConfig,
+  settings,
+  antifraudData,
+  setParams,
+  checkoutLoaded,
+  isPasarelaOpen,
+  onModalClose,
+} = useCulqiCheckout();
 
 const { cart, total, productIds } = useUserCart();
 
@@ -45,7 +53,7 @@ async function onOpenCulqiCheckout() {
   const urlPayment = `/store/sells/${sell.value.id}/pay/`;
   const errorUrl = `/store/sells/${sell.value.id}/set-error/`;
   const threeDSUrl = url.href;
-  setUrls(urlPayment, errorUrl, threeDSUrl);
+  setParams(urlPayment, errorUrl, threeDSUrl, sell.value.id);
   settings.amount = new Big(sell.value.total_cost).times(100).toNumber();
   settings.order = sell.value.order_id;
   culqiConfig.client!.email = antifraudData.value.email;
@@ -56,6 +64,57 @@ async function onOpenCulqiCheckout() {
 
 <template>
   <div class="flex flex-col-reverse md:flex-row mx-auto max-w-[900px] gap-8">
+    <!-- Modal de la pasarela de pago -->
+    <UModal v-model="isPasarelaOpen" prevent-close>
+      <UCard
+        :ui="{
+          base: 'flex flex-col h-[750px]',
+          background: 'dark:bg-white',
+          divide: 'divide-none',
+          header: {
+            padding: 'py-2',
+          },
+          body: {
+            base: 'flex h-full',
+            padding: 'p-0 sm:p-0',
+          },
+        }"
+      >
+        <template #header>
+          <div class="flex justify-end">
+            <UButton
+              icon="i-mdi-close"
+              @click="onModalClose"
+              variant="ghost"
+              color="white"
+              :ui="{
+                color: {
+                  white: {
+                    ghost:
+                      'dark:text-gray-900 dark:hover:bg-gray-50 dark:focus-visible:ring-primary-500',
+                  },
+                },
+                variant: {
+                  ghost:
+                    'dark:text-{color}-500 dark:hover:bg-{color}-50 dark:focus-visible:ring-{color}-500',
+                },
+              }"
+            />
+          </div>
+        </template>
+
+        <div
+          id="culqi-container"
+          class="flex justify-center items-center h-full w-full rounded-xl"
+        >
+          <DataLoadingTransition
+            v-if="!checkoutLoaded"
+            message="Cargando pasarela de pago..."
+          />
+        </div>
+      </UCard>
+    </UModal>
+
     <!-- Left side: Sales Form -->
     <div class="md:w-3/5">
       <Typography tag="h2" variant="h3" color="gray" class="mb-8">

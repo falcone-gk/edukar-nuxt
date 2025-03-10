@@ -12,7 +12,9 @@ export interface ICulqiSettings {
 export interface ICulqiOptions {
   lang?: string;
   installments?: boolean;
+  modal?: boolean;
   paymentMethods: any;
+  container?: string;
 }
 
 export interface StyleOptions {

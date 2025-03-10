@@ -12,7 +12,7 @@ export const paymentSchema = z.object({
     .max(15, {
       message: "El número de teléfono debe tener máximo 15 dígitos",
     })
-    .regex(/^\d{9}$/, {
+    .regex(/^\d+$/, {
       message: "El número de teléfono debe contener solo dígitos",
     }),
   // isAcceptedTerms: z.literal<boolean>(true),

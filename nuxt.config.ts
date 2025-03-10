@@ -13,6 +13,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
+      baseURL: process.env.BASE_DOMAIN,
       apiURL: process.env.API_BASE,
       culqiPublicKey: process.env.CULQI_PUBLIC_KEY,
     },

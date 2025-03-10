@@ -42,8 +42,8 @@ const emailPayment = useState<string>("emailPayment");
             de compras ingresa a tu perfil en el apartado de
             <span class="text-primary-500 dark:text-primary-400"
               >Mis compras</span
-            >. Si has realizado la compra de un solucionario, podrás ver tu
-            producto en tu perfil, en el apartado de
+            >. Si has realizado la compra de un solucionario, podrás ver tu(s)
+            producto(s) en tu perfil, en el apartado de
             <span class="text-primary-500 dark:text-primary-400"
               >Mis solucionarios</span
             >. El comprobante de pago de su compra fue enviado a su correo
@@ -52,7 +52,7 @@ const emailPayment = useState<string>("emailPayment");
           </p>
 
           <div class="mt-8">
-            <UButton to="/" target="_blank" label="Ir al inicio" />
+            <UButton to="/" label="Ir al inicio" />
           </div>
         </div>
       </div>

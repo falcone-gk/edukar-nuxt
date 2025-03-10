@@ -5,7 +5,7 @@ export const FORUM_HOME_KEY = "forum-home";
 const PAYMENT_METHODS = {
   tarjeta: true,
   yape: true,
-  billetera: false,
+  billetera: true,
   bancaMovil: false,
   agente: false,
   cuotealo: false,
@@ -14,7 +14,9 @@ const PAYMENT_METHODS = {
 export const OPTIONS: ICulqiOptions = {
   lang: "auto",
   installments: false, // Habilitar o deshabilitar el campo de cuotas
+  modal: false,
   paymentMethods: PAYMENT_METHODS,
+  container: "#culqi-container",
 };
 
 export const APPEARANCE = {
@@ -23,7 +25,7 @@ export const APPEARANCE = {
   hiddenBannerContent: false,
   hiddenBanner: false,
   hiddenToolBarAmount: false,
-  menuType: "sidebar", // sidebar / sliderTop / select
+  menuType: "sliderTop", // sidebar / sliderTop / select
   buttonCardPayText: "Pagar", //
   logo: "https://aedukar.com/logos/logo.svg",
   defaultStyle: {

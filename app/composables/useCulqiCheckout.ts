@@ -15,35 +15,11 @@ interface ChargeData {
   parameters_3DS: IAuthentication3DS | null;
 }
 
+type OrderState = "created" | "pending" | "paid";
+
 export function useCulqiCheckout() {
   const { showNotification } = useNotification();
   const { $api } = useNuxtApp();
-
-  const modal = useModal();
-  const isPaid = useState("isPaid", () => false);
-  const emailPayment = useState("emailPayment", () => "");
-  const { cart } = useUserCart();
-  function paymentSuccess() {
-    isPaid.value = true;
-    emailPayment.value = antifraudData.value.email;
-    cart.value = [];
-    navigateTo("/checkout/success");
-  }
-
-  let checkout: CulqiCheckout | null = null;
-  let culqi3DS: Culqi3DSService | null = null;
-
-  const urlPayment = ref("");
-  const errorUrlPayment = ref("");
-  const url3DS = ref("");
-
-  function setUrls(payUrl: string, errorUrl: string, threeDSUrl: string) {
-    urlPayment.value = payUrl;
-    errorUrlPayment.value = errorUrl;
-    url3DS.value = threeDSUrl;
-  }
-
-  const chargeMessage = ref("");
 
   const antifraudData = ref<ChargeData>({
     first_name: "",
@@ -55,8 +31,140 @@ export function useCulqiCheckout() {
     parameters_3DS: null,
   });
 
+  const toast = useToast();
+  const notifId = "validation_notif";
+  const noteId = "message_qr";
+  const importantNoteId = "important_message";
+  const modal = useModal();
+  const isPendingShown = ref(false);
+  const isPasarelaOpen = ref(false);
+  const sseConnection = ref<EventSource | null>(null);
+  const orderState = ref<OrderState>("created");
+  const checkoutLoaded = ref(false);
+  const isPaid = useState("isPaid", () => false);
+  const emailPayment = useState("emailPayment", () => "");
+  const { cart } = useUserCart();
+
+  function onModalClose() {
+    console.log("Cerrando...");
+    checkout?.close();
+    checkoutLoaded.value = false;
+    if (orderState.value === "created") {
+      sseConnection.value?.close();
+    }
+    isPasarelaOpen.value = false;
+  }
+
+  function paymentSuccess() {
+    isPaid.value = true;
+    emailPayment.value = antifraudData.value.email;
+    cart.value = [];
+    sseConnection.value?.close();
+    navigateTo("/checkout/success");
+  }
+
+  const notifData = {
+    id: notifId,
+    title: "Validación",
+    description:
+      "Se está a la espera del pago por QR. La validación después del pago puede demorar unos minutos.",
+    timeout: 0,
+    actions: [
+      {
+        label: "Detener validación",
+        click: () => {
+          sseConnection.value?.close();
+          toast.remove("validation_notif");
+          isPendingShown.value = false;
+        },
+      },
+    ],
+  };
+
+  const noteData = {
+    id: noteId,
+    title: "Aviso",
+    description: "El QR se ha enviado a su correo electrónico.",
+    timeout: 0,
+  };
+
+  const importantNoteData = {
+    id: importantNoteId,
+    title: "Importante",
+    description:
+      "Una vez validado el pago, se enviarán los detalles con su comprobante de pago a su correo electrónico.",
+    timeout: 0,
+  };
+
+  let checkout: CulqiCheckout | null = null;
+  let culqi3DS: Culqi3DSService | null = null;
+
+  const urlPayment = ref("");
+  const errorUrlPayment = ref("");
+  const url3DS = ref("");
+  const sellId = ref(0);
+
+  function setParams(
+    payUrl: string,
+    errorUrl: string,
+    threeDSUrl: string,
+    id: number,
+  ) {
+    urlPayment.value = payUrl;
+    errorUrlPayment.value = errorUrl;
+    url3DS.value = threeDSUrl;
+    sellId.value = id;
+  }
+
+  // Connection to check order status
+  const runConfig = useRuntimeConfig();
+  function startSSEConnection(id: number) {
+    const eventSource = new EventSource(
+      `${runConfig.public.baseURL}/sse/check-order/${id}`,
+    );
+
+    eventSource.onmessage = (event) => {
+      const state: OrderState = JSON.parse(event.data);
+      orderState.value = state;
+      console.log("Estado de la orden:", state);
+      if (orderState.value === "paid") {
+        toast.remove(notifId);
+        toast.remove(noteId);
+        toast.remove(importantNoteId);
+        paymentSuccess();
+        return;
+      }
+
+      if (orderState.value === "pending") {
+        console.log("A la espera del pago...");
+        toast.add(notifData);
+        if (isPendingShown.value) return;
+
+        // Mensajes a mostrar solo una vez
+        toast.add(noteData);
+        toast.add(importantNoteData);
+        isPendingShown.value = true;
+      }
+    };
+
+    // También puedes manejar otros eventos como 'open' y 'error'
+    eventSource.onopen = () => {
+      console.log("Conexión SSE abierta");
+    };
+
+    eventSource.onerror = (error) => {
+      console.error("Error en la conexión SSE:", error);
+      sseConnection.value?.close();
+    };
+
+    // Retornar el eventSource si necesitas cerrar la conexión más tarde
+    return eventSource;
+  }
+
+  const chargeMessage = ref("");
+
   // Culqi3DS configuration
-  const { load: loadCulqi3DS } = useScript(
+  const { load: loadCulqi3DS, status: threeDSStatus } = useScript(
     {
       src: "https://3ds.culqi.com",
       referrerpolicy: false,
@@ -71,7 +179,7 @@ export function useCulqiCheckout() {
   );
 
   // CulqiCheckout configuration
-  const { load: loadCulqiCheckout } = useScript(
+  const { load: loadCulqiCheckout, status: checkoutStatus } = useScript(
     {
       src: "https://js.culqi.com/checkout-js",
       referrerpolicy: false,
@@ -84,6 +192,12 @@ export function useCulqiCheckout() {
       },
     },
   );
+
+  watchEffect(() => {
+    if (threeDSStatus.value === "loaded" && checkoutStatus.value === "loaded") {
+      checkoutLoaded.value = true;
+    }
+  });
 
   const settings = reactive<ICulqiSettings>({
     title: "Tienda Edukar",
@@ -119,6 +233,9 @@ export function useCulqiCheckout() {
   });
 
   async function onCreateCharge() {
+    isPasarelaOpen.value = false;
+    sseConnection.value?.close();
+    console.log("Procesando pago de productos...");
     modal.open(ModalSimpleMessage, {
       message: "Procesando pago de productos...",
     });
@@ -223,7 +340,6 @@ export function useCulqiCheckout() {
 
     antifraudData.value.token = token.id;
     antifraudData.value.email = token.email;
-    checkout!.close();
     await onCreateCharge();
 
     const responseData = chargeData.value
@@ -250,8 +366,9 @@ export function useCulqiCheckout() {
     await loadCulqiCheckout();
     checkout = new CulqiCheckout(culqiKey, culqiConfig);
     checkout.handleAction = handleCulqiToken;
+    // This function is only called when user use a button to close modal.
     checkout.closeCheckoutFunction = () => {
-      console.log("closing...");
+      onModalClose();
     };
   }
 
@@ -260,9 +377,11 @@ export function useCulqiCheckout() {
       type: "info",
       message: "Abriendo pasarela de pago.",
     });
+    isPasarelaOpen.value = true;
     await setupCulqi3DS();
     await setupCulqiCheckout();
     checkout!.open();
+    sseConnection.value = startSSEConnection(sellId.value);
   }
 
   return {
@@ -270,6 +389,9 @@ export function useCulqiCheckout() {
     culqiConfig,
     settings,
     antifraudData,
-    setUrls,
+    setParams,
+    checkoutLoaded,
+    isPasarelaOpen,
+    onModalClose,
   };
 }
