@@ -12,7 +12,7 @@ const socials = [
   },
   {
     icon: "i-ri-youtube-fill",
-    link: "https://www.youtube.com/c/",
+    link: "https://www.youtube.com/@Edukar1",
     ariaLabel: "Youtube",
   },
   {
