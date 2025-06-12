@@ -40,7 +40,7 @@ const loading = computed(() => status.value === "pending");
       </template>
 
       <template #paid_at-data="{ row }">
-        {{ new Intl.DateTimeFormat("en-CA").format(new Date(row.paid_at)) }}
+        {{ row.paid_at ? new Intl.DateTimeFormat("en-CA").format(new Date(row.paid_at)) : '' }}
       </template>
 
       <template #total_cost-data="{ row }">
