@@ -20,7 +20,7 @@ const iconColorMode = computed(() => {
 
 const links = [
   { text: "Inicio", path: "/", name: "home", id: 1 },
-  { text: "Cursos", path: "/courses", name: "course", id: 2 },
+  // { text: "Cursos", path: "/courses", name: "course", id: 2 },
   { text: "Foro", path: "/forum", name: "forum", id: 3 },
   { text: "Descargas", path: "/downloads/exams", name: "download", id: 4 },
   { text: "Tienda", path: "/store", name: "store", id: 5 },
@@ -73,9 +73,9 @@ const menuItems = [
 
 <template>
   <header
-    class="sticky top-0 px-4 h-[var(--header-height)] hidden md:block shadow-xl z-10 bg-white dark:bg-secondary"
+    class="sticky top-0 h-[var(--header-height)] hidden md:block shadow-xl z-10 bg-white dark:bg-secondary"
   >
-    <div class="flex justify-between h-full items-stretch">
+    <div class="flex px-4 justify-between h-full items-stretch">
       <div class="flex my-auto">
         <NuxtLink aria-label="Ir a la página de inicio de Edukar" to="/">
           <LogoEdukar />
@@ -144,5 +144,6 @@ const menuItems = [
         </div>
       </div>
     </div>
+    <UiImportantMessage />
   </header>
 </template>

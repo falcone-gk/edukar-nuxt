@@ -1,8 +1,8 @@
 <template>
   <header
-    class="sticky top-0 z-10 h-16 p-4 shadow-xl md:hidden bg-white dark:bg-secondary"
+    class="sticky top-0 z-10 h-16 shadow-xl md:hidden bg-white dark:bg-secondary"
   >
-    <div class="flex justify-between items-center h-full">
+    <div class="flex p-4 justify-between items-center h-full">
       <div class="flex my-auto">
         <NuxtLink to="/">
           <LogoEdukar />
@@ -22,6 +22,7 @@
         />
       </div>
     </div>
+    <UiImportantMessage />
   </header>
   <USlideover
     class="md:hidden"
@@ -148,12 +149,12 @@ const navLinks = [
     icon: "i-heroicons-home",
     click: () => (isOpen.value = false),
   },
-  {
-    label: "Cursos",
-    to: "/courses",
-    icon: "i-heroicons-book-open-20-solid",
-    click: () => (isOpen.value = false),
-  },
+  // {
+  //   label: "Cursos",
+  //   to: "/courses",
+  //   icon: "i-heroicons-book-open-20-solid",
+  //   click: () => (isOpen.value = false),
+  // },
   {
     label: "Foro",
     to: "/forum",
