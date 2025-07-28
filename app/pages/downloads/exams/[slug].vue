@@ -64,20 +64,20 @@
 
               <UButton
                 color="gray"
-                v-if="exam?.source_video_solution_premium"
+                v-if="exam?.source_video_product"
                 label="Video solucionario"
                 size="lg"
                 rounded
-                :to="exam?.source_video_solution_premium"
-                target="_blank"
+                @click="onAddToCart"
+                :loading="pending"
                 :ui="customUIBtn"
               >
                 <template #trailing>
                   <span
                     class="flex gap-1 text-black px-1.5 py-0.5 rounded bg-yellow-400"
                   >
-                    <UIcon class="w-4 h-auto" name="i-ri-vip-crown-2-fill" />
-                    Premium
+                    <UIcon class="w-4 h-auto" name="i-mdi-cart" />
+                    Comprar
                   </span>
                 </template>
               </UButton>
@@ -123,9 +123,9 @@
 <script lang="ts" setup>
 import type { Exam } from "~/types/resultApiTypes";
 
-definePageMeta({
-  middleware: ["auth"],
-});
+// definePageMeta({
+//   middleware: ["auth"],
+// });
 
 const router = useRouter();
 const backTo = computed(() => {
@@ -162,6 +162,8 @@ if (!exam.value) {
     statusMessage: "No existe el examen",
   });
 }
+
+const { pending, onAddToCart } = useAddToCArt(exam.value.source_video_product)
 
 const filters = reactive({
   year: exam.value.year,
@@ -211,6 +213,7 @@ const customUIBtn = { rounded: "rounded-full" };
 
 const {
   data: examFile,
+  error,
   status: downloadStatus,
   execute: downloadExam,
 } = useEdukarAPI<Blob>(
@@ -224,11 +227,11 @@ const { showNotification } = useNotification();
 async function onDownload() {
   await downloadExam();
   if (!exam.value || !examFile.value) {
+    const errorMsg = error.value?.statusCode === 401 ? "Debes inciar sesión o registrate para poder descargar este examen" : "Hubo un error al descargar el examen. Por favor contactar con soporte de Edukar.";
     showNotification({
       title: "Error al descargar examen",
       type: "error",
-      message:
-        "Hubo un error al descargar el examen. Por favor contactar con soporte de Edukar.",
+      message: errorMsg
     });
   } else {
     downloadFile(examFile.value, exam.value.title);

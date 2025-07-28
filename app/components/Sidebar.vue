@@ -167,12 +167,12 @@ const navLinks = [
     icon: "i-heroicons-arrow-down-circle-20-solid",
     click: () => (isOpen.value = false),
   },
-  {
-    label: "Tienda",
-    to: "/store",
-    icon: "i-mdi-store",
-    click: () => (isOpen.value = false),
-  },
+  // {
+  //   label: "Tienda",
+  //   to: "/store",
+  //   icon: "i-mdi-store",
+  //   click: () => (isOpen.value = false),
+  // },
 ];
 
 const darkMode = [

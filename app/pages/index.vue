@@ -1,26 +1,26 @@
 <script setup lang="ts">
-import JSConfetti from "js-confetti";
-import { ModalStorePresentation } from "#components";
+// import JSConfetti from "js-confetti";
+// import { ModalStorePresentation } from "#components";
 
-const isModalAlreadyOpen = useState("isModalAlreadyOpen", () => false);
+// const isModalAlreadyOpen = useState("isModalAlreadyOpen", () => false);
 
-const modal = useModal();
-onMounted(() => {
-  if (isModalAlreadyOpen.value) return;
-  modal.open(ModalStorePresentation, {
-    onClose: () => {
-      modal.close();
-    },
-  });
+// const modal = useModal();
+// onMounted(() => {
+//   if (isModalAlreadyOpen.value) return;
+//   modal.open(ModalStorePresentation, {
+//     onClose: () => {
+//       modal.close();
+//     },
+//   });
 
-  const jsConfetti = new JSConfetti();
-  jsConfetti.addConfetti({
-    emojis: ["🎉", "🎊", "🎈", "🎇", "🥳", "🎉", "🎊", "🎈", "🎇", "🥳"],
-    emojiSize: 30,
-    confettiNumber: 100,
-  });
-  isModalAlreadyOpen.value = true;
-});
+//   const jsConfetti = new JSConfetti();
+//   jsConfetti.addConfetti({
+//     emojis: ["🎉", "🎊", "🎈", "🎇", "🥳", "🎉", "🎊", "🎈", "🎇", "🥳"],
+//     emojiSize: 30,
+//     confettiNumber: 100,
+//   });
+//   isModalAlreadyOpen.value = true;
+// });
 </script>
 
 <template>

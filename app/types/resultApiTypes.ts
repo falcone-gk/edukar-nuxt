@@ -1,3 +1,5 @@
+import type { Product } from "./store";
+
 // types for exams
 export interface Exam {
   id: number;
@@ -11,7 +13,8 @@ export interface Exam {
   year: number;
   source_exam: string;
   source_video_solution: string;
-  source_video_solution_premium: string;
+  // source_video_solution_premium: string;
+  source_video_product: Product | null;
 }
 
 // Type for courses
