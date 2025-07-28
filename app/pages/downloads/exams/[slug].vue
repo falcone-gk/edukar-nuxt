@@ -15,11 +15,14 @@
       <div class="w-full">
         <div class="flex flex-col-reverse md:flex-row gap-24">
           <div class="flex flex-col gap-8">
-            <Typography tag="h1" variant="h2">
+            <Typography tag="h1" variant="h2" color="gray">
               {{ exam?.title }}
             </Typography>
 
             <div class="flex flex-col my-3 gap-1">
+              <Typography tag="h2" variant="h3" color="gray">
+                Detalles del examen:
+              </Typography>
               <p>
                 <strong class="text-primary">Universidad:</strong>
                 {{ exam?.university }}
@@ -32,6 +35,15 @@
                 <strong class="text-primary">Area:</strong> {{ exam?.area }}
               </p>
               <p><strong class="text-primary">Año:</strong> {{ exam?.year }}</p>
+            </div>
+
+            <div v-if="exam?.source_video_product" class="space-y-1">
+              <Typography tag="h2" variant="h3" color="gray">
+                Detalles del videosolucionario:
+              </Typography>
+
+              <p><strong class="text-primary">Descripción:</strong> {{ exam?.source_video_product.description }}</p>
+              <p><strong class="text-primary">Precio:</strong> S/.{{ exam?.source_video_product.price }}</p>
             </div>
 
             <div class="flex flex-wrap justify-start gap-2">
