@@ -34,6 +34,7 @@ export interface Product {
     comment: string;
     created_at: string;
   }[];
+  published_at: string;
 }
 
 export interface Sell {

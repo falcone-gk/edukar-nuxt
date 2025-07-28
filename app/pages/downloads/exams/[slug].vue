@@ -44,6 +44,7 @@
 
               <p><strong class="text-primary">Descripción:</strong> {{ exam?.source_video_product.description }}</p>
               <p><strong class="text-primary">Precio:</strong> S/.{{ exam?.source_video_product.price }}</p>
+              <p><strong class="text-primary">Fecha de publicación:</strong> {{ exam?.source_video_product.published_at }}</p>
             </div>
 
             <div class="flex flex-wrap justify-start gap-2">
