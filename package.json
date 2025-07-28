@@ -15,6 +15,7 @@
     "@pinia/nuxt": "^0.5.1",
     "@tiptap-pro/extension-mathematics": "^2.8.6",
     "@tiptap/extension-image": "^2.2.4",
+    "@tiptap/extension-link": "^3.0.7",
     "@unhead/vue": "^1.11.19",
     "@videojs/themes": "^1.0.1",
     "big.js": "^6.2.2",

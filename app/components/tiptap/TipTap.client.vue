@@ -7,7 +7,7 @@
           <USelectMenu v-model="labels" :options="headingOptions" value-attribute="id" option-attribute="label" :ui-menu="{
             width: 'w-48'
           }">
-            <TipTapButton title="Cabeceras" :icon="headingOptions[headingSelected].icon" />
+            <TipTapButton title="Cabeceras" :icon="headingOptions[headingSelected]!.icon" />
             <template #option="{ option: heading }">
               <span>{{ heading.label }}</span>
               <span>{{ heading.name }}</span>
@@ -27,6 +27,7 @@
             icon="i-heroicons-list-bullet-solid" :is-active="editor.isActive('bulletList')" />
           <TipTapButton title="Lista enumerada" @on-custom-click="editor.chain().focus().toggleOrderedList().run()"
             icon="i-ri-list-ordered" :is-active="editor.isActive('orderedList')" />
+          <TipTapButton title="Link" icon="i-heroicons-link" @on-custom-click="setLink" :is-active="editor.isActive('link')" />
 
           <UDivider class="w-1 h-8" orientation="vertical" />
 
@@ -53,8 +54,9 @@
 </template>
 
 <script setup lang="ts">
-import Mathematics from '@tiptap-pro/extension-mathematics'
-import 'katex/dist/katex.min.css'
+import Mathematics from '@tiptap-pro/extension-mathematics';
+import Link from '@tiptap/extension-link';
+import 'katex/dist/katex.min.css';
 // import { Image as ImageTipTap } from '@tiptap/extension-image'
 
 const model = defineModel({ required: true })
@@ -140,7 +142,8 @@ const editor = useEditor({
     TiptapStarterKit,
     Mathematics.configure({
       regex: /\$\$([^\$]*)\$\$/gi
-    })
+    }),
+    Link,
   ],
   editorProps: {
     attributes: {
@@ -243,6 +246,27 @@ const labels = computed({
 })
 
 // Functions to insert Latex special codes
+
+function setLink() {
+  const previousUrl = editor.value?.getAttributes('link').href
+  const url = window.prompt('URL', previousUrl)
+
+  // cancelled
+  if (url === null) {
+    return
+  }
+
+  // empty
+  if (url === '') {
+    editor.value?.chain().focus().extendMarkRange('link').unsetLink().run()
+
+    return
+  }
+
+  // update link
+  editor.value?.chain().focus().extendMarkRange('link').setLink({ href: url }).run()
+}
+
 const insertEquation = () => {
   editor.value?.commands.insertContent('$$ f(x) = x $$ ')
 }
@@ -294,4 +318,23 @@ onBeforeUnmount(() => {
   border-radius: 0.25rem;
   display: inline-block;
 }
+
+.dark .tiptap a {
+    color: deepskyblue;
+    cursor: pointer;
+
+    &:hover {
+      color: cornflowerblue;
+    }
+  }
+
+.tiptap a {
+  color: cornflowerblue;
+  cursor: pointer;
+
+  &:hover {
+    color: royalblue;
+  }
+}
+
 </style>

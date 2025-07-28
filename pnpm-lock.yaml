@@ -23,6 +23,9 @@ importers:
       '@tiptap/extension-image':
         specifier: ^2.2.4
         version: 2.11.5(@tiptap/core@2.11.5(@tiptap/pm@2.11.5))
+      '@tiptap/extension-link':
+        specifier: ^3.0.7
+        version: 3.0.7(@tiptap/core@2.11.5(@tiptap/pm@2.11.5))(@tiptap/pm@2.11.5)
       '@unhead/vue':
         specifier: ^1.11.19
         version: 1.11.19(vue@3.5.13(typescript@5.7.3))
@@ -1009,6 +1012,12 @@ packages:
     peerDependencies:
       '@tiptap/core': ^2.7.0
       '@tiptap/pm': ^2.7.0
+
+  '@tiptap/extension-link@3.0.7':
+    resolution: {integrity: sha512-e53MddBSVKpxxQ2JmHfyZQ2VBLwqlZxqwn0DQHFMXyCKTzpdUC0DOtkvrY7OVz6HA3yz29qR+qquQxIxcDPrfg==}
+    peerDependencies:
+      '@tiptap/core': ^3.0.7
+      '@tiptap/pm': ^3.0.7
 
   '@tiptap/extension-list-item@2.11.5':
     resolution: {integrity: sha512-Mp5RD/pbkfW1vdc6xMVxXYcta73FOwLmblQlFNn/l/E5/X1DUSA4iGhgDDH4EWO3swbs03x2f7Zka/Xoj3+WLg==}
@@ -5157,6 +5166,12 @@ snapshots:
       '@tiptap/core': 2.11.5(@tiptap/pm@2.11.5)
 
   '@tiptap/extension-link@2.11.5(@tiptap/core@2.11.5(@tiptap/pm@2.11.5))(@tiptap/pm@2.11.5)':
+    dependencies:
+      '@tiptap/core': 2.11.5(@tiptap/pm@2.11.5)
+      '@tiptap/pm': 2.11.5
+      linkifyjs: 4.2.0
+
+  '@tiptap/extension-link@3.0.7(@tiptap/core@2.11.5(@tiptap/pm@2.11.5))(@tiptap/pm@2.11.5)':
     dependencies:
       '@tiptap/core': 2.11.5(@tiptap/pm@2.11.5)
       '@tiptap/pm': 2.11.5
