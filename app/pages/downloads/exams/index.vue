@@ -6,45 +6,22 @@
         <div class="flex flex-col gap-8 px-3 py-3.5">
           <div class="flex flex-col gap-5">
             <UFormGroup label="Año:">
-              <UiSelect
-                class="w-full"
-                v-model="filters.year"
-                :options="filtersOpt?.years"
-              />
+              <UiSelect class="w-full" v-model="filters.year" :options="filtersOpt?.years" />
             </UFormGroup>
             <UFormGroup label="Universidad:">
-              <UiSelect
-                class="w-full"
-                v-model="filters.univ"
-                :options="filtersOpt?.universities"
-                option-attribute="name"
-                value-attribute="siglas"
-              />
+              <UiSelect class="w-full" v-model="filters.univ" :options="filtersOpt?.universities"
+                option-attribute="name" value-attribute="siglas" />
             </UFormGroup>
             <UFormGroup label="Tipo de examen:">
-              <UiSelect
-                class="w-full"
-                v-model="filters.type"
-                :options="typesOpt"
-                :disabled="!filters.univ"
-              />
+              <UiSelect class="w-full" v-model="filters.type" :options="typesOpt" :disabled="!filters.univ" />
             </UFormGroup>
             <UFormGroup label="Are de examen">
-              <UiSelect
-                class="w-full"
-                v-model="filters.area"
-                :options="areasOpt"
-                :disabled="!filters.univ"
-              />
+              <UiSelect class="w-full" v-model="filters.area" :options="areasOpt" :disabled="!filters.univ" />
             </UFormGroup>
           </div>
 
           <div>
-            <UButton
-              label="Limpiar filtros"
-              color="gray"
-              @click="clearFilters"
-            />
+            <UButton label="Limpiar filtros" color="gray" @click="clearFilters" />
           </div>
         </div>
       </UCard>
@@ -53,9 +30,7 @@
         <Typography class="mb-8" tag="h1" variant="h1" color="primary">
           Exámenes
         </Typography>
-        <div
-          class="h-[700px] overflow-y-auto border-2 border-gray-200 dark:border-gray-800 p-8 rounded-lg"
-        >
+        <div class="min-h-[700px]">
           <DataLoading :loading="pending" :data="data" :list="data?.results">
             <template #loading>
               <SkeletonCardList />
@@ -63,23 +38,15 @@
 
             <template #data="{ data }">
               <DisplayGrid>
-                <CardResume
-                  v-for="exam in data.results"
-                  :image="exam.cover"
-                  :title="exam.title"
-                  :to="`/downloads/exams/${exam.slug}`"
-                />
+                <CardResume v-for="exam in data.results" :image="exam.cover" :title="exam.title"
+                  :to="`/downloads/exams/${exam.slug}`" />
               </DisplayGrid>
             </template>
           </DataLoading>
         </div>
         <div v-if="!pending && data">
           <div class="flex justify-center mt-8">
-            <UPagination
-              :total="data?.count"
-              :page-count="pageCount"
-              v-model="page"
-            />
+            <UPagination :total="data?.count" :page-count="pageCount" v-model="page" />
           </div>
         </div>
       </div>
