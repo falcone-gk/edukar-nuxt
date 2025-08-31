@@ -30,7 +30,7 @@ const {
   status: downLoadStatus,
   execute: download,
 } = useEdukarAPI<Blob>(
-  () => `/store/document/download/${clickedDocument.value}`,
+  () => `/store/document/download/${clickedDocument.value}/`,
   {
     immediate: false,
     watch: false,

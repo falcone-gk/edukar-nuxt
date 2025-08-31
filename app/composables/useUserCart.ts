@@ -14,7 +14,7 @@ export const useUserCart = () => {
       .toFixed(2);
   });
 
-  const checkProductUrl = "/store/cart/check-product";
+  const checkProductUrl = "/store/cart/check-product/";
   interface CheckResponse {
     message: string;
   }
