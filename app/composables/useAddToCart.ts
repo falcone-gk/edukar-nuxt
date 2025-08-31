@@ -41,14 +41,14 @@ export const useAddToCArt = (product: Product | null) => {
       return;
     }
 
-    // await execute();
-    // if (!data.value) {
-    //   showNotification({
-    //     message: "Ya has adquirido el producto.",
-    //     type: "info",
-    //   });
-    //   return;
-    // }
+    await execute();
+    if (!data.value) {
+      showNotification({
+        message: "Ya has adquirido el producto.",
+        type: "info",
+      });
+      return;
+    }
     showNotification({
       message: "Se ha agregado el producto correctamente.",
       type: "success",
