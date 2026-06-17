@@ -377,9 +377,9 @@
 
       <p>
         Los productos mostrados en la tienda virtual son videosolucionarios de
-        exámenes de admisión de las diferentes universidades.
-        Cabe mencionar que estos exámenes de admisión resueltos no son oficiales
-        ni podemos garantizar su originalidad.
+        exámenes de admisión de las diferentes universidades. Cabe mencionar que
+        estos exámenes de admisión resueltos no son oficiales ni podemos
+        garantizar su originalidad.
       </p>
 
       <ul>
@@ -410,24 +410,25 @@
       </p>
 
       <p>
-        Los videos fueron desarrollados por un
-        grupo de personas con diferentes grados de estudio.
+        Los videos fueron desarrollados por un grupo de personas con diferentes
+        grados de estudio.
       </p>
 
       <p>
-        Los videosolucionarios serán de acceso libre por medio de nuestro canal de
-        YouTube <a href="https://www.youtube.com/@Edukar1" target="_blank">Edukar</a>, después de que
-        se cumplan dos años de la fecha de publicación en nuestra Tienda Virtual.
+        Los videosolucionarios serán de acceso libre por medio de nuestro canal
+        de YouTube
+        <a href="https://www.youtube.com/@Edukar1" target="_blank">Edukar</a>,
+        después de que se cumplan un año de la fecha de publicación en nuestra
+        Tienda Virtual.
       </p>
 
       <h3>Reclamaciones</h3>
       <p>
-        Los videosolucionarios han sido
-        desarrollados con el mayor esfuerzo y cuidado para garantizar su
-        precisión. Sin embargo, debido a la naturaleza de los cálculos
-        matemáticos y al proceso humano en su elaboración, es posible que
-        existan errores en la resolución de los ejercicios o en las respuestas
-        proporcionadas.
+        Los videosolucionarios han sido desarrollados con el mayor esfuerzo y
+        cuidado para garantizar su precisión. Sin embargo, debido a la
+        naturaleza de los cálculos matemáticos y al proceso humano en su
+        elaboración, es posible que existan errores en la resolución de los
+        ejercicios o en las respuestas proporcionadas.
       </p>
       <p>
         El usuario acepta que los solucionarios se ofrecen como herramientas de
@@ -449,9 +450,9 @@
         descargar nuevamente el documento corregido.
       </p> -->
       <p>
-        En caso de los videosolucionarios se actualizará el video mostrando con la
-        corrección al error observado en un plazo de 7 días hábiles y el usuario
-        tendrá acceso a dicho video.
+        En caso de los videosolucionarios se actualizará el video mostrando con
+        la corrección al error observado en un plazo de 7 días hábiles y el
+        usuario tendrá acceso a dicho video.
       </p>
       <p>
         Edukar no se hace responsable ante cualquier tipo de reclamo si es que
